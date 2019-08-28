@@ -762,7 +762,7 @@ ul.service-grid li i{
   left: 3%;
 }
 .contact h1,.top-contact h3{
-	color:#a3a3a3;
+	/*color:#a3a3a3;*/
 	font-size:1.8em;
 	padding: 0 0 0.4em
 }
@@ -1242,10 +1242,10 @@ ul.date li span {
   height: 46px;
   background-size: 44px;
 }
-.work-top h2{
+.work-top h2, .about h2{
   font-size: 1em;
 }
-.work-top p ,.about-top p{
+.work-top p ,.about p{
   font-size: 0.8em;
 }
 .work,.about,.single {
@@ -1522,7 +1522,7 @@ ul.social li span, ul.social li a {
   height: 5px;
   width: 17px;
 }
-.work-top p, .about-top p , p.para{
+.work-top p, .about p , p.para{
   font-size: 0.7em;
   height: 107px;
   overflow: hidden;
