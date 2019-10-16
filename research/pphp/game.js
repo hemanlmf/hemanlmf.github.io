@@ -168,7 +168,7 @@ function setPlayerInfo(){
 
 // Load the model and enable start button
 async function loadModel(){
-	model = await tf.loadModel("https://pphp2019.do.am/model/model.json");
+	model = await tf.loadModel("https://hemanlmf.github.io/research/pphp/model/model.json");
 	return "completed";
 }
 
