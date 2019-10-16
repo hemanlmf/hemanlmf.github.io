@@ -1,0 +1,166 @@
+body {
+	background-image: url("img/bg.jpg");
+	font-family: "FangSong", sans-serif;
+}
+
+a:hover {
+	cursor: pointer;
+}
+
+.progress {
+	width: 400px;
+	height: 25px;
+}
+
+/* Class for pop up windows */
+.modal {
+	position: fixed; /* Stay in place */
+	z-index: 999; /* Sit on top */
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,1); /* Black w/ opacity */
+}
+
+.modal-content {
+	margin: auto;
+	display: block;
+	width: 80%;
+	max-width: 700px;
+}
+
+.modal-dialog {
+	position: fixed; /* Stay in place */
+	z-index: 998; /* Sit on top */
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,1); /* Black w/ opacity */
+}
+
+.modal-content {
+	margin: auto;
+	display: block;
+	width: 80%;
+	max-width: 700px;
+}
+
+/* 关闭按钮 */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#hpBar {
+	width: 1200px;
+	height: 50px;
+}
+
+#playerForm {
+	display: none;
+	margin-top: 0px;
+}
+
+#gameWarpper {
+	background-color: white;
+	width: 1200px;
+	height: 1000px;
+	margin: auto auto auto auto;
+	opacity: 0.8;
+}
+
+#gameVisual {
+	margin: auto auto auto auto;
+	position: relative;
+	width: 1200px;
+}
+
+#playerCamera {
+	width: 400px;
+	height: 300px;
+	vertical-align: middle;
+	margin-left: 0px;
+}
+
+#gameTimer {
+	width: 300px;
+	height: 200px;
+	margin-left: 50px;
+	opacity: 1;
+}
+
+#rps {
+	width: 400px;
+	height: 300px;
+	margin-left: 20px;
+}
+
+#gameControl {
+	margin: auto;
+	height: 200px;
+	width: 1200px;
+	text-align:center;
+	opacity: 1;
+}
+
+#fightTxt {
+	margin: auto auto 20px auto;
+}
+
+#start {
+	width: 200px;
+	height: 80px;
+	margin: auto auto 20px auto;
+}
+
+#cameraCap {
+	width: 400px;
+	height: 300px;
+	display: none;
+}
+
+#gameStat {
+	height: 120px;
+	padding-top: 20px;
+	position: relative;
+	width: 1200px;
+}
+
+#playerStat {
+	float:left;
+	margin-left: 20px;
+}
+
+#enemyStat {
+	float:right;
+	margin-right: 20px;
+}
+
+#history {
+	margin-top: 50px;
+	height: 200px;
+	width: 1200px;
+	text-align:center;
+	font-size: 20px;
+	width: 1200px;
+}
