@@ -58,7 +58,7 @@ body a{
 	min-height:1618px;
 }
 .logo{
-	background:#fff;
+	background:#242b2e;
 	padding: 2em;
 }
 .top-nav ul li {
@@ -1391,8 +1391,8 @@ ul.social li span, ul.social li a {
 /*---*/
 .header-top{
 	display:block;
-	background:#fff;
-	  padding: 1em 0.5em;
+	background:#242b2e;
+	padding: 1em 0.5em;
 }
 .header-left{
 	display:none;
