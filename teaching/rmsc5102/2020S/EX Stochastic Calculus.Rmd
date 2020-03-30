@@ -17,9 +17,6 @@ fontsize: 12pt
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Preface
-The questions in this exercise are compiled from some of my past courses. Please let me know if there is any mistake (I am better at simulation than those calculus orz)
-
 # Finding the SDE
 ## Strategy
 1) Define $f(x,t)$ and $dX_t$  
