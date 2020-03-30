@@ -1,0 +1,53 @@
+---
+title: "RMSC5102 2020S A Question on Inverse Transform"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question
+Why do we need to use cdf for inverse transform? Why can't we use pdf?
+
+# Answer
+Let $v=f(x)$ be a general pdf and $w=F(x)=\int_{-\infty}^{\infty} f(x) dx$ be its cdf. Assume their inverse both exists, then we have $x=f^{-1}(v)$ and $x=F^{-1}(w)$  
+
+To generate the random variable $X$ from the above relationship, we need to generate random $V$ or $W$ so as to put them into the inverse equation, i.e. $X=f^{-1}(V)$ or $X=F^{-1}(W)$  
+
+In other words, we need to know how to generate random $V$ or $W$. The problem of using pdf for inverse transform is that we do not know what is the distribution of $V$ in general.  
+
+However, for cdf, $W \sim Unif(0,1)$ according to the [probability integral transform](https://en.wikipedia.org/wiki/Probability_integral_transform). As we know how to generate $Unif(0,1)$, we use cdf for inverse transform.  
+
+As our focus is on the simulation aspect, I am not going through the theory but rather illustrate with the example of epxonential distribution with pdf $f(x)=2e^{-2x},\ x>0$:  
+Note that the cdf is
+$$
+\begin{aligned}
+F(x) &= \int_0^x 2e^{-2t} dt \\
+&= \left[ -e^{-2t} \right]_0^x \\
+&= 1-e^{-2x}
+\end{aligned}
+$$
+Let $V=f(X)=2e^{-2X}$ and $W=F(X)=1-e^{-2X}$  
+Then $X=-\frac{1}{2} ln(\frac{1}{2} V)$ and $X=-\frac{1}{2} ln(1-W)$  
+We use histogram to visualize the distribution of them:
+```{r answer}
+Xrexp = rexp(10000,2) #use rexp function to generate
+hist(Xrexp)
+V = 2*exp(-2*Xrexp)
+hist(V) #plot shows not U(0,1). It is U(0,2) for this case
+W = 1-exp(-2*Xrexp)
+hist(W) #plot shows close to U(0,1)
+# If we know V is U(0,2), we may try to use the pdf relation
+V = runif(10000,0,2)
+Xpdf = -0.5*log(0.5*V)
+hist(Xpdf)
+# However we don't know V in general. So we use W~U(0,1) and cdf
+W = runif(10000,0,1)
+Xcdf = -0.5*log(1-W)
+hist(Xcdf)
+```

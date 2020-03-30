@@ -1,0 +1,19 @@
+---
+title: "STAT1012 Resources"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Spring, 2020
+
+### Notes
+1. [Quick revision notes](notes.pdf)  
+2. [Post-midterm review](2020S/review_post_midterm.pdf)  
+
+## Fall, 2019
+
+### Notes
+1. [Quick revision notes](2019F/notes.pdf)  

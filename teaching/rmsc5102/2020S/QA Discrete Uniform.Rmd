@@ -1,0 +1,60 @@
+---
+title: "RMSC5102 2020S A Question on Discrete Uniform"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question
+Can we use continuous version of inverse transform for discrete uniform random variable?
+
+# Answer
+It is not appropriate in terms of algorithm. Below is an explanation:  
+
+To use continuous version of inverse transform, note that the cdf of discrete uniform is
+$$
+\begin{aligned}
+F(x) &= \frac{x}{m} &, x=1,...,m \\
+u &= F(x) = \frac{x}{m} \\
+x &= um \\
+\Rightarrow F^{-1}(u) &= um
+\end{aligned}
+$$
+There are at least two problems here:  
+1) As $F(x)$ is only defined at $x=1,...,m$, the inverse function $F^{-1}(u)$ is actually not well defined. As you can try in simulation, $um$ may not be an integer  
+2) Even if you round the "inverse" properly, they may fail on boundary cases. For instance, if $0 \le u \le 1$, $\lceil um \rceil$ (i.e. round up to nearest integer) will fail at $u=0$ since $\lceil 0 \rceil = 0$ may not be in the support of $X$  
+
+Hence you should use discrete version of inverse transform for generating for discrete uniform random variable
+
+However, if you round the the "inverse" properly, the implementation is fine in R practically because the documentation states that "runif(1,0,1)" will not return 0 or 1. This avoids the boundary cases but I do not recommend it as it depends on specification of uniform random number in the language
+```{r answer}
+m = 100
+n = 10000
+U = runif(n) #use same set of U to compare plot
+X = Y = vector(length = n)
+#Standard way
+for (i in 1:n)
+{
+  for (j in 1:m)
+  {
+    if (U[i] > (j-1)/m && U[i] <= j/m)
+    {
+      X[i] = j
+      break
+    }
+  }
+}
+hist(X)
+#Non-standard way
+for (i in 1:n)
+{
+  Y[i] = ceiling(U[i]*m)
+}
+hist(Y) #same shape as X's plot
+```

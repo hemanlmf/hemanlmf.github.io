@@ -1,0 +1,21 @@
+---
+title: "RMSC5102 Resources"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Spring, 2020
+
+### Notes
+1. [Tutorial notes](notes.pdf)  
+2. [Midterm review](2020S/review_midterm.pdf)  
+
+### Q&A
+1. [Inverse transform](2020S/QA-Inverse-Transform.html)  
+2. [Discrete uniform](2020S/QA-Discrete-Uniform.html)  
+
+### Extra Exercise
+1. [Stochastic calculus](2020S/EX-Stochastic-Calculus.html)
