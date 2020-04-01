@@ -1,0 +1,41 @@
+---
+title: "STAT1012 2020S A Question on Variance of Binomial Distribution"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question
+Why the variance of $Y \sim B(n,p)$ is $np(1-p)$?
+
+# Answer
+It is not necessay to know this proof but I think it can provide some insight for the later chapters (e.g. usefulness of iid assumption in estimation). Note that if
+$$
+X_1, ..., X_n \stackrel{iid}{\sim} B(1,p)
+$$
+We can write $Y$ as $Y = \sum_{i=1}^n X_i$ since $Y$ has $n$ independent trials. Then by definition,
+$$
+\begin{aligned}
+Var(X_1) &= \sum_{x=0}^1 (x-p)^2 p^x (1-p)^{1-x} \\
+&= p^2 (1-p) +(1-p)^2 p \\
+&= p(1-p) \\
+Var(Y) &= Var(X_1 +... +X_n)
+\end{aligned}
+$$
+Since $X_1, ..., X_n$ are independent, variance of sum is sum of variance. Hence we have
+$$
+\begin{aligned}
+Var(Y) &= Var(X_1 +... +X_n) \\
+&= Var(X_1) +... +Var(X_n) \\
+&= n Var(X_1) =np(1-p)
+\end{aligned}
+$$
+The last line follows from the fact that $X_1, ..., X_n$ are identically distributed  
+
+You can refer to the quick revision notes for the general variance of sum formula. However, as covariance is not covered in this course, you only need to remember variance of sum is sum of variance when the random variables are independent
