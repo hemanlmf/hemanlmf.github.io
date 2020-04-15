@@ -1,0 +1,13 @@
+---
+title: "Recursive Long-Run Variance Estimation"
+output: html_document
+author: LEUNG Man Fung, Heman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Supplementary Materials
+1. [Reading Group - Asymptotic theory for stationary processes](Reading Group - Asymptotic theory for stationary processes.pdf)  
+Wu (2005) developed a beautiful and coherent asymptotic framework for inference of stationary process. Apart from using them in this research, I am also delighted to share them with other members of [research group](https://sites.google.com/site/kwchankeith/e-learning/reading-group)  
