@@ -10,4 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Supplementary Materials
 1. [Reading Group - Asymptotic theory for stationary processes](Reading Group - Asymptotic theory for stationary processes.pdf)  
-Wu (2005) developed a beautiful and coherent asymptotic framework for inference of stationary process. Apart from using them in this research, I am also delighted to share them with other members of [research group](https://sites.google.com/site/kwchankeith/e-learning/reading-group)  
+Wu (2005) developed a beautiful and coherent asymptotic framework for the inference of stationary process. Apart from using them in this research, I am also delighted to share them with other members of our [research group](https://sites.google.com/site/kwchankeith/e-learning/reading-group)  
+
+2. [Reading Group - Recursive Estimation of Time-Average Variance Constants](Reading Group - Recursive Estimation of Time-Average Variance Constants.pdf)  
+This seminal paper by Wu (2009) enlightens us about recursive estimation of long-run variance. Along with [Chan and Yau (2017)](https://sites.google.com/site/kwchankeith/publications/rtacm), I detail the proofs and summarize some important ideas/techniques for this research  
