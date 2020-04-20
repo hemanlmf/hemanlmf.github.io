@@ -1,0 +1,76 @@
+---
+title: "RMSC5102 2020S A Question on Variance in Simulation"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question
+Why do we need to generate multiple estimates when we compute variance? What is the meaning of "variance" in variance reduction?
+
+# Answer
+There are two interpretations of "variance" in variance reduction. Firstly, it can be the **variance of samples** that you generate for calculating 1 estimate. Secondly, it can be the **variance of estimates** that you calculate using multiple estimates. In tutorial, I told you to always use **variance of estimates**  
+
+However, there are some tricky parts here. For instance, antithetic variable can actually reduce variance of samples (thus variance of estimates since they decrease together usually) when we use antithetic variables as half of the samples. In this regard, variance of samples is sometimes used instead of variance of estimates in the lecture slides to illustrate the reduction  
+
+Then why do we need to use **variance of estimates**? There are several reasons:  
+
+1) Some variance reduction methods (in particular control variates) do not affect the samples being generated. As it affects the estimate $\hat{\theta}$ directly, we have to use variance of estimates. Similar problem happens with dependent samples  
+
+2) Variance of estimates is more meaningful in the sense that it measures the accuracy of your estimation procedure. If you are aware of, variance of estimates is the Monte Carlo approximation of $Var(\hat{\theta})$, which gives us the accuracy of $\hat{\theta}$ (assume unbiased)  
+
+3) Variance of samples needs to account for convergence rate for reporting. Hence we need to report the standard error (but not the raw variance) if we use it. Meanwhile variance of estimates is very intutitive and you do not need to do adjustment in R  
+
+Let me illustrate an importance sampling example for $\theta = \int_0^1 2x^2 dx$ using $g(x)=2x, 0 \leq x \leq 1$. Note that the likelihood ratio is $\frac{1}{2x}$. Hence
+$$
+h(x) \frac{f(x)}{g(x)} = x
+$$
+If we want to simulate $X \sim G$, then
+$$
+G(x) = \int_0^1 2x dx = x^2 \implies
+X = G^{-1}(U) = \sqrt{U}
+$$
+The algorithm is as follows:  
+1) Generate $U_i \sim U(0,1)$ for $i=1,...,n$  
+2) Set $X_i=\sqrt{U_i}$ for $i=1,...,n$  
+3) Compute $\hat{\theta} = \frac{1}{n} \sum_{i=1}^n X_i$  
+
+Note that the theoretical variance of sample is
+$$
+Var(X) = Var(\sqrt{U}) = \int_0^1 udu - \left( \int_0^1 \sqrt{u}du \right)^2 = \frac{1}{18}
+$$
+While the theoretical variance of estimator is
+$$
+\begin{aligned}
+Var(\hat{\theta}) &= \frac{1}{n^2} Var(\sum_{i=1}^n X_i) \\
+&= \frac{1}{n} Var(X_1) \\
+&= \frac{1}{18n}
+\end{aligned}
+$$
+The $n$ represent number of samples here. We can see that theoretical variance of estimator is proportional to theoretical variance of sample, which verifies my claim that they usually decrease together. At the same time, it proves reason 1 of using *variance of estimates* since we do not always have *variance of sample* from estimation. Reporting standard error in that case requires estimation or close form of $Var(X)$
+
+Finally, we end this Q&A with a comparison in R:
+```{r answer}
+nSample = 1000
+nEstimate = 1000
+thetaH = vector(length = nEstimate)
+v = vector(length = 5)
+for (j in 1:nEstimate)
+{
+  U = runif(nSample)
+  X = sqrt(U)
+  thetaH[j] = mean(X)  
+}
+v[1] = 1/18 #theoretical variance of samples
+v[2] = var(X) #estimated variance of samples
+v[3] = 1/(18*nSample) #theoretical variance of estimator
+v[4] = var(thetaH) #estimated variance of estimator
+v[5] = var(X)/nSample #standard error
+v
+```
