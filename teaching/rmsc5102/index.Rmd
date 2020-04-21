@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Notes
 1. [Tutorial notes](notes.pdf)  
 2. [Midterm review](2020S/review_midterm.pdf)  
+3. [Final review](2020S/review_final.pdf)  
 
 ### Q&A
 1. [Inverse transform](2020S/QA-Inverse-Transform.html)  
