@@ -53,7 +53,7 @@ Var(\hat{\theta}) &= \frac{1}{n^2} Var(\sum_{i=1}^n X_i) \\
 &= \frac{1}{18n}
 \end{aligned}
 $$
-The $n$ represent number of samples here. We can see that theoretical variance of estimator is proportional to theoretical variance of sample, which verifies my claim that they usually decrease together. At the same time, it proves reason 1 of using *variance of estimates* since we do not always have *variance of sample* from estimation. Reporting standard error in that case requires estimation or close form of $Var(X)$
+The $n$ represent number of samples here. We can see that theoretical variance of estimator is proportional to theoretical variance of sample, which verifies my claim that they usually decrease together. At the same time, it proves reason 1 of using variance of estimates since we do not always have variance of sample from estimation. Reporting standard error in that case requires estimation or close form of $Var(X)$
 
 Finally, we end this Q&A with a comparison in R:
 ```{r answer}

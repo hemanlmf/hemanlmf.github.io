@@ -1670,7 +1670,7 @@ Var(\hat{\theta}) &amp;= \frac{1}{n^2} Var(\sum_{i=1}^n X_i) \\
 &amp;= \frac{1}{n} Var(X_1) \\
 &amp;= \frac{1}{18n}
 \end{aligned}
-\]</span> The <span class="math inline">\(n\)</span> represent number of samples here. We can see that theoretical variance of estimator is proportional to theoretical variance of sample, which verifies my claim that they usually decrease together. At the same time, it proves reason 1 of using <em>variance of estimates</em> since we do not always have <em>variance of sample</em> from estimation. Reporting standard error in that case requires estimation or close form of <span class="math inline">\(Var(X)\)</span></p>
+\]</span> The <span class="math inline">\(n\)</span> represent number of samples here. We can see that theoretical variance of estimator is proportional to theoretical variance of sample, which verifies my claim that they usually decrease together. At the same time, it proves reason 1 of using variance of estimates since we do not always have variance of sample from estimation. Reporting standard error in that case requires estimation or close form of <span class="math inline">\(Var(X)\)</span></p>
 <p>Finally, we end this Q&amp;A with a comparison in R:</p>
 <pre class="r"><code>nSample = 1000
 nEstimate = 1000
@@ -1688,7 +1688,7 @@ v[3] = 1/(18*nSample) #theoretical variance of estimator
 v[4] = var(thetaH) #estimated variance of estimator
 v[5] = var(X)/nSample #standard error
 v</code></pre>
-<pre><code>## [1] 5.555556e-02 5.504106e-02 5.555556e-05 5.563128e-05 5.504106e-05</code></pre>
+<pre><code>## [1] 5.555556e-02 5.718439e-02 5.555556e-05 5.601512e-05 5.718439e-05</code></pre>
 </div>
 
 
