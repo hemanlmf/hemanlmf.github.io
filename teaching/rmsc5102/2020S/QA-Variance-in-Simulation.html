@@ -1656,7 +1656,7 @@ summary {
 <p>Let me illustrate an importance sampling example for <span class="math inline">\(\theta = \int_0^1 2x^2 dx\)</span> using <span class="math inline">\(g(x)=2x, 0 \leq x \leq 1\)</span>. Note that the likelihood ratio is <span class="math inline">\(\frac{1}{2x}\)</span>. Hence <span class="math display">\[
 h(x) \frac{f(x)}{g(x)} = x
 \]</span> If we want to simulate <span class="math inline">\(X \sim G\)</span>, then <span class="math display">\[
-G(x) = \int_0^1 2x dx = x^2 \implies
+G(x) = \int_0^x 2t dt = x^2 \implies
 X = G^{-1}(U) = \sqrt{U}
 \]</span> The algorithm is as follows:<br />
 1) Generate <span class="math inline">\(U_i \sim U(0,1)\)</span> for <span class="math inline">\(i=1,...,n\)</span><br />
@@ -1688,7 +1688,7 @@ v[3] = 1/(18*nSample) #theoretical variance of estimator
 v[4] = var(thetaH) #estimated variance of estimator
 v[5] = var(X)/nSample #standard error
 v</code></pre>
-<pre><code>## [1] 5.555556e-02 5.718439e-02 5.555556e-05 5.601512e-05 5.718439e-05</code></pre>
+<pre><code>## [1] 5.555556e-02 5.489821e-02 5.555556e-05 5.364703e-05 5.489821e-05</code></pre>
 </div>
 
 

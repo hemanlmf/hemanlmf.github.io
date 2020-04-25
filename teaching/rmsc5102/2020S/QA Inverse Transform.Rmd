@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Why do we need to use cdf for inverse transform? Why can't we use pdf?
 
 # Answer
-Let $v=f(x)$ be a general pdf and $w=F(x)=\int_{-\infty}^{\infty} f(x) dx$ be its cdf. Assume their inverse both exists, then we have $x=f^{-1}(v)$ and $x=F^{-1}(w)$  
+Let $v=f(x)$ be a general pdf and $w=F(x)=\int_{-\infty}^{x} f(t) dt$ be its cdf. Assume their inverse both exists, then we have $x=f^{-1}(v)$ and $x=F^{-1}(w)$  
 
 To generate the random variable $X$ from the above relationship, we need to generate random $V$ or $W$ so as to put them into the inverse equation, i.e. $X=f^{-1}(V)$ or $X=F^{-1}(W)$  
 

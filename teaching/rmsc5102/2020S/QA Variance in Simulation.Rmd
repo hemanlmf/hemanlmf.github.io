@@ -33,7 +33,7 @@ h(x) \frac{f(x)}{g(x)} = x
 $$
 If we want to simulate $X \sim G$, then
 $$
-G(x) = \int_0^1 2x dx = x^2 \implies
+G(x) = \int_0^x 2t dt = x^2 \implies
 X = G^{-1}(U) = \sqrt{U}
 $$
 The algorithm is as follows:  
