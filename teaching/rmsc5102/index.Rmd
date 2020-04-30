@@ -17,11 +17,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Q&A
 1. [Inverse transform](2020S/QA-Inverse-Transform.html)  
 2. [Discrete uniform](2020S/QA-Discrete-Uniform.html)  
-3. [Monte Carlo integration](2020S/QA-Monte-Carlo-Integration.html)
+3. [Monte Carlo integration](2020S/QA-Monte-Carlo-Integration.html)  
 4. [Variance in simulation](2020S/QA-Variance-in-Simulation.html)
 
 ### Extra Exercise
-1. [Stochastic calculus](2020S/EX-Stochastic-Calculus.html)
+1. [Stochastic calculus](2020S/EX-Stochastic-Calculus.html)  
+2. [General simulation](2020S/EX-General-Simulation.html)
 
 ### Online Reference
 1. [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)  
