@@ -1,0 +1,530 @@
+---
+title: "Reading Group: Probability With Martingales Ch12"
+author: "LEUNG Man Fung, Heman"
+date: "Summer 2020"
+output: 
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+header-includes:
+  - \usepackage{amssymb}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Martingales bounded in $\mathcal{L}^2$
+
+## Introduction
+- Boundedness of a martingale is important for checking convergence
+  - Yet boundedness in $\mathcal{L}^1$ can be difficult to check
+  - Boundedness in $\mathcal{L}^1$: $\sup_n E(|M_n|) < \infty$
+  - What is the difference between boundedness in $\mathcal{L}^1$ and integrability $E(|M_n|) < \infty, \forall n$?
+
+- A martingale $M$ bounded in $\mathcal{L}^2$ is also bounded in $\mathcal{L}^1$
+  - Easier to check boundedness in $\mathcal{L}^2$ due to a Pythagorean formula
+$$
+E(M_n^2) = E(M_0^2) +\sum_{k=1}^n E\left[ (M_k -M_{k-1})^2 \right]
+$$
+
+- This chapter also presents neat proofs of:
+  - Three-Series Theorem
+  - Strong Law of Large Numbers
+  - Lévy's extension of the Borel-Cantelli Lemmas
+
+## Martingales in $\mathcal{L}^2$: orthogonal increments
+- Let $M=\{M_n\}_{n \ge 0}$ be a martingale in $\mathcal{L}^2$ so that $E(M^2_n) < \infty, \forall n$
+- By martingale property, for positive integers $s \le t \le u \le v$, we have
+$$
+E(M_v|\mathcal{F}_u) = M_u\quad (a.s.)
+$$
+- This implies the future increment $M_v -M_u$ is orthogonal to the present information $\mathcal{L}^2(\mathcal{F}_u)$, so
+$$
+\langle M_t -M_s, M_v -M_u \rangle = 0
+$$
+  - Future increment is also orthogonal to the past increment since $M_t -M_s \in \mathcal{L}^2(\mathcal{F}_u)$
+- Hence it is possible to express $M_n$ by sum of orthogonal increments:
+$$
+M_n = M_0 +\sum_{k=1}^n (M_k -M_{k-1})
+$$
+- Pythagoras's theorem yields (since expectation of cross term vanishes)
+$$
+E(M_n^2) = E(M_0^2) +\sum_{k=1}^n E\left[ (M_k -M_{k-1})^2 \right]
+$$
+
+## Boundedness in $\mathcal{L}^2$: sum of increments square
+- Theorem 12.1.1 (numbered by order in the section):
+  - Let $M$ be a martingale for which $M_n \in \mathcal{L}^2, \forall n$
+  - Then $M$ is bounded in $\mathcal{L}^2$ if and only if $\sum E\left[ (M_k -M_{k-1})^2 \right] < \infty$
+  - And when this obtains, $M_n \rightarrow M_\infty$ almost surely and in $\mathcal{L}^2$
+    - Note: William implicitly assumed the martingale was indexed in discrete time by using $k-1$
+    - However I think this theorem also holds for continuous time
+
+- Proof of $\sup_n E(M_n^2) < \infty \iff \sum E\left[ (M_k -M_{k-1})^2 \right] < \infty$
+  - Use the Pythagorean formula
+$$
+E(M_n^2) = E(M_0^2) +\sum_{k=1}^n E\left[ (M_k -M_{k-1})^2 \right]
+$$
+    - Note: $E(M_0^2)$ is unbounded implies $E\left[ (M_1-M_0)^2 \right]$ and $E(M_n^2)$ are also unbounded
+    - So the theorem is safe even if there is no $E(M_0^2)$ explicitly
+
+---
+
+- Proof of $M_n \rightarrow M_{\infty}$ almost surely and in $\mathcal{L}^2$
+  - Suppose that $M$ is bounded in $\mathcal{L}^2$
+  - By monotonicity of norms, $M$ is also bounded in $\mathcal{L}^1$
+  - Apply Doob's convergence theorem, we have $M_n \stackrel{a.s.}{\rightarrow} M_\infty$
+  - The Pythagorean formula implies that $E\left[ (M_{n+r} -M_n)^2 \right] = \sum_{k=n+1}^{n+r} E\left[ (M_k -M_{k-1})^2 \right]$
+  - When $r \rightarrow \infty$, Fatou's lemma yields $E\left[ (M_\infty -M_n)^2 \right] \le \sum_{k \ge n+1} E\left[ (M_k -M_{k-1})^2 \right]$
+  - Hence $\lim_n E\left[ (M_\infty -M_n)^2 \right] = 0$, i.e. $M_n \stackrel{\mathcal{L}^2}{\rightarrow} M_\infty$
+    - Intuition: when $n \rightarrow \infty$, there is no more increment on RHS
+
+# Sum of independent random variables in $\mathcal{L}^2$
+
+## Sum of independent zero-mean RVs in $\mathcal{L}^2$
+- Theorem 12.2.1:
+  - Suppose that $\{X_k\}_{k \in \mathbb{N}}$ is a sequence of independent RVs with zero-mean and finite variance $\sigma_k^2$
+  - Then $\sum \sigma_k^2 < \infty \implies \sum X_k$ converges almost surely
+  - Further if $X_k$ is bounded by some positive constant $K$, then the reverse direction is also true
+    - i.e. $\sum X_k$ converges almost surely $\implies \sum \sigma_k^2 < \infty$
+
+- Notation: define
+  - Natural filtration: $\mathcal{F}_n := \sigma(X_1, X_2, \dots, X_n)$ where $\mathcal{F}_0 := \{\varnothing, \Omega\}$
+  - Partial sum: $M_n := \sum_{k=1}^n X_k$ where $M_0 := 0$
+  - $A_n := \sum_{k=1}^n \sigma_k^2$ where $A_0 := 0$
+  - $N_n := M_n^2 -A_n$ where $N_0 := 0$
+  
+---
+
+- Proof of $\sum \sigma_k^2 < \infty \implies \sum X_k$ converges almost surely
+  - From example in 10.4, $M$ is a martingale
+  - Using the Pythagorean formula,
+$$
+E(M_n^2) = \sum_{k=1}^n E\left[ (M_k -M_{k-1})^2 \right]
+= \sum_{k=1}^n E(X_k^2)
+= \sum_{k=1}^n\sigma_k^2
+= A_n
+$$
+  - If $\sum \sigma_k^2 < \infty$, then $M$ is bounded in $\mathcal{L}^2$ and $M_n$ converges almost surely by theorem 12.1.1
+
+---
+
+- Proof of $\sum X_k$ converges almost surely $\implies \sum \sigma_k^2 < \infty$
+  - Since $X_k \perp \mathcal{F}_{k-1}$, we have, almost surely
+$$
+E\left[ (M_k -M_{k-1})^2 | \mathcal{F}_{k-1} \right]
+= E[X_k^2 | \mathcal{F}_{k-1}]
+= E(X_k^2)
+= \sigma_k^2
+$$
+  - Similarly, since $M_{k-1}$ is $\mathcal{F}_{k-1}$ measurable, we can expand $(M_k -M_{k-1})^2$, almost surely
+$$
+\sigma_k^2 = E(M_k^2 | \mathcal{F}_{k-1}) -2M_{k-1} E(M_k | \mathcal{F}_{k-1}) +M_{k-1}^2
+=  E(M_k^2 | \mathcal{F}_{k-1}) -M_{k-1}^2
+$$
+  - But this implies that $N$ is a martingale (Recall $N_n := M_n^2 -A_n$)
+  - Now let $c \in (0,\infty)$ and $T := \inf\{ r:|M_r|>c\}$
+  - Since stopped martingale is also a martingale, $E(N_n^T) = E\left[ (M_n^T)^2 \right] -E(A_{T \land n}) =0$
+  - By the further condition, we have $|M_T-M_{T-1}| =|X_T| \le K$ if $T < \infty$
+  - Hence $E(A_{T \land n}) = E\left[ (M_n^T)^2 \right] \le (K+c)^2, \forall n$
+    - Intuition: same as upcrossing with last increment bounded by $K$
+  - However, since $\sum X_k$ converges a.s., the partial sums are a.s. bounded
+  - So it must be the case that $P(T = \infty) > 0$ for some $c$ and $A_\infty := \sum \sigma_k^2 < \infty$
+
+## Random signs
+- Let $\{a_n\}$ ve a sequence of real numbers and $\{\epsilon_n\}$ be a sequence of iid Rademacher RVs
+    - Rademacher distribution: $P(\epsilon_n = \pm 1) = 0.5$
+    - Frequently appear in statistical learning theory
+- Theorem 12.2.1 tells us that $\sum \epsilon_n a_n$ converges a.s. $\iff \sum a_n^2 < \infty$
+  - And $\sum \epsilon_n a_n$ oscillates infinitely if $\sum a_n^2 = \infty$
+
+- Sketch
+    - Note that $Var(\epsilon_k a_k) = a_k^2$ and $|\epsilon_k a_k| \le \sup_n a_n < \infty$, theorem 12.2.1 will yield the first part
+    - For the second part, my guess is since $\sum a_n^2 = \infty$, $\sum \epsilon_n a_n$ will not converge
+    - However, as $\epsilon_n$ are Rademacher RVs, $\sum \epsilon_n a_n$ will oscillate depending on the realization
+
+## Symmetrization: expanding the sample space
+- What if the mean of RVs is non-zero?
+- Lemma 12.4.1
+  - Suppose $\{X_n\}$ is a sequence of independent RVs bounded by a constant $K \in [0,\infty)$
+  - Then $\sum X_n$ converges a.s. implies that $\sum E(X_n)$ converges and $\sum Var(X_n) < \infty$
+
+- Proof
+  - If $E(X_n)=0, \forall n$, then this reduce to theorem 12.2.1
+  - Otherwise we need to replace each $X_n$ by a "symmetrized version" $Z_n^*$ of mean 0
+  - Let $\big(\tilde{\Omega}, \tilde{\mathcal{F}}, \tilde{\mathbb{P}}, (\tilde{X}_n: n \in \mathbb{N}) \big)$ be an exact copy of $\big(\Omega, \mathcal{F}, \mathbb{P}, (X_n: n \in \mathbb{N}) \big)$
+  - Define a richer probability space $\big(\Omega^*, \mathcal{F}^*, \mathbb{P}^* \big) := \big(\Omega, \mathcal{F}, \mathbb{P} \big) \times \big(\tilde{\Omega}, \tilde{\mathcal{F}}, \tilde{\mathbb{P}} \big)$
+  - For $\omega^* = (\omega, \tilde{\omega}) \in \Omega$, define
+$$
+X_n^*(\omega^*) := X_n(\omega),
+\tilde{X}_n^*(\omega^*) := \tilde{X}_n(\tilde{\omega}),
+Z_n^*(\omega^*) := X_n^*(\omega^*) -\tilde{X}_n^*(\omega^*)
+$$
+    - Intuition: $X_n^*$ is $X_n$ lifted to the richer probability space
+
+---
+
+- Proof (continue)
+  - It is clear that the combined family $(X_n: n \in \mathbb{N}) \cup (\tilde{X}_n: n \in \mathbb{N})$ is on $\big(\Omega^*, \mathcal{F}^*, \mathbb{P}^* \big)$
+    - This may be proved by the uniqueness lemma in 1.6
+  - Both $X_n^*, \tilde{X}_n^*$ having the same $\mathbb{P}^*$-distribution as the $\mathbb{P}$-distribution of $X_n$
+$$
+\mathbb{P}^* \circ (X_n^*)^{-1} = \mathbb{P} \circ X_n^{-1} \textrm{ on } (\mathbb{R}, \mathcal{B}), \textrm{etc.}
+$$
+  - Now $(Z_n^*: n \in \mathbb{N}^*)$ is a zero-mean sequence of independent RVs on $\big(\Omega^*, \mathcal{F}^*, \mathbb{P}^* \big)$
+  - We have $|Z_n^*(\omega^*)| \le 2K, \forall n, \forall \omega^*$ and $Var(Z_n^*) = 2 \sigma_n^2$ where $\sigma_n^2 := Var(X_n)$
+    - This is probably due to independence of original RV and its copy
+  - Let $G := \{ \omega \in \Omega: \sum X_n(\omega) \textrm{ converges} \}$ with $\tilde{G}$ defined similarly
+  - Since $\mathbb{P}(G) =\tilde{\mathbb{P}}(\tilde{G}) =1$, $\mathbb{P}^*(G \times \tilde{G})=1$
+  - But $\sum Z_n^*(\omega^*)$ also converges on $G \times \tilde{G}$, which means $\mathbb{P}^*(\sum Z_n^* \textrm{ converges})=1$
+  - As $Z_n^*$ converges a.s., is zero-mean and bounded, theorem 12.2.1 yields $\sum \sigma_n^2 < \infty$ 
+  - It also follows that $\sum [X_n -E(X_n)]$ and $\sum E(X_n)$ converges a.s.
+
+# Some lemmas on real numbers
+
+## Cesàro's lemma
+- Alternative version of Stolz–Cesàro theorem
+- Suppose that $\{b_n\}$ is a sequence of strictly positive real numbers with $b_0:=0$ and $b_n \uparrow \infty$
+- $\{v_n\}$ is a convergent sequence of real numbers with $v_n \rightarrow v_\infty \in \mathbb{R}$
+- Then we have $\lim_{n \rightarrow \infty} \frac{1}{b_n} \sum_{k=1}^n (b_k -b_{k-1}) v_k = v_\infty$
+
+- Proof: let $\epsilon > 0$. Choose $N$ s.t. $v_k > v_\infty -\epsilon$ whenever $k \ge N$. Then
+$$
+\begin{aligned}
+\liminf_{n \rightarrow \infty} \frac{1}{b_n} \sum_{k=1}^n (b_k -b_{k-1}) v_k
+&\ge \liminf_{n \rightarrow \infty} \left[ \frac{1}{b_n} \sum_{k=1}^N (b_k -b_{k-1}) v_k +\frac{b_n -b_N}{b_n} (v_\infty -\epsilon) \right] \\
+&\ge 0 +v_\infty -\epsilon
+\end{aligned}
+$$ 
+- Since this is true for every $\epsilon > 0$, we have $\liminf \ge v_\infty$
+- By a similar argument, we have  $\limsup \le v_\infty$ and the result follows
+
+## Kronecker's lemma
+- Suppose that $\{b_n\}$ is a sequence of strictly positive real numbers with $b_n \uparrow \infty$
+- $\{x_n\}$ is a sequence of real numbers and define $s_n := \sum_{i=1}^n x_i$
+- Then we have $\sum \frac{x_n}{b_n}$ converges $\implies \frac{s_n}{b_n} \rightarrow 0$
+
+- Proof: let $u_n := \sum_{k \le n} \frac{x_k}{b_k}$ so that $u_\infty := \lim_{n \rightarrow \infty} u_n$ exists
+- Then $u_n -u_{n-1} = \frac{x_n}{b_n}$. Thus by rearrangement
+$$
+s_n = \sum_{k=1}^n b_k(u_k -u_{k-1}) 
+= b_n u_n -\sum_{k=1}^n (b_k-b_{k-1}) u_{k-1}
+$$
+- Applying Cesàro's lemma, we have $\frac{s_n}{b_n} \rightarrow u_\infty -u_\infty = 0$
+- Alternative version: $\sum x_n$ exists and is finite $\implies \lim_{n \rightarrow \infty} \frac{1}{b_n} \sum_{k=1}^n b_k x_k =0$
+  - Check the little o of a weighted sum with monotonically increasing weights
+
+# Some neat proofs of classical theorems
+
+## Kolmogorow's Three-Series Theorem
+- Let $\{X_n\}$ be a sequence of independent RVs
+- Then $\sum X_n$ converges a.s. iff for some (then for every) $K>0$, the following 3 properties hold:
+  - $\sum_n P(|X_n| > K) < \infty$
+  - $\sum_n E(X_n^K)$ converges
+  - $\sum_n Var(X_n^K) < \infty$ where
+$$
+\begin{aligned}
+X_n^K(\omega) &:= \left\{
+	\begin{array}{ll}
+		X_n(\omega) &, |X_n(\omega)| \le K \\
+		0 &, |X_n(\omega)| > K
+	\end{array}
+\right.
+\end{aligned}
+$$
+
+- Proof of "only if" part
+  - Suppose that $\sum X_n$ converges a.s. and $K$ is any constant in $(0,\infty)$
+  - Since $X_n \rightarrow 0$ a.s. whence $|X_n| > K$ for only finitely many n, BC2 shows the first property holds
+    - Where is BC2 applied?
+  - Since (a.s.) $X_n = X_n^K$ for all but finitely many $n$, $\sum X_n^K$ also converges a.s.
+  - Applying lemma 12.4.1 yields the other two properties
+
+---
+
+- Proof of "if" part
+  - Suppose that for some $K>0$ the 3 properties hold
+  - Then $\sum P(X_n \ne X_n^K) = \sum P(|X_n| > K) < \infty$ by construction and property 1
+  - Applying BC1 yields $P(X_n = X_n^K \textrm{ for all but finitely many } n) = 1$
+  - So we only need to check $\sum X_n^K$ converges a.s.
+  - By property 2, we can check if $\sum \left[ X_n^K -E(X_n^K) \right]$ converges a.s. instead
+  - Now note that $Y_n^K := X_n^K -E(X_n^K)$ is a zero-mean RV with $E\left[ (Y_n^K)^2 \right] = Var(X_n^K)$
+  - By property 3, the result follows from theorem 12.2.1
+  
+## A Strong Law under variance constraints
+- Lemma 12.8.1
+  - Let $\{W_n\}$ be a sequence of independent RVs with $E(W_n)=0, \sum \frac{Var(W_n)}{n^2} < \infty$
+  - Then $\frac{1}{n} \sum_{k \le n} W_k \stackrel{a.s.}{\rightarrow} 0$
+
+- Proof
+  - By Kronecker's lemma, it suffices to prove that $\sum \frac{W_n}{n}$ converges
+  - However $E \left( \frac{W_n}{n} \right) = 0, \sum Var \left( \frac{W_n}{n} \right) = \sum  \frac{Var(W_n)}{n^2} < \infty$
+  - So by theorem 12.2.1, the statement is proved
+
+## Kolmogorov's Truncation Lemma
+- Suppose that $X_1, X_2, \dots$ are iid RVs with the same distribution as $X$ where $E(|X|) < \infty$
+- Define
+$$
+\mu := E(X),
+Y_n := \left\{
+	\begin{array}{ll}
+		X_n &, |X_n| \le n \\
+		0 &, |X_n| > n
+	\end{array}
+\right.
+$$
+- Then
+  - $E(Y_n) \rightarrow \mu$
+  - $P(Y_n = X_n \textrm{ eventually}) = 1$
+  - $\sum \frac{Var(Y_n)}{n^2} < \infty$
+
+---
+
+- Proof of $E(Y_n) \rightarrow \mu$
+  - Let
+$$
+Z_n := \left\{
+	\begin{array}{ll}
+		X &, |X| \le n \\
+		0 &, |X| > n
+	\end{array}
+\right.
+$$
+  - Then $Z_n \stackrel{d}{=} Y_n$ and $E(Z_n)=E(Y_n)$
+  - When $n \rightarrow \infty$, we have $Z_n \rightarrow X, |Z_n| \le |X|$
+  - Applying dominated convergence theorem (note that $X$ is integrable by assumption):
+$$
+\lim_{n \rightarrow \infty} E(Y_n) = \lim_{n \rightarrow \infty} E(Z_n)
+= E(X) = \mu
+$$
+
+---
+
+- Proof of $P(Y_n = X_n \textrm{ eventually}) = 1$
+  - Note that
+$$
+\begin{aligned}
+\sum_{n=1}^\infty P(Y_n \ne X_n) 
+&= \sum_{n=1}^\infty P(|X_n| > n) 
+= \sum_{n=1}^\infty P(|X| > n) \\
+&= E\left( \sum_{n=1}^\infty I_{|X| > n} \right)
+=  E\left( \sum_{1 \le n < |X|} 1 \right) \\
+&\le E(|X|) < \infty
+\end{aligned}
+$$
+  - By BC1, $P(Y_n \ne X_n, \textrm{ i.o}) = 0$. In other words, $P(Y_n = X_n, \textrm{ e.v.}) = 1$
+  
+---
+
+- Proof of $\sum \frac{Var(Y_n)}{n^2} < \infty$
+  - We have
+$$
+\sum \frac{Var(Y_n)}{n^2} 
+\le \sum \frac{E(Y_n^2)}{n^2}
+= \sum_n \frac{E(|X|^2 ; |X| \le n)}{n^2}
+= E\left[ |X|^2 f(|X|) \right]
+$$
+    - where $f(z) = \sum_{n \ge \max(1,z)} \frac{1}{n^2}, 0 < z < \infty$
+  - Note that, for $n \ge 1$, $\frac{1}{n^2} \le \frac{2}{n(n+1)} = 2 \left( \frac{1}{n} -\frac{1}{n+1} \right)$
+  - Hence $f(z) \le \frac{2}{\max(1,z)}$ by telescoping
+  - We have $\sum \frac{Var(Y_n)}{n^2} \le 2E(|X|) < \infty$
+
+## Kolmogorov's Strong Law of Large Numbers
+- Let $X_1, X_2, \dots$ be iid RVs with $E(|X_k|) < \infty, \forall k$. Define $S_n := \sum_{k=1}^n X_k$ and $\mu := E(X_k), \forall k$
+- Then $\frac{1}{n} S_n \stackrel{a.s.}{\rightarrow} \mu$
+
+- Proof
+  - Define $Y_n$ as in Kolmogorov's Truncation Lemma
+  - By $P(Y_n = X_n, \textrm{ e.v.}) = 1$, it suffices to show that $\frac{1}{n} \sum_{k=1}^n Y_k \stackrel{a.s.}{\rightarrow} \mu$
+  - Define $W_k := Y_k -E(Y_k)$. Note that
+$$
+\frac{1}{n} \sum_{k=1}^n Y_k
+= \frac{1}{n} \sum_{k=1}^n E(Y_k) +\frac{1}{n} \sum_{k=1}^n W_k
+$$
+  - The first term $\frac{1}{n} \sum_{k=1}^n E(Y_k) \rightarrow \mu$ by $E(Y_n) \rightarrow \mu$ and Cesàro's lemma (let $b_n := n$)
+  - The second term $\frac{1}{n} \sum_{k=1}^n W_k \stackrel{a.s.}{\rightarrow} 0$ by $\sum \frac{Var(Y_n)}{n^2} < \infty$ and lemma 12.8.1
+
+## Some remarks on SLLN
+- Philosophy
+  - SLLN gives a precise formulation of $E(X)$ as "the mean of a large number of independent realizations of X"
+    - Long run guarantee of frequentist method
+  - From exercise E4.6, it can be shown that if $E(|X|)=\infty$, then $\limsup \frac{S_n}{n} = \infty$ almost surely
+  - Hence SLLN is the best possible result for iid RVs
+
+- Methodology
+  - The truncation technique seems "ad hoc" with no pure-mathematical elegance
+  - The proof with martingale or ergodic theory possess that
+  - However, each of the methods can be adapted to cover situations which the others cannot tackle
+  - Classical truncation arguments retain great importance
+
+# Decomposition of stochastic process
+
+## Doob decomposition
+- Theorem 12.11.1
+  - Let $\{X_n\}_{n \in \mathbb{Z^+}}$ be an adapted process in $\mathcal{L}^1$
+  - Then $X$ has a Doob decomposition $X = X_0 +M +A$
+    - where $M$ is a martingale null at $0$ and $A$ is a previsible process null at $0$
+  - Moreover, this decomposition is unique modulo indistinguishability in the sense that
+$$
+X = X_0 +\tilde{M} +\tilde{A}
+\implies P(M_n =\tilde{M}_n, A_n =\tilde{A}_n, \forall n) = 1
+$$
+  - Continuous time analogue: Doob-Meyer decomposition
+
+- Corollary 12.11.2
+  - $X$ is a submartingale iff $A$ is an increasing process in the sense that $P(A_n \le A_{n+1}, \forall n) = 1$
+  - Similarly, $X$ is a supermartingale if and only if $A$ is almost surely decreasing
+
+---
+
+- Proof of existence
+  - If $X$ has Doob decomposition $X = X_0 +M +A$, we have
+$$
+\begin{aligned}
+E(X_n -X_{n-1} | \mathcal{F}_{n-1})
+&= E(M_n -M_{n-1} | \mathcal{F}_{n-1}) +E(A_n -A_{n-1} | \mathcal{F}_{n-1}) \\
+&= 0 +(A_n -A_{n-1})
+\end{aligned}
+$$
+  - Hence we can define $A$ by $A_n = \sum_{k=1}^n E(X_k -X_{k-1} | \mathcal{F}_{n-1})$ a.s.
+    - $A$ represents the sum of expected increments of $X$
+    - $M$ can be defined by $M_n = \sum_{k=1}^n \left[ X_k -E(X_k | \mathcal{F}_{k-1}) \right]$, which adds up the surprises
+  - Corollary is now obvious by the defintion of $A$
+
+- Proof of uniqueness
+  - Define $Y := M-\tilde{M} = A -\tilde{A}$ by rearranging the other decomposition
+  - The first equality implies that $Y$ is a martingale and $E(Y_n | \mathcal{F}_{n-1}) = Y_{n-1}$ a.s.
+  - The second equality implies that $Y$ is also previsible and $E(Y_n | \mathcal{F}_{n-1}) = Y_n$ a.s.
+  - Since $Y_0 = 0$ by construction, this implies that $Y_n = 0$ a.s.
+  - which also means that the decomposition is almost surely unique
+  
+## The angle-brackets process $\langle M \rangle$
+- Let $M$ be a martingale in $\mathcal{L}^2$ and null at $0$
+- The the conditional form of Jensen's inequality shows that $M^2$ is a submartingale
+  - Square function is convex as the second derivative is non-negative
+  - $E(M_n^2|\mathcal{F}_{n-1}) \ge \left[ E(M_n|\mathcal{F}_{n-1}) \right]^2 = M_{n-1}^2$
+- Thus $M^2$ has a Doob decomposition $M^2 = N +A$
+  - where $N$ is a martingale null at $0$ and $A$ is a previsible increasing process null at $0$ 
+  - $A$ is often written as $\langle M \rangle$ (quadratic variation in stochastic calculus)
+- Since $E(M_n^2) = E(A_n)$, $M$ is bounded in $\mathcal{L}^2 \iff E(A_\infty) < \infty$
+  - where $A_\infty := \uparrow \lim A_n$, a.s.
+  - $E(N) = E\left[ E(N | \mathcal{F}_0) \right] = 0$ (martingale property)
+- It is important to note that $A_n -A_{n-1} = E(M_n^2 -M_{n-1}^2 | \mathcal{F}_{n-1}) = E\left[ (M_n -M_{n-1})^2 | \mathcal{F}_{n-1} \right]$
+  - As the cross term is $-E(2M_n M_{n-1}|\mathcal{F}_{n-1}) = -2M_{n-1}^2$
+
+## Relating convergence of $M$ to finiteness of $\langle M \rangle_\infty$
+- Theorem 12.13.1
+  - Let $M$ be a martingale in $\mathcal{L}^2$ and null at $0$. Let $A$ be "a version of" $\langle M \rangle$
+  - Then $A_\infty (\omega) < \infty \implies \lim_{n \rightarrow \infty} M_n(\omega)$ exists
+  - Suppose that $M$ has uniformly bounded increments in that for some $K \in \mathbb{R}$,
+$$
+|M_n(\omega) -M_{n-1}(\omega)| \le K, \forall n, \forall \omega
+$$
+  - Then $\lim_{n \rightarrow \infty} M_n(\omega)$ exists $\implies A_\infty (\omega) < \infty$
+
+- Remark
+  - Theorem 12.13.1 is an extension of 12.2.1
+    - Doob convergence theorem + 12.2.1 with different conditions
+
+---
+
+- Proof of $A_\infty (\omega) < \infty \implies \lim_{n \rightarrow \infty} M_n(\omega)$ exists
+  - Since $A$ is previsible, $S(k) := \inf \big\{ n \in \mathbb{Z^+}: A_{n+1} > k \big\}$ is a stopping time for every $k \in \mathbb{N}$
+  - The stopped process $A^{S(k)}$ is also previsible because for $B \in \mathcal{B}, n \in \mathbb{N}$
+$$
+\big\{ A_{n \land S(k)} \in B \big\} = F_1 \cup F_2
+$$
+    - where $F_1 := \cup_{r=0}^{n-1} \big\{ S(k)=r; A_r \in B \big\} \in \mathcal{F}_{n-1}$ (case $S(k) \le n$)
+    - and $F_2 := \big\{ A_n \in B \big\} \cap \big\{ S(k) \le n-1 \big\}^c \in \mathcal{F}_{n-1}$ (case $S(k) > n$)
+  - Since $\left( M^{S(k)} \right)^2 -A^{S(k)} = (M^2-A)^{S(k)}$ is a martingale, we have $\langle M^{S(k)} \rangle = A^{S(k)}$
+    - Why this is not true by definition?
+  - As $A^{S(k)}$ is bounded by $k$, $M^{S(k)}$ is bounded in $\mathcal{L}^2$ by the third property in 12.2
+  - Thus $\lim_n M_{n \land S(k)}$ exists almost surely by Doob convergence theorem
+  - However, $\big\{ A_\infty < \infty \big\} = \cup_k \big\{ S(k)=\infty \big\}$
+  - The result now follows on combining $\lim_n M_{n \land S(k)}$ and $\big\{ A_\infty < \infty \big\}$
+
+---
+
+- Proof of $\lim_{n \rightarrow \infty} M_n(\omega)$ exists $\implies A_\infty (\omega) < \infty$
+  - Suppose that $P(A_\infty = \infty, \sup_n |M_n| < \infty) > 0$
+  - Then for some $c>0$, $P[T(c) = \infty, A_\infty = \infty] > 0$ (since $M_n$ is bounded)
+    - where $T(c) := \inf \big\{ r : |M_r| > c \big\}$ is a stopping time
+  - Now $E\left[ M_{T(c) \land n}^2 -A_{T(c) \land n} \right] = 0$ and $M^{T(c)}$ is bounded by $c+K$
+    - The first one comes from decomposition and martingale property
+    - The second one comes from the given condition and idea of upcrossing
+  - Thus $E\left[ A_{T(c) \land n} \right] \le (c+K)^2, \forall n$, which implies $E(A_\infty) < \infty$
+  - Contradication arises so we should have $P(A_\infty = \infty, \sup_n |M_n| < \infty) = 0$
+
+- Remarks
+  - The additional assumption of uniformly bounded increments of $M$ is needed for upcrossing
+  - For $A$, this is not necessary as the jump $A_{S(k)} - A_{S(k)-1}$ becomes irrelevant due to previsibility
+
+## A trivial "Strong Law" for martingales in $\mathcal{L}^2$
+- Let $M$ be a martingale in $\mathcal{L}^2$ and null at $0$. Let $A$ be "a version of" $\langle M \rangle$
+- Since $(1+A)^{-1}$ is a bounded previsible process, we can define a martingale
+$$
+W := \sum_{k=1}^n \frac{M_k -M_{k-1}}{1 +A_k}
+= \left[ (1+A)^{-1} \bullet M \right]_n
+$$
+- Moreover, since $(1+A_n)$ is $\mathcal{F}_{n-1}$ measurable,
+$$
+\begin{aligned}
+E\left[ (W_n -W_{n-1})^2 | \mathcal{F}_{n-1} \right] 
+&= (1+A_n)^{-2} (A_n -A_{n-1}) \\
+&\le (1+A_{n-1})^{-1} -(1+A_n)^{-1}, \textrm{ a.s.}
+\end{aligned}
+$$
+- We see that $\langle W \rangle_\infty \le 1$ so $\lim W_n$ exists a.s. by theorem 12.13.1
+- Applying Kronecker's lemma shows that $\frac{M_n}{A_n} \rightarrow 0$ almost surely on $\{A_\infty = \infty\}$
+
+## Lévy's extension of the Borel-Cantelli Lemmas
+- Theorem 12.15.1
+  - Suppose that for $n \in \mathbb{N}, E_n \in \mathcal{F}_n$
+  - Define $Z_n := \sum_{k=1}^n I_{E_k} =$ number of $E_k(k \le n)$ which occur
+  - Also define $\xi_k := P(E_k|\mathcal{F}_{k-1})$ and $Y_n := \sum_{k=1}^n \xi_k$
+  - Then we have $\{Y_\infty < \infty\} \implies \{Z_\infty < \infty\}$ almost surely
+  - And $\{Y_\infty = \infty\} \implies \{\frac{Z_n}{Y_n} \rightarrow 1\}$ almost surely
+
+- Extension of BC1
+  - Since $E(\xi_k)=P(E_k)$, it follows that if $\sum P(E_k) < \infty$ then $Y_\infty < \infty$ a.s. and BC1 follows
+
+- Extension of BC2
+  - Let $\{E_n\}_{n \in \mathbb{N}}$ be a sequence of independent events associated with some triple $(\Omega, \mathcal{F}, \mathbb{P})$
+  - Define the natural filtration $\mathcal{F}_n = \sigma (E_1, E_2, \dots, E_n)$
+  - Then $\xi_k = P(E_k)$ almost surely by independence
+  - BC2 follows from $\{Y_\infty = \infty\} \implies \{\frac{Z_n}{Y_n} \rightarrow 1\}$ a.s.
+  
+---
+
+- Proof
+  - Let $M$ be the martingale $Z-Y$, so that $Z = M +Y$ is the Doob decomposition of $Z$. Then
+$$
+\begin{aligned}
+M_n &= Z_n -Y_n = \sum_{k=1}^n \left[ I_{E_k} -\xi_k \right] \\
+A_n := \langle M \rangle_n &= \sum_{k=1}^n E\left[ (M_k -M_{k-1})^2 | \mathcal{F}_{k-1} \right] 
+= \sum_{k=1}^n E\left[ (I_{E_k} -\xi_k )^2 | \mathcal{F}_{k-1} \right] \\
+&= \sum_{k=1}^n E\left[ I_{E_k} -2I_{E_k} \xi_k +\xi_k^2 | \mathcal{F}_{k-1} \right]
+= \sum_{k=1}^n \xi_k (1 -\xi_k)
+\le Y_n, \textrm{ a.s.}
+\end{aligned}
+$$
+    - Note that $E(I_{E_k}|\mathcal{F}_{k-1}) = P(E_k|\mathcal{F}_{k-1}) =: \xi_k$
+  - If $Y_\infty < \infty$, then $A_\infty < \infty$ and $\lim M_n$ exists so that $Z_\infty$ is finite almost surely
+  - If $Y_\infty = \infty$ and $A_\infty < \infty$, then $\lim M_n$ still exists and $\frac{Z_n}{Y_n} \rightarrow 1$ almost surely
+  - If $Y_\infty = \infty$ and $A_\infty = \infty$, then $\frac{M_n}{A_n} = \frac{M_n}{M_n^2 +N} \rightarrow 0$ almost surely
+  - Hence, a fortiori, $\frac{M_n}{Y_n} \rightarrow 0$ and $\frac{Z_n}{Y_n} = \frac{M_n+Y_n}{Y_n} \rightarrow 1$ almost surely
+    - A fortiori means "from the stronger argument"
+
+# Concluding remarks
+
+## Comments
+- Independence is important in the study of RVs
+- Martingale may relax the independent RVs assumption to orthogonal increments
+  - Pythagorean formula in $\mathcal{L}^2$
+  - Richer probability space for copy of independent RVs
+  - Doob decomposition for expected increment and surprise
+- Martingale also relates convergence with finiteness
+  - Doob convergence theorem
+  - Truncation technique with stopping time
+  - $\langle M \rangle$ from decomposition of $M^2$
