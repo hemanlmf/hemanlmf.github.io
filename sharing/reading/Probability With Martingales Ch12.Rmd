@@ -237,7 +237,8 @@ $$
 - Proof of "only if" part
   - Suppose that $\sum X_n$ converges a.s. and $K$ is any constant in $(0,\infty)$
   - Since $X_n \rightarrow 0$ a.s. whence $|X_n| > K$ for only finitely many n, BC2 shows the first property holds
-    - Where is BC2 applied?
+    - BC2: $\sum P(|X_n| > K)=\infty \implies P(|X_n| > K, \textrm{ i.o.})=1$
+    - Contraposition: $P(|X_n| > K, \textrm{ i.o.})=0 \implies \sum P(|X_n| > K)<\infty$
   - Since (a.s.) $X_n = X_n^K$ for all but finitely many $n$, $\sum X_n^K$ also converges a.s.
   - Applying lemma 12.4.1 yields the other two properties
 
@@ -464,7 +465,7 @@ $$
 - Let $M$ be a martingale in $\mathcal{L}^2$ and null at $0$. Let $A$ be "a version of" $\langle M \rangle$
 - Since $(1+A)^{-1}$ is a bounded previsible process, we can define a martingale
 $$
-W := \sum_{k=1}^n \frac{M_k -M_{k-1}}{1 +A_k}
+W_n := \sum_{k=1}^n \frac{M_k -M_{k-1}}{1 +A_k}
 = \left[ (1+A)^{-1} \bullet M \right]_n
 $$
 - Moreover, since $(1+A_n)$ is $\mathcal{F}_{n-1}$ measurable,
@@ -528,3 +529,8 @@ $$
   - Doob convergence theorem
   - Truncation technique with stopping time
   - $\langle M \rangle$ from decomposition of $M^2$
+- Martingale transform is a possible candidate for control variate in variance reduction
+  - Suppose $\{X_n\}_{n \in \mathbb{N}}$ is a martingale wrt natural filtration $\mathcal{F}_n$
+  - $Y_{n+1} := \sum_{i=1}^n g_i(X_1,\dots,X_i)(X_{i+1}-X_i)$ is also a martingale wrt $\mathcal{F}_n$
+  - Choose $g$ with high correlation to use $Y_n$ as control variate
+  - See a trivial "Strong Law" for an example of martingale transform

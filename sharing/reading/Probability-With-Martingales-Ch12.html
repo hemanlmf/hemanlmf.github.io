@@ -3443,7 +3443,8 @@ X_n^K(\omega) &amp;:= \left\{
 <li>Since \(X_n \rightarrow 0\) a.s. whence \(|X_n| &gt; K\) for only finitely many n, BC2 shows the first property holds
 
 <ul>
-<li>Where is BC2 applied?</li>
+<li>BC2: \(\sum P(|X_n| &gt; K)=\infty \implies P(|X_n| &gt; K, \textrm{ i.o.})=1\)</li>
+<li>Contraposition: \(P(|X_n| &gt; K, \textrm{ i.o.})=0 \implies \sum P(|X_n| &gt; K)&lt;\infty\)</li>
 </ul></li>
 <li>Since (a.s.) \(X_n = X_n^K\) for all but finitely many \(n\), \(\sum X_n^K\) also converges a.s.</li>
 <li>Applying lemma 12.4.1 yields the other two properties</li>
@@ -3788,7 +3789,7 @@ E(X_n -X_{n-1} | \mathcal{F}_{n-1})
 <ul>
 <li>Let \(M\) be a martingale in \(\mathcal{L}^2\) and null at \(0\). Let \(A\) be &ldquo;a version of&rdquo; \(\langle M \rangle\)</li>
 <li>Since \((1+A)^{-1}\) is a bounded previsible process, we can define a martingale \[
-W := \sum_{k=1}^n \frac{M_k -M_{k-1}}{1 +A_k}
+W_n := \sum_{k=1}^n \frac{M_k -M_{k-1}}{1 +A_k}
 = \left[ (1+A)^{-1} \bullet M \right]_n
 \]</li>
 <li>Moreover, since \((1+A_n)\) is \(\mathcal{F}_{n-1}\) measurable, \[
@@ -3879,6 +3880,14 @@ A_n := \langle M \rangle_n &amp;= \sum_{k=1}^n E\left[ (M_k -M_{k-1})^2 | \mathc
 <li>Doob convergence theorem</li>
 <li>Truncation technique with stopping time</li>
 <li>\(\langle M \rangle\) from decomposition of \(M^2\)</li>
+</ul></li>
+<li>Martingale transform is a possible candidate for control variate in variance reduction
+
+<ul>
+<li>Suppose \(\{X_n\}_{n \in \mathbb{N}}\) is a martingale wrt natural filtration \(\mathcal{F}_n\)</li>
+<li>\(Y_{n+1} := \sum_{i=1}^n g_i(X_1,\dots,X_i)(X_{i+1}-X_i)\) is also a martingale wrt \(\mathcal{F}_n\)</li>
+<li>Choose \(g\) with high correlation to use \(Y_n\) as control variate</li>
+<li>See a trivial &ldquo;Strong Law&rdquo; for an example of martingale transform</li>
 </ul></li>
 </ul></article></slide>
 
