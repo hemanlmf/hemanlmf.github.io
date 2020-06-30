@@ -133,14 +133,15 @@ $$
   - So it must be the case that $P(T = \infty) > 0$ for some $c$ and $A_\infty := \sum \sigma_k^2 < \infty$
 
 ## Random signs
-- Let $\{a_n\}$ ve a sequence of real numbers and $\{\epsilon_n\}$ be a sequence of iid Rademacher RVs
+- Let $\{a_n\}$ be a sequence of real numbers and $\{\epsilon_n\}$ be a sequence of iid Rademacher RVs
     - Rademacher distribution: $P(\epsilon_n = \pm 1) = 0.5$
     - Frequently appear in statistical learning theory
 - Theorem 12.2.1 tells us that $\sum \epsilon_n a_n$ converges a.s. $\iff \sum a_n^2 < \infty$
   - And $\sum \epsilon_n a_n$ oscillates infinitely if $\sum a_n^2 = \infty$
 
 - Sketch
-    - Note that $Var(\epsilon_k a_k) = a_k^2$ and $|\epsilon_k a_k| \le \sup_n a_n < \infty$, theorem 12.2.1 will yield the first part
+    - Note that $Var(\epsilon_k a_k) = a_k^2$ and $|\epsilon_k a_k| \le \sup_n a_n$, theorem 12.2.1 will yield the first part
+      - $\sup_n a_n < \infty$ because we are given $\sum a_n^2 = \infty$
     - For the second part, my guess is since $\sum a_n^2 = \infty$, $\sum \epsilon_n a_n$ will not converge
     - However, as $\epsilon_n$ are Rademacher RVs, $\sum \epsilon_n a_n$ will oscillate depending on the realization
 
@@ -217,7 +218,7 @@ $$
 
 # Some neat proofs of classical theorems
 
-## Kolmogorow's Three-Series Theorem
+## Kolmogorov's Three-Series Theorem
 - Let $\{X_n\}$ be a sequence of independent RVs
 - Then $\sum X_n$ converges a.s. iff for some (then for every) $K>0$, the following 3 properties hold:
   - $\sum_n P(|X_n| > K) < \infty$

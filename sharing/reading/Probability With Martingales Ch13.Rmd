@@ -180,7 +180,7 @@ $$
 ## A necessary and sufficient condition for $\mathcal{L}^1$ convergence
 - Theorem 13.7.1
   - Let $\{X_n\}$ be a sequence in $\mathcal{L}^1$ and let $X \in \mathcal{L}^1$
-  - Then $X_n \stackrel{\mathcal{L}^1}{\rightarrow}$, equivalently $E(|X_n-X|) \rightarrow 0$, if and only if $X_n \stackrel{p}{\rightarrow} X$ and $\{X_n\}$ is UI
+  - Then $X_n \stackrel{\mathcal{L}^1}{\rightarrow} X$, equivalently $E(|X_n-X|) \rightarrow 0$, if and only if $X_n \stackrel{p}{\rightarrow} X$ and $\{X_n\}$ is UI
 
 - Remarks
   - The "if" part is more useful since it improves dominated convergence theorem

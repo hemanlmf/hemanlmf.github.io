@@ -3298,7 +3298,7 @@ E\left[ (M_k -M_{k-1})^2 | \mathcal{F}_{k-1} \right]
 </article></slide><slide class=""><hgroup><h2>Random signs</h2></hgroup><article  class="smaller " id="random-signs">
 
 <ul>
-<li>Let \(\{a_n\}\) ve a sequence of real numbers and \(\{\epsilon_n\}\) be a sequence of iid Rademacher RVs
+<li>Let \(\{a_n\}\) be a sequence of real numbers and \(\{\epsilon_n\}\) be a sequence of iid Rademacher RVs
 
 <ul>
 <li>Rademacher distribution: \(P(\epsilon_n = \pm 1) = 0.5\)</li>
@@ -3312,7 +3312,11 @@ E\left[ (M_k -M_{k-1})^2 | \mathcal{F}_{k-1} \right]
 <li>Sketch
 
 <ul>
-<li>Note that \(Var(\epsilon_k a_k) = a_k^2\) and \(|\epsilon_k a_k| \le \sup_n a_n &lt; \infty\), theorem 12.2.1 will yield the first part</li>
+<li>Note that \(Var(\epsilon_k a_k) = a_k^2\) and \(|\epsilon_k a_k| \le \sup_n a_n\), theorem 12.2.1 will yield the first part
+
+<ul>
+<li>\(\sup_n a_n &lt; \infty\) because we are given \(\sum a_n^2 = \infty\)</li>
+</ul></li>
 <li>For the second part, my guess is since \(\sum a_n^2 = \infty\), \(\sum \epsilon_n a_n\) will not converge</li>
 <li>However, as \(\epsilon_n\) are Rademacher RVs, \(\sum \epsilon_n a_n\) will oscillate depending on the realization</li>
 </ul></li>
@@ -3416,7 +3420,7 @@ s_n = \sum_{k=1}^n b_k(u_k -u_{k-1})
 
 </article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Some neat proofs of classical theorems</h2></hgroup><article  class="smaller " id="some-neat-proofs-of-classical-theorems">
 
-</article></slide><slide class=""><hgroup><h2>Kolmogorow’s Three-Series Theorem</h2></hgroup><article  class="smaller " id="kolmogorows-three-series-theorem">
+</article></slide><slide class=""><hgroup><h2>Kolmogorov’s Three-Series Theorem</h2></hgroup><article  class="smaller " id="kolmogorovs-three-series-theorem">
 
 <ul>
 <li>Let \(\{X_n\}\) be a sequence of independent RVs</li>
