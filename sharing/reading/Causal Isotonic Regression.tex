@@ -204,6 +204,208 @@
 \end{frame}
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     P.2
+\section{Introduction}
+%\section{Motivation and Literature Review}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     P.3
+
+\begin{frame}{Terminologies}
+There are some common terminologies to be introduced.
+\begin{block}{Terminoloies}
+	\begin{enumerate}
+		\item \textbf{Observational Studies:} Conduct inference based on the data set we observed, i.e. we did not make any control on the experiment.
+
+		\item \textbf{Experimental Design:} Randomly assigning the values of the exposure and observe the corresponding response.
+
+		\item \textbf{Association:} $X$ is positively associated with $Y$ iff $X$ increases together with $Y$.
+
+		\item \textbf{Causation:} Increase in $X$ results in increase in $Y$.
+	\end{enumerate}
+\end{block}
+In general, we cannot draw causation conclusion under framework of observation studies due to the existence of confounders.\\
+\textbf{AIM 1:} Accessing causality effect by using observational data set.
+\end{frame}
+
+\begin{frame}{Literature Review}
+	\begin{enumerate}
+		\item Non-parametric methods with \textbf{binary/categorical exposure}
+		\begin{enumerate}
+			\item Inverse-probability-weighted estimators\\ \textit{(Horvitz and Thompson, 1952)}
+
+			\item Augmented inverse-probability-weighted (AIPW) estimators \textit{(Scharfstein et al., 1999; Bang and Robins, 2005)}
+
+			\item Targeted minimum-loss-based estimators \\
+			\textit{(van der Laan and Rose, 2011)}
+		\end{enumerate}
+
+	    \item \textbf{Continuous exposure}\\
+	    Common approach: Discretize the continuous interval into two or more region and apply above methods under categorial case.
+
+	\end{enumerate}
+	\textit{Remark:} Undesirable method as we are commonly interested in the causal dose response curver, which describes the causal relationship between the exposure and outcome across a \textbf{continuum} of the exposure
+\end{frame}
+
+\begin{frame}{Literature Review}
+We further consider existing method dealing with continuous exposures.
+	\begin{enumerate}
+		\item Applying parametric models \textit{(Robins, 2000 and Zhang et al., 2016)}
+
+		\item Inference on parameters obtained by projecting a causal dose-response curve onto a parametric working model. \textit{(Neugebauer and van der Laan, 2007)}
+
+		\item nonparametric	estimation using flexible data-adaptive algorithms\\
+		\textit{(Rubin and van der Laan, 2006 and Diaz and van der Laan, 2011)}
+
+		\item estimator based on local linear smoothing
+		\textit{(Kennedy et al, 2017)}
+
+		\item general framework for inference on parameters that fail to be sufficiently smooth as a function of the data-generating distribution and for which regular root-n-estimation theory is therefore not available.
+		\textit{(van der Laan et al., 2018)}
+	\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Comment on existing methodologies}
+	For the literature on non-parametric estimation of causal dose-response curves, the large sample inference is not valid and is sensitive to selection of certain tuning parameters.\\
+	Smoothing-based methods are sensitive to choice of kernel function and bandwidth. The estimators commonly have non-negligible bias.
+
+\end{frame}
+
+\begin{frame}{Motivation for isotonic regression}
+   In many setting, the causal dose-response curve is a monotone function For example, exposures such as daily exercise performed, cigarettes smoked per week
+   and air pollutant levels are all known to have monotone relationships with various health outcomes.\\
+   Recall in the setting of linear regression, we are interested in estimating the function $g$ s.t.
+   $$
+   \E(Y|X_1,\cdots,X_p)=g(X_1,\cdots,X_p).
+   $$
+   For linear regression, we assumed linearity on the model, i.e. restrict the class of estimating cuver for $g$ to class of the linear function $\E(Y|X_1,\cdots,X_p)=g(X_1,\cdots,X_p)=\beta_0+\beta_1 X_1+\cdots+\beta_pX_p$ for some $\beta_0,\beta_1,\cdots,\beta_p$. However, linearity is usually too strong as the model assumption. In contrast, we add only trivial restriction on the class of function under non-parametric function for estimation $g$.
+\end{frame}
+
+\begin{frame}{Motivation for isotonic regression}
+	However, as mentioned, the estimator in non-parametric methods might be easily affected by choice of kernel and bandwidth. And as an intermediate level of assumption, we may assume $g$ to be a monotone function. Notice that linearity implies monotonicity but the converse does not holds. The regression with monotonicity assumption is known as \textbf{Isotonic Regression}.\\
+	The following are some advantages of isotonic regression
+	\begin{enumerate}
+		\item Does not require linearity assumption.
+		\item Does not require selection of kernel and bandwidth.
+		\item Invariance to strictly increasing transformation of exposure and on centring and scaling by factor of $n^{-1/3}$.
+	\end{enumerate}
+    If there is not confounding variables, we can directly estimate the causal isotonic curve. However as mentioned, the authur attempted access causality under confounded setting in this paper.
+\end{frame}
+
+
+%\section{Parameter of interest and causal interpretation}
+
+\begin{frame}{Notation}
+	\begin{enumerate}
+		\item $Y$: Response.
+		\item $A$: Continuous exposure.
+		\item $W$: Vector of covariates.
+		\item $O\defn (Y,A,W)$: Data unit.
+		\item $P_0$: The true data-generating distribution
+		\item $\mathcal{O}=\mathcal{Y}\times \mathcal{A}\times\mathcal{W}$: Support of $P_0$, where $\mathcal{Y},\mathcal{A}\subseteq \R$ are intervals and $\mathcal{W}\subseteq \R^p$.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Parameter of interest}
+	Denote $E_0$ as the expectation under the law $P_0$. Our parameter of interest, known as \textbf{G-computed regression function} from $\mathcal{A}$ to $\E$ is defined as
+	$$
+	a\mapsto \theta_0(a)\defn \E_0\big\{\E_0(Y|A=a,W) \big\}
+	$$
+	, which has causation interpretation in some scientific contexts. It kind of measure the \textbf{effect of $A$ on $Y$ after accounted for $W$}.
+\end{frame}
+
+\begin{frame}{Causal parameter and unadjusted regression function}
+Adopting the idea of randomnized experiment, for each fixed $a\in\mathcal{A}$, we denote by $Y(a)$ the potential outcome (i.e. a R.V.) under exposure level $A=a$. The causal parameter is thus defined as $m_0:\mathcal{A}\to\R$ through
+$$
+m_0(a)\defn \E_0\big\{Y(a)\big\}
+$$
+annd the resulting curve is known as \textbf{\textit{causal dose-response curve}}.\\
+We can also denote the \textbf{unadjusted} regression function as $r_0(a)\defn\E_0(Y|A=a)$, which is the standard quantity of interest in regression analysis.\\
+Under different set of conditions, we can claim that $m_0(a)=r_0(a)$ and $m_0(a)=\theta_0(a)$, meaning that those causal conditions allows us to draw causation conclusion from observational data set.
+\end{frame}
+
+\begin{frame}{Comparison among quantities}
+\begin{enumerate}
+	\item Causal dose-response curve: $m_0(a)\defn \E_0\big\{Y(a)\big\}$ measures the intrinsic casual effect of $A$ on $Y$.
+	\item G computed regression function: $\theta_0(a)\defn \E_0\big\{\E_0(Y|A=a,W) \big\}$ measures the effect of $A$ on $Y$ after accounted for covariates $W$
+	\item Unadjusted regression function: $r_0(a)\defn\E_0(Y|A=a)$ measures the association between $A$ on $Y$
+\end{enumerate}
+Therefore, the strength of causation statement can be made through these functions are different. Even though we may not be able to contain all covariates in $W$, it gives more informative conclusion than only relying on $r_0(a)$.
+\end{frame}
+
+\begin{frame}{Causal condition: $m_0(a)=r_0(a)$}
+\begin{block}{Causal condition 1}
+	Suppose that for some $a\in \mathcal{A}$,
+	\begin{enumerate}
+		\item Each unit's potential outcomes are independent of all other units' exposures.
+
+		\item $Y=Y(A)$, where $Y$ is the response and $Y(A)$ is defined as in setting of randomnized experiment.
+
+		\item $A$ and $Y(a)$ are independent.
+
+		\item The marginal density of $A$ is positive at $a$.
+	\end{enumerate}
+    then for such $a\in \mathcal{A}$, we have $m_0(a)=r_0(a)$, i.e. the causal effect for exposure level $A=a$.
+\end{block}
+\textit{
+Remark:
+} Condition (3) is commonly only satisfied in randomnized trials as usually ther exist some confounders affecting both $A$ and $Y(a)$, which induce dependency.
+\end{frame}
+
+
+\begin{frame}{Causal condition: $m_0(a)=\theta_0(a)$}
+Condition (3) and (4) are being too strong to be practical, it is natural to find sufficient condition s.t. inference of $\theta_0(a)$ give meaningful result.
+	\begin{block}{Causal condition 2}
+		Suppose that for some $a\in \mathcal{A}$,
+		\begin{enumerate}
+			\item Each unit's potential outcomes are independent of all other units' exposures.
+
+			\item $Y=Y(A)$, where $Y$ is the response and $Y(A)$ is defined as in setting of randomnized experiment.
+
+			\item $A$ and $Y(a)$ are \textbf{conditionally} independent given $W$.
+
+			\item The marginal density of $A$ \textbf{given} $\bo{W}$ is a.s. positive at $a$
+		\end{enumerate}
+		then for such $a\in \mathcal{A}$, we have $m_0(a)=\theta_0(a)$, i.e. the causal effect for exposure level $A=a$.
+	\end{block}
+	\textit{
+		Remark:
+	} Whenever $m_0(a)=\theta_0(a)$, the conclusion drawn from inference can be interpreted as causal statement.
+\end{frame}
+
+%\section{Contribution and organization of the paper}
+\begin{frame}{Notations}
+	\begin{enumerate}
+		\item $F_P:\mathcal{A}\to\R$ the distribution function of $A$ under $P$.
+
+		\item $\F_\theta:$ class of non-decreasing real-valued functions on $\mathcal{A}$.
+
+		\item $\F_T$: class of strictly increasing and continuous distribution functions supported on $\mathcal{A}$.
+	\end{enumerate}
+	The statistical model to work on is given by
+	$$
+	\mathcal{M}\defn \big\{
+	P:\theta_P\in\F_\theta,F_P\in\F_T
+	\big\}
+	$$
+	Recall our target: Making inference about $$\theta_0(a)=\E_0\big\{E_0(Y|A=a,W) \big\}$$ for cts exposure $A$ and monotone $\theta_0$ by using \textbf{independent} (NOT randomnized) observations $O_1,\cdots,O_n$ drawn from $P_)\in\mathcal{M}$, which is an extension of classical isotonic regression in sense of allowing the existence of confounders.
+\end{frame}
+
+\begin{frame}{Contribution of paper}
+\begin{block}{Contributions}
+	\fn{
+\begin{enumerate}
+	\item generalizes the unadjusted isotonic regression estimator to the more realistic scenario in which there is confounding by recorded covariates.
+
+	\item investigate finite sample and asymptotic properties of the estimator proposed, including invariance to strictly increasing transformations of the exposure, doubly robust consistency	and doubly robust convergence in distribution to a non-degenerate limit.
+
+	\item derive practical methods for constructing pointwise confidence intervals, including intervals that have valid doubly robust calibration.
+
+	\item illustrate numerically the practical performance of the estimator.
+\end{enumerate}
+}
+\end{block}
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Proposed approach}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -223,7 +425,7 @@
     \item $r_n$ can also be represented by greatest convex minorants (GCMs)
     \begin{itemize}
       \item Probably because isotonic regression can be formulated as a convex programming problem
-      \item See section 2.3 of the R package \textit{isotone}'s vignette
+      \item See section 2.3 of the R package \href{https://cran.r-project.org/web/packages/isotone/vignettes/isotone.pdf}{\textit{isotone}'s vignette}
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -240,7 +442,7 @@
     \item Response $Y_i$ may not be monotone as the sorting is done on $A_i$
     \item Fit $\hat{Y}_i = r_n(A_i)$ must be monotone in $i$
     \begin{itemize}
-      \item That's way $r=r_n$ should be a monotone non-decreasing function
+      \item That's why $r=r_n$ should be a monotone non-decreasing function
       \item Identifiable without assuming piecewise linearity of $r$?
     \end{itemize}
   \end{itemize}
@@ -651,6 +853,466 @@
     $$
     for any $a \in \mathcal{A}$ such that $F_0(a) \in (0,1)$, where $\mathbb{W}$ follows the standard Chernoff distribution.
   \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Construction of confidence intervals}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Section 4.1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.1
+
+\begin{frame}{Wald-type Confidence Interval}
+
+\begin{block}{Wald-type CI}
+	Since the limit distribution of $n^{1/3} \Big[ \theta_n(a)-\theta_0(a) \Big]$ is symmetric around zero by the result of Theorem 2, writing $\tau_0(a):=\theta^{'}_0(a)\kappa_0(a)/f_0(a)$ and denoting by $\tau_n(a)$ any consistent estimator of $\tau_0(a)$ , then a Wald-type $1-\alpha$ level asymptotic confidence interval for $\theta_0(a)$ is given by
+	\begin{center}
+	$\Big[ \theta_n(a)-\Big[ \frac{4\tau_n(a)}{n} \Big]^{1/3} \ q_{1-\alpha /2}, \ \theta_n(a)+\Big[ \frac{4\tau_n(a)}{n} \Big]^{1/3} \ q_{1-\alpha /2}  \Bigg] $,
+	\end{center}
+	where $q_p$ denotes the $p^{th}$ quantile of $\mathbb{W}$.
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.2
+
+\begin{frame}{Wald-type Confidence Interval}
+
+\begin{block}{Estimation of $\tau_0(a)$}
+  Since estimation of $\tau_0(a)$ involves, it can be estimated either direcly or indirectly, estimation of $\theta^{'}_0(a)/f_0(a)$ and $\kappa_0(a)$.
+  For direct estimation, we note that $\theta^{'}_0(a)/f_0(a)=\psi^{'}_0(F_0(a)$ with $\psi_0:=\theta_0 \circ F^{-1}_0$.It suggests that
+  	\begin{enumerate}
+  	\item Estimate $\theta^{'}_0$ and $f_0$ separately and consider the ratio of these of estimators; or
+  	\item Estimate $\psi^{'}_0$ directly and compose it with the estimator of $F_0$.
+  	\end{enumerate}
+
+  For indirect estimation, it involves the invariance property of the scale estimator to strictly monotone transformations of the exposure. To estimate $\psi^{'}_0$, we recall that the estimator $\psi_n$ from Section 2 is a step function and is not differentiable. A Natural Solution consists of computing the derivative of a smoothed version of $\phi_n$. We have found local quadratic kernel smoothing of points $\lbrace (u_j,\psi_n(u_j)):j=1,2,\cdots,\rbrace$, for $u_j$ the midpoints of the jump points of $\psi_n$, to work well in practice.
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.3
+
+\begin{frame}{Wald-type Confidence Interval}
+
+\begin{block}{Wald-type CIs for causal effects}
+	Theorem 3 is used to construct the Wald-type CIs for causal effects in the form $\theta_0(a_1)-\theta_0(a_2)$, then a Wald-type $1-\alpha$ level asymptotic confidence interval for $\theta_0(a_1)-\theta_0(a_2)$ is given by
+	\begin{center}
+	$\Big[ \theta_n(a_1)-\theta_n(a_2) - \bar{q}_{n,1-\alpha/2}n^{-1/3}, \ \theta_n(a_1)-\theta_n(a_2) + \bar{q}_{n,1-\alpha/2}n^{-1/3} \Bigg] $
+	\end{center}
+	where $\bar{q}_{n,1-\alpha/2}$ denotes the $(1-\alpha/2)$ quantile of $\big[4\tau_n(a_1)\big]^{1/3} \mathbb{W}_1 - \big[4\tau_n(a_2)\big]^{1/3} \mathbb{W}_2$, $\mathbb{W}_1$ and $\mathbb{W}_2$ are independent Chernoff distributions, using Monte Carlo simulations.
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Section 4.2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.4
+
+\begin{frame}{Scale estimation relying on consistent nuisance estimation}
+
+\begin{block}{Plug-in estimator of $\kappa_0(a)$}
+	Consider settings in which both $\mu_n$ and $g_n$ are consistent estimators. In such cases, we have $\kappa_0(a)=E_0\big[ \sigma_0^2(a,W)/g_0(a,W)\big]$ with $\sigma^2_0(a,W)$ denoting the conditional variance $E_0\lbrace  \big[ Y - \mu_0(a,W) \big]^2 | A=a,W=w \rbrace$. Then, a plug-in estimator of $\kappa_0(a)$ is given by
+	\begin{center}
+	$\kappa_n(a):=\frac{1}{n}\sn \frac{\sigma_n^2(a,W_i)}{g_n(a,W_i)}$
+	\end{center}
+	 Any regression technique could be used to estimate the conditional expectation of $Z_n:= \big[ Y - \mu_(a,W) \big]^2$ given A and W. If $\mu_n$, $g_n$ and $\sigma_n^2$ are consistent estimator, then $\kappa_n(a)$ is a consistent estimator.
+\end{block}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Section 4.3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.5
+
+\begin{frame}{Doubly-robust scale estimation}
+	Aim: To construct an estimator of $\kappa_0(a)$ consistent even of either $\mu_{\infty} \neq \mu_0$ or $g_{\infty} \neq g_0$
+\begin{block}{Doubly-robust estimator of $\kappa_0(a)$}
+	Note that $\kappa_0(a)=lim_{h\downarrow 0} E_0 \big[ K_h (F_0(A)-F_0(a)) \eta_{\infty}(Y,A,W) \big]$, where $K_h:u \mapsto h^{-1} K(uh^{-1})$ for some bounded density function K with bounded support, and defined
+	\begin{center}
+	$\eta_{\infty}:(y,a,w)\mapsto \Bigg[ \frac{y-\mu_{\infty}(a,w)}{g_{\infty}(a,w)} + \theta_{\infty}(a) - \theta_0(a)\Bigg]^2$
+	\end{center}
+	Setting $\theta_{\mu_n}(a):= \int \mu_n(a,w)Q_n(dw)$ with $Q_n$ the empirical distribution based on $W_1,W_2,\cdots,W_n$, and define
+	\begin{center}
+	$\kappa^{*}_{n,h}(a)=\frac{1}{n} \sn  K_h (F_n(A_i)-F_n(a)) \eta_{n}(Y_i,A_i,W_i)$
+	\end{center}
+	by substituting $\mu_{\infty},g_{\infty},\theta_{{\infty}},\theta_0$ by $\mu_n,g_n,\theta_{\mu_n},\theta_n$.
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.6
+
+\begin{frame}{Doubly-robust scale estimation}
+
+\begin{block}{Doubly-robust estimator of $\kappa_0(a)$(Con'd)}
+	Under conditions (A1)-(A5), it can be shown that $\kappa^{*}_{n,h_n}(a) \stackrel{P}{\rightarrow} \kappa_0(a)$ by standard kernel smoothing arguments for any sequence $h_n \rightarrow 0$. In particular, $\kappa^{*}_{n,h_n}(a)$ is consistent under the general form of doubly-robustness specified by condition(A3).
+
+\end{block}
+
+\begin{block}{Appropriate value of bandwidth h}
+	We propose the following empirical criterion:
+	\begin{enumerate}
+	\item Define the integrated scale $\gamma_0:=\int\kappa_0(a)F_0(da)$ and construct the estimator $\gamma_n(h):=\int\kappa_{n,h}(a)F_n(da)$ for any candidate $h>0$.
+	\item Observe that $\gamma_0=E_0[\eta_{\infty}(Y,A,W)]$, which suggest $\bar{\eta}_n:=\frac{1}{n} \sn \eta_n(Y_i,A_i,W_i)$.
+	\end{enumerate}
+	It motivates us to define $h^{*}_n:=argmin_h [\gamma_n(h)-\bar{\eta_n}]^2$.
+\end{block}
+
+The proposed doubly-robust estimator of $\kappa_0(a)$ is $\kappa_{n,DR}(a):=\kappa_{n,h_n^{*}}(a)$.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.7
+
+\begin{frame}{Doubly-robust scale estimation}
+
+\begin{block}{Remarks}
+	\begin{enumerate}
+	\item	$\kappa_{n,DR}(a)$ only depends on A and a through the ranks $F_n(A)$ and $F_n(a)$. Hence, the estimator is invariant to strictly monotone transformations of the exposure.
+	\item If $\mu_n(a,w)=\mu_n(a)$ does not depend on $w$ and $g_n=1$, $\kappa_{n,DR}(a)$ tends to the conditional variance $Var_0(Y|A=a)$, which is precisely the scale parameter appearing in standard isotonic regression.
+	\end{enumerate}
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Section 4.4
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.8
+
+\begin{frame}{Confidence intervals via sample splitting}
+
+	Sample splitting method recently proposed by Banerjee er al.(2019) could also be used to perform inference. To implement the approach in our context: (1)we randomly split the sample into $m$ subsets of roughly equal size;(2) perform the estimation procedure on each subset to form subset-specific estimates $\theta_{n,1},\theta_{n,2},\cdots,\theta_{n,m}$; and (3) define $\bar{\theta}_{n,m}(a):=\frac{1}{m}\sum^m_{j=1}\theta_{n,j}(a)$.
+	 If $m>1$ is fixed, then under mild conditions $\bar{\theta}_{n,m}(a)$ has strictly better asymptotic MSE than $\theta_n(a)$.
+
+\begin{block}{CI via sample splitting}
+	For moderate m, the asymptotic $1-\alpha$ level confidence interval for $\theta_0(a)$ is given by
+	\begin{center}
+	$\Bigg[ \bar{\theta}_{n,m}(a)-\frac{\sigma_{n,m}(a)}{\sqrt{m}n^{1/3}}t_{1-\alpha/2,m-1}, \ \bar{\theta}_{n,m}(a)+\frac{\sigma_{n,m}(a)}{\sqrt{m}n^{1/3}}t_{1-\alpha/2,m-1} \Bigg]$
+	\end{center}
+	where $\sigma^2_{n,m}(a):=\frac{1}{m-1} \sum^m_{j=1}[\theta_{n,j}(a)-\bar{\theta}_{n,m}(a)]^2$ and $t_{1-\alpha/2,m-1}$ is the $(1-\alpha/2)$ quantile of the t-distribution with $m-1$ degrees of freedom.
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Numerical studies}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.9
+
+\begin{frame}{Numerical Studies}
+
+	Goals: Perform numerical experiments to assess the performance of the proposed estimators of $\theta_0(a)$ and of the three approaches for constructing confidence intervals, which we also compare to that of
+the local linear estimator and associated confidence intervals proposed in Kennedy et al.(2017).
+
+\begin{block}{Idea of Data Generating Process}
+	\begin{enumerate}
+	\item	Generate $W \in \R^4$ as a vector of four independent standard normal variate.
+	\item	Generate $U$ given $W$, and then transform $U$ to obtain $A$. ($\because$ the estimation procedures requires estimating the conditional density of $U:=F_0(A)$ given $W$)
+	\end{enumerate}
+
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.10
+
+\begin{frame}{Data Generating Process}
+
+	\begin{enumerate}
+	\item	$W \sim N(0,\sum)$
+	\\where $\sum$ is the $4\times4$ diagonal matrix with value 1.
+	\item		$U \sim \bar{g}_0(u|w)=I_{[0,1]}(u)\lbrace \lambda(w) + 2u[1-\lambda(w)]\rbrace$
+	\\where $\lambda(w):=0.1+1.8 \ expit(\beta^{\top}w).$
+	\item	$A \sim 0.5N(-2,1)+0.5N(2,1)$
+	\item	$[Y|A=a,W=w] \sim Bern(\mu_0(a,w))$
+	\\where $\mu_0(a,w):=expit(\gamma^{\top}_1 \underline{w} + \gamma^{\top}_2 \underline{w}a + \gamma_3 a^2)$
+	\item $\beta = (-1,-1,1,1)^{\top}, \gamma_1 = (-1,-1,-1,1,1)^{\top}, \gamma_1 = (3,-1,-1,1,1)^{\top}$ and $\gamma_3=3$
+	\end{enumerate}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.11
+
+\begin{frame}{Estimation and Conditions}
+
+\begin{block}{Estimator used}
+	\begin{enumerate}
+	\item	Causal isotonic regression estimator $\theta_n$.
+	\item	Local linear estimator of Kennedy et al.(2017) with data-driven bandwidth selection procedure proposed in Section 3.5.
+	\item	Sample-splitting version of $\theta_n$ with $m=5$ splits.
+	\end{enumerate}
+\end{block}
+
+\begin{block}{Settings}
+	\begin{enumerate}
+	\item Both $\mu_n$ and $g_n$ are consistent.
+	\item Only $\mu_n$ is consistent.
+	\item Only $g_n$ is consistent.
+	\end{enumerate}
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.12
+
+\begin{frame}{Estimation and Conditions}
+
+\begin{block}{Estimator under settings}
+	\begin{enumerate}
+	\item If $\mu_n$ and $g_n$ are consistent, then logistic regression model and maximum likelihood estimator based on the correctly specified parametric model are used.
+	\item If $\mu_n$ is inconsistent, then logistic regression model is used but omit covariates $W_3,W_4$ and all interactions.
+	\item If $g_n$ is inconsistent, then posit the parametric model as before but omit $W_3$ and $W_4$.
+	\end{enumerate}
+\end{block}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.13
+
+\begin{frame}{Confidence intervals for causal effect}
+
+\begin{block}{Construction of CIs}
+	Constructing pointwise confidence intervals for $\theta_0$ in each setting from section 4 using Plug-in and doubly-robust estimators of $\kappa_0(a)$. We expect that
+	\begin{enumerate}
+	\item asymptotically correct coverage rates for each of the three settings when doubly-robust estimator of $\kappa_0(a)$ is used; while
+	\item asymptotically correct coverage rates for the first setting when Plug-in estimator of $\kappa_0(a)$ is used.
+	\end{enumerate}
+	As before, pointwise confidence intervals for the local linear estimator and the sample splitting procedure will be demonstrated also. And, we consider the performance of these inferential procedures for values of a between -3 and 3.
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.14
+
+\begin{frame}{Simulation Results}
+
+\begin{block}{Adjusted and unadjusted regression}
+	For $n =5000$, note that $\theta_0(a)\neq\tau_0(a)$ for $a\neq 0$. Since the relationship between Y and A is confounding by W, the unadjusted regression curve dose not have a causal interpretation. Therefore, the marginal isotonic regression estimator will not be consistent for the true causal parameter.
+\end{block}
+
+\includegraphics[width=8cm]{Causal Isotonic Regression/CIRS501}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.15
+
+\begin{frame}{Simulation Results}
+
+\includegraphics[width=11cm]{Causal Isotonic Regression/CIRS502}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.16
+
+\begin{frame}{Simulation Results}
+
+\begin{block}{Standard error}
+	\begin{enumerate}
+	\item	The standard error of the local linear estimator is smaller than that of $\theta_n$, is expected due to the fast rate of convergence.
+	\item	The standard deviation of the local linear estimator appears to decrease faster than $n^{-1/3}$.
+	\item	Inconsistent estimation of the propensity has little impact on the standard errors of any of the estimators but inconsistent estimation of the outcome regression not.
+	\end{enumerate}
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.17
+
+\begin{frame}{Simulation Results}
+
+\includegraphics[width=11cm]{Causal Isotonic Regression/CIRS503}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.18
+
+\begin{frame}{Simulation Results}
+
+\begin{block}{Absolute bias}
+	\begin{enumerate}
+	\item	The estimator of $\theta_n$ has smaller absolute bias than the local linear estimator, and its absolute bias decreases faster than $n^{-1/3}$.
+	\item	The absolute bias of the local linear estimator depends strongly on $a$, and in particular is largest where the second derivative of $\theta_0$ is larger in absolute value.
+	\item	The sample splitting estimator has larger absolute bias than $\theta_n$ since it inherits the bias of $\theta_{n/m}$. The bias is large for values of a in the tails of the marginal distribution of A.
+	\end{enumerate}
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.19
+
+\begin{frame}{Simulation Results}
+
+\includegraphics[width=11cm]{Causal Isotonic Regression/CIRS504}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.20
+
+\begin{frame}{Simulation Results}
+
+\begin{block}{Coverage of pointwise 95$\%$ confidence intervals}
+	\begin{enumerate}
+	\item	Both plug-in and doubly-robust estimator intervals centered around $\theta_n$, the coverage improves as n grows.
+	\item	Under correct specification of outcome and propensity regression models, the plug-in method attains close to nominal coverage. When the propensity estimator is inconsistent, the plug-in method still performs well in this case. When $\mu_n$ is consistent, the plug-in method is very conservative for positive values of a.
+	\item	The doubly-robust method attains close to nominal coverage for large samples as one of $g_n$ or $\mu_n$ is consistent.
+	\item	The local linear estimator has poor coverage for values of $a$ where the bias of the estimator is large.
+	\item Sample-splitting method performs excellent except perhaps the value of a in the tails when $n$ is small or moderate.
+	\end{enumerate}
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.21
+
+\begin{frame}{Simulation Results}
+
+	A simulation study is conducted to illustrate the performance of the proposed procedures when machine learning techniques are used to construct $\mu_n$ and $g_n$.
+
+\begin{block}{Estimator under settings}
+	Consider the estimator $\theta^{\circ}_n$ obtained via cross-fitting (mentioned in section 3.7).
+	\begin{enumerate}
+	\item If $\mu_n$ is consistent, then use Super Learner (van der Laan et al. 2017)
+	\item If $g_n$ is consistent, then used the method proposed by Diaz and van der Laan(2011) with covariate vector $(W_1,W_2,W_3,W_4)$.
+	\item If $\mu_n$ or $g_n$ is inconsistent, then omit covariates $W_1$ and $W_2$.
+	\end{enumerate}
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.22
+
+\begin{frame}{Simulation Results}
+
+\includegraphics[width=12cm]{Causal Isotonic Regression/CIRS505}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.23
+
+\begin{frame}{Simulation Results}
+
+\begin{block}{Coverage of 95$\%$ of confident intervals}
+	\begin{enumerate}
+	\item The plug-in method performs well which achieve very close to nominal coverage under both consistent settings, even propensity is inconsistently estimated.
+	\item The doubly-robust method is anti-conservative under both inconsistent settings and also when the propensity is inconsistently estimated. Good coverage rates are also achieved when the outcome regression is inconsistently estimated.
+	\item Cross fitting has little impact on coverage.
+	\end{enumerate}
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% p.24
+
+\begin{frame}{Simulation Results}
+
+\begin{block}{Conclusion of results}
+	\begin{enumerate}
+	\item For plug-in method, under the inconsistent estimation of any nuisance function, the scale parameter is biased and its variance decreases relatively quickly with sample size by the simple empirical average of estimated functions.
+	\item For doubly-robust method, the scale parameter is asymptotically unbiased but its variance decreases much slower with sample size.
+	\end{enumerate}
+\end{block}
+
+\end{frame}
+
+\section{Body mass index and T-cell response in human immunodeficiency virus vaccine studies}
+
+\begin{frame}{Literature Review on BMI and cells response}
+Some previous scientific literature indicates that
+\begin{enumerate}
+	\item BMI is inversely associated with immune responses to vaccination
+
+	\item higher BMI might lead to impaired	immune responses
+
+	\item obesity reduced hepatitis B immune responses through leptin-induced systemic and B cell intrinsic inflammation, impaired T cell responses
+\end{enumerate}
+\textbf{AIM:} assess the covariate-adjusted relationship between BMI and CD4+ T-cell responses using data from a collection of clinical trials of candidate HIV vaccines
+\end{frame}
+
+\begin{frame}{Comment on previous literature}
+\begin{enumerate}
+	\item Jin et al. (2015): low BMI participants had a statistically significantly greater response rate than high
+	BMI participants by using Fisher?s exact test.\\
+	\textit{Comment:} Marginal comparison can be misleading due to existence of confounders such as age and sex.
+
+	\item Jin
+	et al. (2015): logistic regression of the binary CD4+ responses against sex, age,
+	BMI (not discretized), vaccination dose and number of vaccinations.\\
+	\textit{Comment:} adjusted odds ratio has a formal causal interpretation only under strong parametric
+	assumptions.
+\end{enumerate}
+Comparetively, the method proposed in this paper can identify the covariate-adjusted dose-response function
+$\theta_0$ with the causal dose-response curve without making parametric assumptions.
+\end{frame}
+
+\begin{frame}{Argument in Causal inference}
+Some researchers suggest that causal model should always be tied to hypothetical randomized experiments. However, randominzed experiments are commonly not practical. For example,
+\begin{enumerate}
+	\item Not ethical to force someone to smoke or not to smoke
+	\item \textbf{Impossible} to assign the BMI to the participants randomly.
+\end{enumerate}
+one may think it is not appropriate to interpret the G-computed regression function $\theta_0(a)$ in causal manner. \\
+However, it provides a meaningful summary of the relationship between BMI and immune
+response accounting for measured potential confounders.
+\end{frame}
+
+\begin{frame}{Result}
+	\begin{center}
+		\includegraphics[width=120mm,height=40mm]{Causal Isotonic Regression/Fig_Sec6}
+	\end{center}
+The graph refer to the estimated probabilities of CD4+ T-cell response and 95\% pointwise confidence intervals as a function of BMI, adjusted for sex, age, number of vaccinations received, vaccine dose and study with
+\begin{enumerate}
+	\item Estimator proposed here
+	\item Local linear estimator of Kennedy et al. (2017)
+	\item Sample splitting version of our estimator with $m=5$ splits
+\end{enumerate}
+\end{frame}
+
+\section{Concluding remarks}
+\begin{frame}{Furture direction}
+	\begin{enumerate}
+		\item Inference on a monotone causal dose-response curve when outcome data are only observed subject to potential coarsening, such as censoring, truncation or
+		missingness
+
+		\item Develop tests of the monotonicity assumption.
+
+		\item Develop methods for uniform inference.
+
+		\item Inferential methods that do not require estimation of additional nuisance parameters or sample splitting
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Comparison between methods}
+There is some tradeoff between local linear smoothing and monotonicity-based methods.
+\begin{enumerate}
+	\item Convergence rate of regression estimator:\\
+	faster for local linear regression estimator; $n^{-2/5}$ VS $n^{-1/3}$ for monotonicity based method.
+
+	\item Local linear smoothing: Limit distribution
+	involves an asymptotic bias term depending on the second derivative of the true function,
+	so confidence intervals based on optimally chosen tuning parameters provide asymptotically
+	correct coverage only for a smoothed parameter rather than the true parameter of interest.
+
+	\item Monotonicity based: Do not require choosing a tuning parameter, are invariant to strictly
+	increasing transformations of the exposure and their limit theory does not include any asymptotic
+	bias.
+\end{enumerate}
 \end{frame}
 
 \end{document}
