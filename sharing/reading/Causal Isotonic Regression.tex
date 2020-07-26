@@ -1,0 +1,656 @@
+\documentclass{beamer}
+%[envcountsect]
+
+\usepackage{multicol, multirow, enumerate}
+\usepackage{lmodern}
+\usepackage[english]{babel}
+\usepackage{pgf}
+%\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps}
+\usepackage{graphics, amsfonts, dsfont, graphicx, animate, epsfig}
+\usepackage{color, xcolor, colortbl}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[latin1]{inputenc}
+\setbeamertemplate{theorems}[numbered]
+\usepackage{times}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usetikzlibrary{arrows,shapes}
+\usepackage{bbding}
+\usepackage{array}
+\usepackage{tkz-euclide}
+\usepackage{gensymb}
+\usepackage{hyperref, bm, etoolbox, mathtools}
+\usepackage{mathrsfs}
+\usetikzlibrary{calc,intersections}
+\definecolor{bblue}{RGB}{163,187,221}
+\definecolor{rred}{RGB}{238,147,153}
+
+\newcommand{\defn}{\triangleq}
+\newcommand{\Bern}{\textnormal{Bern}}
+\newcommand{\Unif}{\textnormal{Unif}}
+\newcommand{\Normal}{\textnormal{N}}
+\newcommand{\logNormal}{\textnormal{LN}}
+\newcommand{\Bin}{\textnormal{Bin}}
+\newcommand{\NB}{\textnormal{NB}}
+\newcommand{\HG}{\textnormal{HG}}
+\newcommand{\Geom}{\textnormal{Geom}}
+\newcommand{\Beta }{\textnormal{Beta}}
+\newcommand{\BetaBin}{\textnormal{Beta-Bin}}
+\newcommand{\Ga}{\textnormal{Ga}}
+\newcommand{\Exp}{\textnormal{Exp}}
+\newcommand{\Expo}{\textnormal{Expo}}
+\newcommand{\Po}{\textnormal{Po}}
+\newcommand{\Multi}{\textnormal{Multi}}
+\newcommand{\student}{\textnormal{t}}
+\newcommand{\Cauchy}{\textnormal{Cauchy}}
+\newcommand{\Pareto}{\textnormal{Pareto}}
+\newcommand{\Laplace}{\textnormal{Laplace}}
+\newcommand{\Logistic}{\textnormal{Logistic}}
+\newcommand{\Dir}{\textnormal{Dir}}
+\newcommand{\DP}{\textnormal{DP}}
+\newcommand{\Inv}{\textnormal{Inv-}}
+
+\newcommand{\pa}{\partial}
+\newcommand{\RV}{\textsc{rv}}
+\newcommand{\cdf}{\textsc{cdf}}
+\newcommand{\cgf}{\textsc{cgf}}
+\newcommand{\pdf}{\textsc{pdf}}
+\newcommand{\pmf}{\textsc{pmf}}
+\newcommand{\chf}{\textsc{chf}}
+\newcommand{\mgf}{\textsc{mgf}}
+\newcommand{\EF}{\textsc{EF}}
+\newcommand{\NEF}{\textsc{NEF}}
+\newcommand{\MLE}{\textsc{mle}}
+\newcommand{\MAP}{\textsc{MAP}}
+\newcommand{\Med}{\textsc{Med}}
+\newcommand{\MME}{\textsc{mme}}
+\newcommand{\QME}{\textsc{qme}}
+\newcommand{\UMVUE}{\textsc{umvue}}
+\newcommand{\MPT}{\textsc{MPT}}
+\newcommand{\UMPT}{\textsc{UMPT}}
+\newcommand{\LRT}{\textsc{LRT}}
+
+
+\newcommand{\simiid}{\stackrel{iid}{\sim}}
+\newcommand{\ind}{\mathds{1}}
+\newcommand{\pr}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\mathbb{V}ar}
+%%% ### Algebraic Operators
+%%%----------------------------------------------------------------------------%%%
+\newcommand{\sn}{\sum_{i=1}^n}
+\newcommand{\pn}{\prod_{i=1}^n}
+\newcommand{\f}[2]{\frac{#1}{#2}}
+\newcommand{\bo}[1]{\boldsymbol{#1}}
+\newcommand{\sto}[1]{\sum_{i=1}^{#1}}
+\newcommand{\sft}[2]{\sum_{i=#1}^{#2}}
+\newcommand{\fn}[1]{{\footnotesize #1}}
+%%%----------------------------------------------------------------------------%%%
+%%% ### Limit Operators
+%%%----------------------------------------------------------------------------%%%
+\newcommand{\limn}{\lim_{n\to\infty}}
+\newcommand{\limh}{\lim_{h\to0}}
+%%% ### Math Set Notation
+%%%----------------------------------------------------------------------------%%%
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathscr{F}}
+\newcommand{\el}{\mathscr{L}}
+\newcommand{\sol}[1]{{\color{blue}{\textbf{Solution:} #1}}}
+\newcommand{\dis}[1]{{\displaystyle #1}}
+\newcommand{\vs}[1]{\vspace{#1 cm}}
+\newcommand{\wwt}{\frac{\partial}{\partial \theta}}
+
+\newenvironment{mymathbox}
+{\par\smallskip\centering\begin{lrbox}{0}%
+\begin{minipage}[c]{0.95\textwidth}}
+{\end{minipage}\end{lrbox}%
+\framebox[0.98\textwidth]{\usebox{0}}%
+\par\medskip
+\ignorespacesafterend}
+
+\newcommand{\rotateRPY}[3]% roll, pitch, yaw
+{   \pgfmathsetmacro{\rollangle}{#1}
+    \pgfmathsetmacro{\pitchangle}{#2}
+    \pgfmathsetmacro{\yawangle}{#3}
+
+    % to what vector is the x unit vector transformed, and which 2D vector is this?
+    \pgfmathsetmacro{\newxx}{cos(\yawangle)*cos(\pitchangle)}
+    \pgfmathsetmacro{\newxy}{sin(\yawangle)*ffcos(\pitchangle)}
+    \pgfmathsetmacro{\newxz}{-sin(\pitchangle)}
+    \path (\newxx,\newxy,\newxz);
+    \pgfgetlastxy{\nxx}{\nxy};
+
+    % to what vector is the y unit vector transformed, and which 2D vector is this?
+    \pgfmathsetmacro{\newyx}{cos(\yawangle)*sin(\pitchangle)*sin(\rollangle)-sin(\yawangle)*cos(\rollangle)}
+    \pgfmathsetmacro{\newyy}{sin(\yawangle)*sin(\pitchangle)*sin(\rollangle)+ cos(\yawangle)*cos(\rollangle)}
+    \pgfmathsetmacro{\newyz}{cos(\pitchangle)*sin(\rollangle)}
+    \path (\newyx,\newyy,\newyz);
+    \pgfgetlastxy{\nyx}{\nyy};
+
+    % to what vector is the z unit vector transformed, and which 2D vector is this?
+    \pgfmathsetmacro{\newzx}{cos(\yawangle)*sin(\pitchangle)*cos(\rollangle)+ sin(\yawangle)*sin(\rollangle)}
+    \pgfmathsetmacro{\newzy}{sin(\yawangle)*sin(\pitchangle)*cos(\rollangle)-cos(\yawangle)*sin(\rollangle)}
+    \pgfmathsetmacro{\newzz}{cos(\pitchangle)*cos(\rollangle)}
+    \path (\newzx,\newzy,\newzz);
+    \pgfgetlastxy{\nzx}{\nzy};
+}
+
+\tikzset{RPY/.style={x={(\nxx,\nxy)},y={(\nyx,\nyy)},z={(\nzx,\nzy)}}}
+
+
+\mode<presentation> {
+
+  %\usetheme{Warsaw}
+  %\usetheme{Pittsburgh}
+  %\usetheme{Montpellier}
+  \usetheme{Madrid}
+  %\usetheme{Hannover}
+  %\usetheme{default}
+  %\usetheme{CambridgeUS}
+  %\usecolortheme{dolphin,crane}
+
+  \setbeamercovered{transparent}
+    \framebreak
+  %\allowdisplaybreaks
+  \usefonttheme[onlymath]{serif}
+  }
+
+
+\title[Causal Isotonic Regression]{Causal Isotonic Regression}
+\subtitle{}
+\author[Billy, Heman, Martin]{Billy, Heman, Martin}
+\date{Summer, 2020}
+
+ \AtBeginSubsection[] {
+  \begin{frame}<beamer>
+    \frametitle{Agenda}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\begin{document}
+% \usebackgroundtemplate{\includegraphics[width=\paperwidth,height=\paperheight]{JSM}}
+% \setbeamerfont{supertitle}{size=\LARGE,parent=structure}
+% \def\supertitle#1{\gdef\@supertitle{#1}}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\vspace{2cm}
+\hfill
+    \begin{beamercolorbox}[wd=0.95\paperwidth,ht=7ex,dp=3.8ex,center]{title}
+      \usebeamerfont{supertitle}\@ {\Large Reading Group: Causal Isotonic Regression}
+    \end{beamercolorbox}
+\textcolor{blue}{\textbf{\begin{large}
+\\
+\vspace{0.5cm}
+\begin{center}
+{\large Ted Westling, Peter Gilbert, Marco Carone (JRSSB, 2020)}
+\end{center}
+\end{large}}}
+\vspace{0.5cm}
+\end{frame}
+
+\usebackgroundtemplate{...}
+
+\AtBeginSection{
+\begin{frame}
+\frametitle{Agenda}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Proposed approach}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Classical least square isotonic regression}
+  Linear regression: find $\beta=\hat{\beta}$ s.t. $\sn \big( Y_i -\beta A_i \big)^2$ is minimized \\
+  Isotonic regression: find $r=r_n$ s.t. $\sn \big[ Y_i -r(A_i) \big]^2$ is minimized
+  \begin{itemize}
+    \item $Y_{1:n}$: responses
+    \item $A_{1:n}$: continuous exposures
+    \item $r$: any monotone non-decreasing function
+    \item $r_n$ can be obtained via pool adjacent violators algorithm (PAVA)
+    \begin{itemize}
+      \item Not true without assuming piecewise linearity of $r$?
+      \item PAVA can be used to find best monotone fit $\hat{Y}_i$ only
+    \end{itemize}
+    \item $r_n$ can also be represented by greatest convex minorants (GCMs)
+    \begin{itemize}
+      \item Probably because isotonic regression can be formulated as a convex programming problem
+      \item See section 2.3 of the R package \textit{isotone}'s vignette
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Pool adjacent violators algorithm}
+  \animategraphics[scale=0.4, alttext=graphical illustration of PAVA]{10}{Causal Isotonic Regression/pava-}{0}{40} \\
+  \fn{Source: \href{http://fa.bianp.net/blog/2013/isotonic-regression/}{Pedregosa, Fabian (2013)}}
+\end{frame}
+
+\begin{frame}{Pool adjacent violators algorithm}
+  Target: find best monotone fit $\hat{Y}_i$ of response $Y_i$
+  \begin{itemize}
+    \item Exposure $A_i$ are ordered in $i$ first, i.e. $A_1 \le A_2 \le \dots \le A_n$
+    \item Response $Y_i$ may not be monotone as the sorting is done on $A_i$
+    \item Fit $\hat{Y}_i = r_n(A_i)$ must be monotone in $i$
+    \begin{itemize}
+      \item That's way $r=r_n$ should be a monotone non-decreasing function
+      \item Identifiable without assuming piecewise linearity of $r$?
+    \end{itemize}
+  \end{itemize}
+  Algorithm (sketch):
+  \begin{enumerate}
+    \item Initialize $l:=0$, $B^{(0)}:=n$, $\hat{Y}_r^{(0)} := Y_r$ for $r=1, \dots, n$
+    \item Merge $\hat{Y}^{(l)}$-values into blocks if $\hat{Y}_{r+1}^{(l)} < \hat{Y}_r^{(l)}$ for $r=1, \dots, B^{(l)}$
+    \item Minimize the loss function for each block $r$, which gives $\hat{Y}_r^{(l+1)}$
+    \item If $\hat{Y}_{r+1}^{(l)} < \hat{Y}_r^{(l)}$ for some $r$, set $l = l+1$ and go back to step 2
+    \item Expand the block values w.r.t. to $i=1, \dots, n$
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Greatest convex minorant}
+  GCM of a function $f$ bounded on $[a,b]$: supremum over all convex functions $g$ such that $g \le f$ \\
+  \vs{0.5}
+  Let $F_n$ be the empirical distribution function of $A_{1:n}$. It can be shown that the isotonic regression estimator $r_n(a)$ is
+  \begin{itemize}
+    \item the left derivative, evaluated at $F_n(a)$,
+    \item of the GCM over the interval $[0,1]$ of the linear interpolation,
+    \item of the cumulative sum diagram $\left\{ \f{1}{n} \left[ i, \sum_{j=0}^i Y_{(i)}^* \right]: i=0,1,\dots,n \right\}$,
+    \item where $Y_{(0)}^* := 0$ and $Y_{(i)}^*$ is the response $Y$ sorted by value of exposure $A$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Attractive properties of isotonic regression estimator}
+  No need to choose kernel, bandwidth or any other tuning parameter
+  \begin{itemize}
+    \item The monotone fit restriction is kind of like a kernel already
+    \item but it is true that no choice of tuning parameter is needed
+  \end{itemize}
+  Invariant to strictly increasing transformations of $A$ \\
+  \vs{0.1}
+  Uniform consistency on any strict subinterval of $A$ \\
+  \vs{0.1}
+  Limit distribution available
+  \begin{itemize}
+    \item $n^{\f{1}{3}} \big[r_n(a) -r_0(a) \big] \stackrel{d}{\rightarrow} \big[ 4r'_0(a) \sigma_0^2(a)/f_0(a) \big]^{\f{1}{3}} \mathbb{W}$
+    for any interior point $a \in \mathcal{A}$ at which $r'_0(a)$, $f_0(a) := F'_0(a)$ and $\sigma_0^2(a) := E_0 \big[ \{ Y -r_0(a) \}^2 |A=a \big]$ exist and are positive and continuous in a neighbourhood of $a$
+    \item $\mathbb{W}$ follows Chernoff's distribution, which often appears in the limit distribution of monotonicity-constrained estimators
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Definition of proposed estimator}
+  \begin{block}{Definition: pointwise outcome}
+    $$\mu_P(a,w) := E_P(Y|A=a,W=w)$$ for any given $P \in \mathcal{M}$
+  \end{block}
+  \begin{block}{Definition: normalized exposure density}
+    $$g_P(a,w) := \pi_P(a|w)/f_P(a)$$
+    where $\pi_P(a|w)$ is the conditional density evaluated at $a$ given $W=w$, $f_P$ is the marginal density of $A$ under $P$
+  \end{block}
+  \begin{block}{Definition: pseudo-outcome}
+    $$\xi_{\mu,g,Q}(y,a,w) := \f{y-\mu(a,w)}{g(a,w)} +\int \mu(a,z) Q(dz)$$
+  \end{block}
+\end{frame}
+
+\begin{frame}{Monotonicity of proposed estimator} \label{slide:monotonicity}
+  Kennedy \textit{et al.} (2017) used pseudo-outcome to develop local linear regression for inference of $\theta_0(a)$. In the setting of this paper, $\theta_0(a)$ is known to be monotone
+  \begin{itemize}
+    \item I think the monotonicity of $\theta_0(a)$ is an assumption
+    \item Yet it seems reasonable as continuous treatment usually has monotone causal effect (if effective) within certain range
+    \item Example: daily exercise time (0-2 hours) on life expectancy
+    \item Counterexample: daily exercise time (0-12 hours)
+    \item So the reasonability of monotonicity may depend on the range of treatment $A$ (experiemental) or data exploration (observational)
+  \end{itemize}
+  Under monotonicity, it is natural to consider the isotonic regression of the pseudo-outcomes on $A_{1:n}$
+\end{frame}
+
+\begin{frame}{Proposed estimation procedure} \label{slide:procedure}
+  \begin{block}{Estimation of $\theta_n(a)$}
+    \begin{enumerate}
+      \item Construct estimators $\mu_n, g_n$ of $\mu_0, g_0$ respectively
+      \item For each $a$ in the unique values of $A_{1:n}$, compute and set
+      \begin{align}
+        \textstyle \Gamma_n(a) &:= \textstyle \f{1}{n} \sn I_{(-\infty,a]}(A_i) \f{Y_i -\mu_n(A_i,W_i)}{g_n(A_i,W_i)} \nonumber \\
+          &\quad \textstyle +\f{1}{n^2} \sn \sum_{j=1}^n I_{(-\infty,a]}(A_i) \mu_n(A_i,W_j) \label{eq:GammaN}
+      \end{align}
+      \item Compute the GCM $\bar{\Psi}_n$ of the set of points $\{(0,0)\} \cup \{\big( F_n(A_i), \Gamma_n(A_i) \big): i=1,2,\dots,n \}$ over $[0,1]$
+      \item Define $\theta_n(a)$ as the left derivative of $\bar{\Psi}_n$ evaluated at $F_n(a)$
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Asymptotic framework for the proposed estimator}
+  As in Kennedy \textit{et al.} (2017), $\theta_n(a)$ deviate from classical results \\
+  \begin{itemize}
+    \item Pseudo-outcomes $\xi_{\mu,g,Q}(y,a,w)$ are dependent because they depend on the estimator $\mu_n, g_n, Q_n$ estimated with all observations
+    \item Hence classical results from isotonic regression do not apply
+    \item However, $\theta_n$ is of generalized Grenander type
+    \item Asymptotic results of Westling and Carone (2020) can be used
+  \end{itemize}
+  We skip the proof of $\theta_n$ to be Grenander type here, which is to show $\theta_n$ falls in the class of estimator discussed in Westling and Carone (2020)
+\end{frame}
+
+\begin{frame}{Some remarks on monotonicity and generality} \label{slide:generality}
+  Monotonicity: if $\theta_0(a)$ were only known to be monotone on a fixed subinterval $\mathcal{A}_0 \subset \mathcal{A}$
+  \begin{itemize}
+    \item We discuss this assumption on page \ref{slide:monotonicity}
+    \item The estimation procedure is still valid by first defining $F_p(a):=P(A \le a| A \in \mathcal{A}_0)$ and $F_n$ as its empirical counterpart
+    \item Then replace $I_{(-\infty,a]}(A_i)$ in equation \ref{eq:GammaN} by $I_{(-\infty,a] \cap \mathcal{A}_0}(A_i)$
+  \end{itemize}
+  Generality: the proposed estimator $\theta_n$ generalizes the classical $r_n$
+  \begin{itemize}
+    \item Condition 1: $A \perp \!\!\! \perp W \implies g_0(a,w) = 1$, so we may take $g_n=1$
+    \item Condition 2: $Y|A \perp \!\!\! \perp W|A \implies \mu_n(a,w)=\mu_n(a)$
+    \item Under these conditions, equation \ref{eq:GammaN} becomes
+    $$\Gamma_n(a) = \f{1}{n} \sn I_{(-\infty,a]}(A_i) Y_i -\mu_n(A_i)$$
+    \item As a result, $\theta_n(a) = r_n(a)$ for each $a$
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Theoretical properties}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Invariance to strictly increasing transform of exposure}
+  $\theta_n(a)$ is invariant to strictly increasing transform $H(\cdot)$ of exposure $A$
+  \begin{itemize}
+    \item Intuition: composition preserve monotonicity
+    \item Desirable property since scale of exposure is often arbitrary
+    \item Example: temperature in degrees Fahrenheit or Celsius or in kelvins
+    \item Change of scale does not affect available information
+  \end{itemize}
+  We skip the proof because the intuition is simple (composition of monotone functions is also monotone)
+\end{frame}
+
+\begin{frame}{Condtions for consistency}
+  Notations:
+  \begin{itemize}
+    \item $\mathcal{F}$: a uniformly bounded class of functions
+    \item $Q$: a finite discrete probability measure
+    \item $N\{ \epsilon, \mathcal{F}, L_2(Q) \}$: the $\epsilon$-covering-number, i.e. the smallest number of $L_2(Q)$ balls of radius less than or equal to $\epsilon$ needed to cover $\mathcal{F}$
+    \item $\log\big[ \sup_Q N\{ \epsilon, \mathcal{F}, L_2(Q) \} \big]$: the uniform $\epsilon$-entropy of $\mathcal{F}$
+  \end{itemize}
+  \begin{block}{Condition 1}
+    There exist constants $C, \delta, K_0, K_1, K_2 \in (0, \infty)$ and $V \in [0,2)$ s.t., almost surely as $n \rightarrow \infty$, $\mu_n$ and $g_n$ are contained in classes of functions $\mathcal{F}_0$ and $\mathcal{F}_1$ respectively, satisfying
+    \begin{enumerate}
+      \item $|\mu| \le K_0, \forall \mu \in \mathcal{F}_0$, and $K_1 \le g \le K_2, \forall g \in \mathcal{F}_1$
+      \item $\log\big[ \sup_Q N\{ \epsilon, \mathcal{F}_0, L_2(Q) \} \big] \le C \epsilon^{-V/2}$ and $\log\big[ \sup_Q N\{ \epsilon, \mathcal{F}_1, L_2(Q) \} \big] \le C \epsilon^{-V}, \forall \epsilon \le \delta$
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Condtions for consistency}
+  $P_0$: the true data-generating distribution but not projection
+  \begin{block}{Condition 2}
+    There exists $\mu_\infty \in \mathcal{F}_0$ and $g_\infty \in \mathcal{F}_1$ s.t. $P_0(\mu_n -\mu_\infty)^2 \stackrel{p}{\rightarrow} 0$ and $P_0(g_n -g_\infty)^2 \stackrel{p}{\rightarrow} 0$
+  \end{block}
+  \begin{block}{Condition 3}
+    There exist subsets $\mathcal{S}_1, \mathcal{S}_2, \mathcal{S}_3$ of $\mathcal{A} \times \mathcal{W}$ s.t. $P_0(\mathcal{S}_1 \cup \mathcal{S}_2 \cup \mathcal{S}_3)=1$ and
+    \begin{enumerate}
+      \item $\mu_\infty(a,w) = \mu_0(a,w), \forall (a,w) \in \mathcal{S}_1$
+      \item $g_\infty(a,w) = g_0(a,w), \forall (a,w) \in \mathcal{S}_2$
+      \item $\mu_\infty(a,w) = \mu_0(a,w)$ and $g_\infty(a,w) = g_0(a,w), \forall (a,w) \in \mathcal{S}_3$
+    \end{enumerate}
+  \end{block}
+  These conditions control the uniform entropy of certain classes of functions, which is related to empirical process theory. A thorough treatment is provided in van der Vaart and Wellner (1996)
+\end{frame}
+
+\begin{frame}{Consistency}
+  \begin{block}{Theorem 1}
+    If Conditions 1-3 hold, then $\theta_n(a) \stackrel{p}{\rightarrow} \theta_0(a)$ for any value $a \in \mathcal{A}$ s.t. $F_0(a) \in (0,1)$, $\theta_0$ is continuous at $a$ and $F_0$ is strictly increasing in a neighbourhood of $a$. \\
+    \vs{0.3}
+    If $\theta_0$ is uniformly continuous and $F_0$ is strictly increasing on $\mathcal{A}$, then $\sup_{a \in \mathcal{A}_0} \big[ \theta_n(a) -\theta_0(a) \big] \stackrel{p} 0$ for any bounded strict subinterval $\mathcal{A}_0 \subset \mathcal{A}$.
+  \end{block}
+  (Well-known) boundary issues with Grenander-type estimators:
+  \begin{itemize}
+    \item In the pointwise statement, $F_0(a)$ is required to be in $[0,1]$
+    \item Similarly, the uniform statement only covers strict subintervals of $\mathcal{A}$
+    \item Various remedies have been proposed before to mitigate this
+    \item Potential direction for future research
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Remark on Condtions for consistency} \label{slide:remarkCon1}
+  \begin{block}{Remark on Condition 1}
+    Condition 1 requires that $\mu_n$ and $g_n$ eventually be contained in uniformly bounded function classes that are sufficiently small for certain empirical process terms to be controlled.
+    This is satisfied by parametric classes and many infinite dimensional function classes. See chapter 2.6 of van der Vaart and Wellner (1996). \\
+    \vs{0.3}
+    There is also an asymmetry between the entropy requirements for $\mathcal{F}_0$ and $\mathcal{F}_1$ in part 2 of Condition 1. This is due to the term $\int \int_{-\infty}^a \mu_n(u,w) F_n(du) Q_n(dw)$ appearing in $\Gamma_n(a)$.
+    To control this term, an upper bound of the form $\int_0^1 \log\big[ \sup_Q N\{ \epsilon, \mathcal{F}_0, L_2(Q) \} \big] d\epsilon$ from the theory of empirical $U$-process is used (Nolan and Pollard, 1987). \\
+    \vs{0.3}
+    The later part of this paper (section 3.7) considers the use of cross-fitting to avoid these entropy conditions in Condition 1.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Remark on Condtions for consistency} \label{slide:remarkCon3}
+  \begin{block}{Remark on Condition 2 and 3}
+    Condition 2 requires that $\mu_n$ and $g_n$ tend to limit functions $\mu_\infty$ and $g_\infty$, and Condition 3 requires that requires that either $\mu_\infty(a,w) = \mu_0(a,w)$ or $g_\infty(a,w) = g_0(a,w)$ for $(F_0 \times Q_0)$ almost every $(a,w)$.
+    \begin{itemize}
+      \item This is equivalent to saying that $\mu_n$ or $g_n$ is consistent?
+      \item Seems to be in line with Kennedy \textit{et al.} (2017)
+    \end{itemize}
+    If either
+    \begin{enumerate}
+      \item $\mathcal{S}_1$ and $\mathcal{S}_3$ are null sets or
+      \item $\mathcal{S}_2$ and $\mathcal{S}_3$ are null sets,
+    \end{enumerate}
+    then Condition 3 is known simply as double robustness of the estimator $\theta_n$ relative to the nuisance functions $\mu_0$ and $g_0$: $\theta_n$ is consistent as long as $\mu_\infty = \mu_0$ or $g_\infty = g_0$.
+    However, Condition 3 is more general than classical double robustness as at least one of $\mu_n$ or $g_n$ tends to the truth for \textbf{only} almost every point in the domain.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Double robustness} \label{slide:doubleRobust}
+  Multiply robustness: preserve consistency even if a subset of the $N$ nuisance models is mispecified in the procedure \\
+  Double robustness: $N=2$, so one model can be mispecified \\
+  \begin{block}{Example: inverse probability weighted (IPW) estimator}
+    \begin{itemize}
+      \item $Y_i$: response; $A_i \in \{0,1\}$: treatment; $W$: covariates
+      \item Estimator: $\hat{\mu}^{i-IPW} = \f{1}{n} \sn \f{A_i Y_i}{\pi_0(W_i)}$ where $\pi_0(W) = P(A=1|W)$
+      \begin{itemize}
+        \item Often infeasible since functional form $\pi_0(W)$ is unknown
+        \item (Example) nuisance model 1: $\pi_0(W) = \pi(W; \alpha_0) = \f{\exp(\alpha_0^T \tilde{W})}{1 +\exp(\alpha_0^T \tilde{W})}$
+        \item $\hat{\mu}^{f-IPW} = \f{1}{n} \sn \f{A_i Y_i}{\pi(W_i; \hat{\alpha})}$
+      \end{itemize}
+      \item Augmented IPW (AIPW) estimator:
+      \begin{itemize}
+        \item $\hat{\mu}^{f-\phi-IPW} = \f{1}{n} \sn \left[ \f{A_i Y_i}{\pi(W_i; \hat{\alpha})} +\left\{ 1 -\f{A_i}{\pi(W_i; \hat{\alpha})} \right\} \phi(W_i) \right]$
+        \item Nuisance model 2: $\phi(W)=E(Y|W,A=1)$ is the most efficient
+      \end{itemize}
+    \end{itemize}
+  \end{block}
+  See \href{https://statnav.files.wordpress.com/2017/10/doublerobustness-preprint.pdf}{Daniel (2017)} for a simple introduction to this topic
+\end{frame}
+
+\begin{frame}{Conditions for convergence in distribution}
+  Notations:
+  \begin{itemize}
+    \item $d(h_1,h_2; a,\epsilon,\mathcal{S})$: pseudodistance; $\sigma_0^2(a,w)$: conditional variance
+    \item $d(h_1,h_2; a,\epsilon,\mathcal{S}) := \scriptstyle \sqrt{\sup_{|u-a| \le \epsilon} E_0 \big[ I_\mathcal{S}(u,W) \{ h_1 u,W) -h_2(u,W) \}^2 \big]}$
+    \item $\sigma_0^2(a,w) := E_0 \big[ \{Y -\mu_0(A,W)\}^2 | A=a, W=w \big]$
+  \end{itemize}
+  \begin{block}{Condition 4}
+    There exists $\epsilon_0 > 0$ s.t.
+    \begin{enumerate}
+      \item $\max \big[ d(\mu_n,\mu_\infty; a,\epsilon_0,\mathcal{S}_1), d(g_n,g_\infty; a,\epsilon_0,\mathcal{S}_2) \big] = o_p(n^{-1/3})$
+      \item $\max \big[ d(\mu_n,\mu_\infty; a,\epsilon_0,\mathcal{S}_2), d(g_n,g_\infty; a,\epsilon_0,\mathcal{S}_1) \big] = o_p(1)$
+      \item $d(\mu_n,\mu_\infty; a,\epsilon_0,\mathcal{S}_3) d(g_n,g_\infty; a,\epsilon_0,\mathcal{S}_3) = o_p(n^{-1/3})$
+    \end{enumerate}
+  \end{block}
+  \begin{block}{Condition 5}
+    $F_0, \mu_0, \mu_\infty, g_0, g_\infty$ and $\sigma_0^2$ are continuously differentiable in a neighbourhood of $a$ uniformly over $w \in \mathcal{W}$
+  \end{block}
+\end{frame}
+
+\begin{frame}{Convergence in distribution}
+  \begin{block}{Theorem 2}
+    If Conditions 1-5 hold, then
+    $$
+      n^{1/3} \{ \theta_n(a) -\theta_0(a) \} \stackrel{d}{\rightarrow} \left\{ \f{4 \theta'_0(a) \kappa_0(a)}{f_0(a)} \right\}^{1/3} \mathbb{W}
+    $$
+    for any $a \in \mathcal{A}$ such that $F_0(a) \in (0,1)$, where $\mathbb{W}$ follows the standard Chernoff distribution and
+    $$
+      \kappa_0(a) := \scriptstyle E_0 \left( E_0\left[ \left\{ \f{Y-\mu_\infty(a,W)}{g_\infty(a,W)} +\theta_\infty(a) -\theta_0(a) \right\}^2 \Big| A=a,W \right] g_0(a,W) \right)
+    $$
+    with $\theta_\infty(a)$ denoting $\int \mu_\infty(a,w) Q_0(dw)$.
+  \end{block}
+  We skip the comparison between the limit distributions of $\theta_n$ and $r_n$ as it is paritally discussed in p.\ref{slide:generality}. In short, their limit distributions only differ in concentration, which is analogous to findings in linear regression
+\end{frame}
+
+\begin{frame}{Remark on Conditions for convergence in distribution}
+  \begin{block}{Remark on Condition 4 and 5}
+    The requirements of Condition 4 is equivalent to
+    \begin{enumerate}
+      \item On $\mathcal{S}_1$ where $\mu_n$ is consistent but $g_n$ is not, $\mu_n$ converges faster than $n^{-1/3}$ uniformly in a neighbourhood of $a$,
+      \item Similarly for $g_n$ on $\mathcal{S}_2$ and
+      \item On $\mathcal{S}_3$ where both $\mu_n$ and $g_n$ are consistent, only the product of their rates of convergence must be faster than $n^{-1/3}$
+    \end{enumerate}
+    This suggests the possibility of performing doubly robust inference for $\theta_0(a)$, which is explored in section 4.
+    Note that as discussed in p.\ref{slide:remarkCon3}, these conditions are more general than the classical double robustness
+  \end{block}
+  We skip the discussion of plug-in estimator $\theta_{\mu_n}(a)$, which can achieve faster rate of convergence than $\theta_n(a)$ but hinges entirely on the consistency of $\mu_n$ and may not admit a tractable limit theory
+\end{frame}
+
+\begin{frame}{Grenander-type estimation without domain transform}
+  The proposed estimator $\theta_n(a)$ coincides with a generalized Grenander-type estimator for which the marginal exposure empirical distribution function is used as domain transformation \\
+  \vs{0.3}
+  An alternative estimator $\bar{\theta}_n$ could be constructed via Grenander-type estimation \textbf{without} the use of any domain transformation. We skip its construction here but there are several points to note:
+  \begin{itemize}
+    \item $\bar{\theta}_n$ does not generalize the classical isotonic regression
+    \item $\bar{\theta}_n$ is not invariant to strictly increasing transform of $A$
+    \item Domain of $\mathcal{A}$ needs to be known/chosen in defining $\bar{\theta}_n$
+    \item When $\mu_\infty = \mu_0$, $\theta_n(a)$ and $\bar{\theta}_n$ may have the same limit distribution
+    \item When $\mu_\infty \neq \mu_0$, $\bar{\theta}_n$ is dominated by $\theta_n(a)$ in AMSE sense
+    \begin{itemize}
+      \item The transformation improves statistical efficiency in this case
+      \item Relative gain in efficiency is directly related to the asymptotic bias
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Discrete domains}
+  When $A$ is discrete, $\theta_n(a)$ is asymptotically equivalent to the AIPW estimator, which is paritally discussed in p.\ref{slide:doubleRobust} \\
+  \vs{0.5}
+  As a result, the large sample properties of $\theta_n(a)$ can be derived from the large sample properties of the AIPW estimator and asymptotically valid inference can be obtained by using standard influence-function-based techniques \\
+  \vs{0.5}
+  We skip the proof here as it is like realizing the isotonic regression of pseudo-outcome under discrete exposure coincides with the AIPW estimator. Instead, we shall have a short discussion on influence function
+\end{frame}
+
+\begin{frame}{Influence function}
+  \begin{block}{Definition of influence function (Hampel \textit{et al.}, 1986)}
+    Let $T(F)$ be a statistical functional where $F$ is a distribution. The influence function of $T$ at $F$ is given by
+    $$IF(x;T,F) := \lim_{t \downarrow 0} \f{T\big[ (1-t)F +t \delta_x \big] -T(F)}{t}$$
+    in those $x \in \mathcal{X}$ where this limit exists.
+  \end{block}
+  A complete discussion of this definition usually requires G\^{a}teaux differentiability. We cover some of its usage instead:
+  \begin{itemize}
+    \item An estimator $\hat{\theta} \approx \theta(P_0) +E_n\big[ IF(X) \big]$ can be dominated by a single outlier \textbf{unless} $IF$ is bounded
+    \item Asymptotic efficiency bound (Bias, Variance)
+    \item Distributional decomposition, partial identification etc.
+  \end{itemize}
+  See \href{https://scholar.harvard.edu/files/kasy/files/ifhandout.pdf}{this note} for a quick summary
+\end{frame}
+
+\begin{frame}{Large sample results for causal effects}
+  The result so far concerns about the causal dose-response $a \mapsto m_0(a)$, which may not hold for the causal effect $(a_1, a_2) \mapsto m_0(a_1) -m_0(a_2)$ \\
+  \vs{0.3}
+  If the identification conditions discussed in Section 1.2 applied to each of $a_1$ and $a_2$, such causal effects can be identified with the observed data parameter $\theta_0(a_1) -\theta_0(a_2)$ \\
+  \vs{0.3}
+  If the condtions of Theorem 1 hold for both $a_1$ and $a_2$, we can establish consistency via the use of continuous mapping theorem \\
+  \vs{0.3}
+  However, Theorem 2 only provides marginal distributional results. Joint convergence result is thus required for inference of causal effect
+\end{frame}
+
+\begin{frame}{(Joint) convergence for causal effects}
+  \begin{block}{Theorem 3}
+    Define $Z_n(a_1,a_2) := \left( n^{1/3} \big\{ \theta_n(a_1) -\theta_0(a_1) \big\}, n^{1/3} \big\{ \theta_n(a_2) -\theta_0(a_2) \big\} \right)$. If Conditions 1-5 hold for $a \in \{a_1, a_2\} \subset \mathcal{A}$ and $F_0(a_1), F_0(a_2) \in (0,1)$, then
+    $$
+      Z_n(a_1,a_2) \stackrel{d}{\rightarrow}
+      \left( \big\{ 4 \tau_0(a_1) \big\}^{1/3} \mathbb{W}_1, \big\{ 4 \tau_0(a_2) \big\}^{1/3} \mathbb{W}_2 \right)
+    $$
+    where $\mathbb{W}_1, \mathbb{W}_2$ are independent standard Chernoff distributions and the scale parameter $\tau_0 = \f{\theta'_0(a) \kappa_0(a)}{f_0(a)}$ is as defined in theorem 2.
+  \end{block}
+  Note that Theorem 3 implies
+  $$
+    \scriptstyle n^{1/3} \left[ \big\{ \theta_n(a_1) -\theta_n(a_2) \big\} -\big\{ \theta_0(a_1) -\theta_0(a_2) \big\} \right] \stackrel{d}{\rightarrow}
+    \scriptstyle \big\{ 4 \tau_0(a_1) \big\}^{1/3} \mathbb{W}_1 -\big\{ 4 \tau_0(a_2) \big\}^{1/3} \mathbb{W}_2
+  $$
+\end{frame}
+
+\begin{frame}{Cross-fitting to avoid empirical process conditions}
+  In observational studies, researchers can rarely specify a \textit{priori} correct parametric models for $\mu_0$ and $g_0$.
+  This motivates use of data-adaptive estimators to meet Conditions 2 and 3 \\
+  \vs{0.3}
+  However, such estimators often leads to violation of Condition 1, or it may be onerous to determine that they do not. See slide p.\ref{slide:remarkCon1} \\
+  \vs{0.3}
+  In the context of asymptotically linear estimators, it has been noted that cross-fitting nuisance estimators can resolve this challenge by eliminating empirical process conditions \\
+  \vs{0.3}
+  Therefore, this paper proposes cross-fitting of $\mu_n$ and $g_n$ to avoid entropy conditions in Theorem 1 and 2
+\end{frame}
+
+\begin{frame}{Estimation with cross-fitting}
+  \begin{block}{Estimation procedure with cross-fitting}
+    \begin{enumerate}
+      \item Fix $V \in \{ 2,3,\dots,n/2 \}$
+      \item Randomly partition the indices $\{ 1,2,\dots,n \}$ into $V$ sets $\mathcal{V}_{n,1},\mathcal{V}_{n,2},\dots,\mathcal{V}_{n,V}$
+      \item Assume $N := n/V \in \Z^+$. For each $v \in \{ 1,2,\dots,V \}$:
+      \begin{enumerate}
+        \item Define $\mathcal{T}_{n,v} := \{ O_i: i\notin \mathcal{V}_{n,v} \}$ as the \textit{training set} for fold $v$
+        \item Construct $\mu_{n,v}$ and $g_{n,v}$ using only observations from $\mathcal{T}_{n,v}$
+      \end{enumerate}
+      \item Define pointwise the cross-fitted estimator $\Gamma_n^\circ$ of $\Gamma_0$ as
+      $\begin{aligned}
+        \textstyle \Gamma_n^\circ(a) &:= \textstyle \f{1}{V} \sum_{v=1}^V \Big[ \f{1}{N} \sum_{i \in \mathcal{V}_{n,v}} I_{(-\infty,a]}(A_i) \f{Y_i -\mu_{n,v}(A_i,W_i)}{g_{n,v}(A_i,W_i)} \\
+        &\quad \textstyle + \f{1}{N^2} \sum_{i,j \in \mathcal{V}_{n,v}} I_{(-\infty,a]}(A_i) \mu_{n,v}(A_i,W_j) \Big]
+      \end{aligned}$
+      \item Construct the cross-fitted estimator $\theta_n^\circ$ as in p.\ref{slide:procedure}
+    \end{enumerate}
+  \end{block}
+  Remark: all results hold as long as $\max_v n/|\mathcal{V}_{n,v}| = O_p(1)$
+\end{frame}
+
+\begin{frame}{Conditions for convergence under cross-fitting}
+  \begin{block}{Condition 6}
+    There exist constants $C',\delta',K'_0,K'_1,K'_2,K'_3 \in (0,\infty)$ s.t., almost surely as $n \rightarrow \infty$ and for all $v$, $\mu_{n,v}$ and $g_{n,v}$ are contained in classes of functions $\mathcal{F}'_0$ and $\mathcal{F}'_1$ respectively, satisfying
+    \begin{enumerate}
+      \item $|\mu| \le K'_0, \forall \mu \in \mathcal{F}'_0$, and $K'_1 \le g \le K'_2, \forall g \in \mathcal{F}'_1$, and
+      \item $\sigma_0^2(a,w) \le K'_3$ for almost all $a$ and $w$
+    \end{enumerate}
+  \end{block}
+  \begin{block}{Condition 7}
+    There exist $\mu_\infty \in \mathcal{F}'_0$ and $g_\infty \in \mathcal{F}'_1$ s.t. $\max_v P_0(\mu_{n,v} -\mu_\infty)^2 \stackrel{p}{\rightarrow} 0$ and $\max_v P_0(g_{n,v} -g_\infty)^2 \stackrel{p}{\rightarrow} 0$
+  \end{block}
+\end{frame}
+
+\begin{frame}{Conditions for convergence under cross-fitting}
+  \begin{block}{Condition 8}
+    There exists $\epsilon_0 > 0$ s.t.
+    \begin{enumerate}
+      \item $\max \big[ d(\mu_{n,v},\mu_\infty; a,\epsilon_0,\mathcal{S}_1), d(g_{n,v},g_\infty; a,\epsilon_0,\mathcal{S}_2) \big] = o_p(n^{-1/3})$
+      \item $\max \big[ d(\mu_{n,v},\mu_\infty; a,\epsilon_0,\mathcal{S}_2), d(g_{n,v},g_\infty; a,\epsilon_0,\mathcal{S}_1) \big] = o_p(1)$
+      \item $d(\mu_{n,v},\mu_\infty; a,\epsilon_0,\mathcal{S}_3) d(g_{n,v},g_\infty; a,\epsilon_0,\mathcal{S}_3) = o_p(n^{-1/3})$
+    \end{enumerate}
+  \end{block}
+  Remark: Conditions 6, 7 and 8 are analogue of Conditions 1, 2 and 4 respectively under cross-fitting
+\end{frame}
+
+\begin{frame}{Convergence under cross-fitting}
+  \begin{block}{Theorem 4}
+    If Conditions 6, 7 and 3 hold, then $\theta_n^\circ(a) \stackrel{p}{\rightarrow} \theta_0(a)$ for any value $a \in \mathcal{A}$ s.t. $F_0(a) \in (0,1)$, $\theta_0$ is continuous at $a$ and $F_0$ is strictly increasing in a neighbourhood of $a$. \\
+    \vs{0.3}
+    If $\theta_0$ is uniformly continuous and $F_0$ is strictly increasing on $\mathcal{A}$, then $\sup_{a \in \mathcal{A}_0} \big[ \theta_n^\circ(a) -\theta_0(a) \big] \stackrel{p} 0$ for any bounded strict subinterval $\mathcal{A}_0 \subset \mathcal{A}$.
+  \end{block}
+  \begin{block}{Theorem 5}
+    If Conditions 6, 7, 3, 8, 5 hold, then
+    $$
+      n^{1/3} \{ \theta_n^\circ(a) -\theta_0(a) \} \stackrel{d}{\rightarrow} \left\{ 4 \tau_0(a) \right\}^{1/3} \mathbb{W}
+    $$
+    for any $a \in \mathcal{A}$ such that $F_0(a) \in (0,1)$, where $\mathbb{W}$ follows the standard Chernoff distribution.
+  \end{block}
+\end{frame}
+
+\end{document}
