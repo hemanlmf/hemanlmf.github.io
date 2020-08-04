@@ -387,7 +387,7 @@ Condition (3) and (4) are being too strong to be practical, it is natural to fin
 	P:\theta_P\in\F_\theta,F_P\in\F_T
 	\big\}
 	$$
-	Recall our target: Making inference about $$\theta_0(a)=\E_0\big\{E_0(Y|A=a,W) \big\}$$ for cts exposure $A$ and monotone $\theta_0$ by using \textbf{independent} (NOT randomnized) observations $O_1,\cdots,O_n$ drawn from $P_)\in\mathcal{M}$, which is an extension of classical isotonic regression in sense of allowing the existence of confounders.
+	Recall our target: Making inference about $$\theta_0(a)=\E_0\big\{E_0(Y|A=a,W) \big\}$$ for cts exposure $A$ and monotone $\theta_0$ by using \textbf{independent} (NOT randomnized) observations $O_1,\cdots,O_n$ drawn from $P_0\in\mathcal{M}$, which is an extension of classical isotonic regression in sense of allowing the existence of confounders.
 \end{frame}
 
 \begin{frame}{Contribution of paper}
@@ -885,7 +885,7 @@ Condition (3) and (4) are being too strong to be practical, it is natural to fin
 
 \begin{block}{Estimation of $\tau_0(a)$}
   Since estimation of $\tau_0(a)$ involves, it can be estimated either direcly or indirectly, estimation of $\theta^{'}_0(a)/f_0(a)$ and $\kappa_0(a)$.
-  For direct estimation, we note that $\theta^{'}_0(a)/f_0(a)=\psi^{'}_0(F_0(a)$ with $\psi_0:=\theta_0 \circ F^{-1}_0$.It suggests that
+  For direct estimation, we note that $\theta^{'}_0(a)/f_0(a)=\psi^{'}_0(F_0(a))$ with $\psi_0:=\theta_0 \circ F^{-1}_0$.It suggests that
   	\begin{enumerate}
   	\item Estimate $\theta^{'}_0$ and $f_0$ separately and consider the ratio of these of estimators; or
   	\item Estimate $\psi^{'}_0$ directly and compose it with the estimator of $F_0$.
@@ -1248,7 +1248,7 @@ Some previous scientific literature indicates that
 \begin{frame}{Comment on previous literature}
 \begin{enumerate}
 	\item Jin et al. (2015): low BMI participants had a statistically significantly greater response rate than high
-	BMI participants by using Fisher?s exact test.\\
+	BMI participants by using Fisher's exact test.\\
 	\textit{Comment:} Marginal comparison can be misleading due to existence of confounders such as age and sex.
 
 	\item Jin
