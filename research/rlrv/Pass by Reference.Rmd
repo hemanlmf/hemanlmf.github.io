@@ -186,10 +186,10 @@ We try to confirm their equivalence by looking at the first variables:
 n = n.iter[1]
 m = n.var[1]
 cat(c(f.global(n,m), 
-        f.list(n,m), 
-        f.env(n,m), 
-        f.env.with(n,m), 
-        f.env.set(n,m)))
+      f.list(n,m), 
+      f.env(n,m), 
+      f.env.with(n,m), 
+      f.env.set(n,m)))
 ```
 The results can be found below:
 ```{r compare, eval=T}

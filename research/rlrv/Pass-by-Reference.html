@@ -1819,11 +1819,11 @@ f.env.set = function(nIter, nVar)
 <p>We try to confirm their equivalence by looking at the first variables:</p>
 <pre class="r"><code>n = n.iter[1]
 m = n.var[1]
-cat(c(f.global(n,m), 
-        f.list(n,m), 
-        f.env(n,m), 
-        f.env.with(n,m), 
-        f.env.set(n,m)))</code></pre>
+cat(c(f.global(n,m),
+      f.list(n,m),
+      f.env(n,m),
+      f.env.with(n,m),
+      f.env.set(n,m)))</code></pre>
 <pre><code>## 1000 1000 1000 1000 1000</code></pre>
 <p>The results can be found below:</p>
 <pre class="r"><code># compare the performance
@@ -1852,7 +1852,7 @@ for (i in 1:length(n.iter))
 ##       f.env(n, m) 69.3427 72.3090 72.69684 72.66405 73.1303 77.2786    30
 ##  f.env.with(n, m) 66.2744 68.6742 69.79636 69.01050 70.2823 75.5699    30
 ##   f.env.set(n, m) 59.8187 62.3075 63.89641 62.48345 62.8760 96.6574    30
-## 
+##
 ## 1000 iterations, 50 variables
 ## Unit: milliseconds
 ##              expr      min       lq     mean   median       uq      max neval
@@ -1861,7 +1861,7 @@ for (i in 1:length(n.iter))
 ##       f.env(n, m) 703.3076 723.4363 728.6458 725.7711 730.7909 762.4145    30
 ##  f.env.with(n, m) 609.1059 624.6730 631.8855 633.3892 636.1545 671.5078    30
 ##   f.env.set(n, m) 603.5491 622.0154 627.9367 628.6824 630.8707 665.4141    30
-## 
+##
 ## 10000 iterations, 5 variables
 ## Unit: milliseconds
 ##              expr      min       lq     mean   median       uq      max neval
@@ -1870,7 +1870,7 @@ for (i in 1:length(n.iter))
 ##       f.env(n, m) 722.2199 726.2229 730.5405 727.2925 730.5958 767.5532    30
 ##  f.env.with(n, m) 686.1373 688.4164 693.6996 691.3629 693.6030 732.8450    30
 ##   f.env.set(n, m) 613.9361 622.5752 631.9774 628.3284 630.2193 665.1760    30
-## 
+##
 ## 10000 iterations, 50 variables
 ## Unit: seconds
 ##              expr      min       lq     mean   median       uq      max neval
