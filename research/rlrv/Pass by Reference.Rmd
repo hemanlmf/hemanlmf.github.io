@@ -1,0 +1,170 @@
+---
+title: "Comparison of 'Pass by Reference' in R"
+author: "LEUNG Man Fung, Heman"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    df_print: paged
+fontsize: 12pt
+---
+
+```{r setup, include=F}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Motivation
+In a recursive/online procedure, we frequently modify some components passed into a function and want the modification to have permanent effect. A simple example is running min and max:
+```{r example1, eval=F}
+# X: scalar, x.min: running min, x.max: running max
+example1 = function(X, x.min, x.max)
+{
+  if (X < x.min) x.min = X
+  if (X > x.max) x.max = X
+}
+```
+Nevertheless, when this function ends, local variables *x.min* and *x.max* are destroyed automatically. To have permanent effect on the passed in arguments *x.min* and *x.max*, we have several solutions in R.
+
+# Super assignment
+The first solution to the above problem is to declare *x.min* and *x.max* as global variables and use super assignment in the function:
+```{r example2, eval=T}
+example2 = function(X)
+{
+  if (!exists("x.min") || X < x.min) x.min <<- X
+  if (!exists("x.max") || X > x.max) x.max <<- X
+}
+# running example2
+data = c(9,5,2,7,11)
+for (i in 1:length(data))
+{
+  example2(data[i])
+  print(c(x.min, x.max))
+}
+```
+Despite its simplicity, super assignment is a bad practice in general. We can see that we need to check their existence and have to make sure the other functions will not affect them unconsciously.
+
+# Return list
+The second category of solution is to return *x.min* and *x.max* from the function so that we can store them properly. While we cannot return multiple variables at the same time, we can warp the variables we need with a list:
+```{r example3, eval=T}
+example3 = function(X, L)
+{
+  if (is.null(L$x.min) || X < L$x.min) L$x.min = X
+  if (is.null(L$x.max) || X > L$x.max) L$x.max = X
+  return(L)
+}
+# running example3
+data = c(9,5,2,7,11)
+L = list(x.min=NULL, x.max=NULL)
+for (i in 1:length(data))
+{
+  L = example3(data[i], L)
+  print(c(L$x.min, L$x.max))
+}
+```
+While this is safer than using global variables, two major issues with this approach are that we have to access the variables via the list as well as passing a (large) list repeatedly may hinder the program performance.
+
+# Reference semantic
+The last category of solutions is to use 'pass by reference' discussed in many elementary programming courses. This is in fact the first solution that came up in my mind as I learnt C before R. Unfortunately, there is no natural support of pointer in R. Some substitutes include *eval.parent()*, *setRefClass()*, *R.oo* packages etc.  
+
+Update: while there is no pointer in R, it is possible to use reference semantic under *environment*. I notice this property when I try unload a list to the environment so that I do not need to access the list multiple times. This solution has been added to the comparison.  
+
+# Comparison
+While different methods are proposed during the discussion in our research group, we did not find any comprehensive comparison of them online. Intuitively, different methods incur different amounts of overhead when the variables are accessed. In order to develop the best package for our [project](index.html), we try to compare them with different number of variables to be passed and different number of iterations. The functions that implement different solutions are as follows:
+```{r function, eval=T}
+# super assignment
+add.global = function(n) #arbitrary number of variables
+{
+  for (i in 1:n)
+    eval(parse(text=paste0("x.global",i,"<<-","x.global",i,"+1")))
+}
+# return list
+add.list = function(n, L)
+{
+  for (i in 1:n)
+    eval(parse(text=paste0("L$x",i,"=","L$x",i,"+1")))
+  return(L)
+}
+# environment
+add.env = function(n, E)
+{
+  for (i in 1:n)
+    eval(parse(text=paste0("E$x",i,"=","E$x",i,"+1")))
+}
+
+add.env.with = function(E)
+{
+  with(E, for (i in 1:n)
+    eval(parse(text=paste0("x",i,"=","x",i,"+1")))
+  )
+}
+```
+We compare them with the following setting:
+```{r setting, eval=T, warning=F}
+library(microbenchmark)
+# setting
+nRep = 30
+n.iter = c(1e3, 1e4)
+n.var = c(5, 50)
+# iterating the solutions
+run.global = function(nIter, nVar)
+{
+  for (i in 1:nVar)
+    eval(parse(text=paste0("x.global",i,"<<-0")))
+  for (i in 1:nIter)
+    add.global(nVar)
+}
+
+run.list = function(nIter, nVar)
+{
+  L = list()
+  for (i in 1:nVar)
+    eval(parse(text=paste0("L$x",i,"=0")))
+  for (i in 1:nIter)
+    L = add.list(nVar, L)
+}
+
+run.env = function(nIter, nVar)
+{
+  E = new.env()
+  for (i in 1:nVar)
+    eval(parse(text=paste0("E$x",i,"=0")))
+  for (i in 1:nIter)
+    add.env(nVar, E)
+}
+
+run.env.with = function(nIter, nVar)
+{
+  E = new.env()
+  for (i in 1:nVar)
+    eval(parse(text=paste0("E$x",i,"=0")))
+  E$n = nVar # need to put n into the environment
+  for (i in 1:nIter)
+    add.env.with(E)
+}
+```
+The results can be found below:
+```{r compare, eval=T}
+# compare the performance
+for (i in 1:length(n.iter))
+{
+  for (j in 1:length(n.var))
+  {
+    n = n.iter[i]
+    m = n.var[j]
+    cat(paste0(n, " iterations, ", m, " variables\n"))
+    print(microbenchmark(
+      run.global(n,m),
+      run.list(n,m),
+      run.env(n,m),
+      run.env.with(n,m), times=nRep)
+    )
+    cat("\n")
+  }
+}
+```
+
+# Reference links
+1. [Stack Overflow: Can you pass-by-reference in R?](https://stackoverflow.com/questions/2603184/can-you-pass-by-reference-in-r)  
+2. [R-bloggers: Call by reference in R](https://www.r-bloggers.com/call-by-reference-in-r/)  
+3. [Stack Overflow: Return list vs environment from an R function](https://stackoverflow.com/questions/54537065/return-list-vs-environment-from-an-r-function)  
+4. [Advanced R: Explicit environments](https://adv-r.hadley.nz/environments.html#explicit-envs)  
+5. [Stack Overflow: changing default environment for assignment of new variables](https://stackoverflow.com/questions/10759944/changing-default-environment-for-assignment-of-new-variables)  
