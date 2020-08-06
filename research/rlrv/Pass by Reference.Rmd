@@ -49,7 +49,7 @@ example3 = function(X, L)
 {
   if (is.null(L$x.min) || X < L$x.min) L$x.min = X
   if (is.null(L$x.max) || X > L$x.max) L$x.max = X
-  return(L)
+  L
 }
 # running example3
 data = c(9,5,2,7,11)
@@ -65,10 +65,28 @@ While this is safer than using global variables, two major issues with this appr
 # Reference semantic
 The last category of solutions is to use 'pass by reference' discussed in many elementary programming courses. This is in fact the first solution that came up in my mind as I learnt C before R. Unfortunately, there is no natural support of pointer in R. Some substitutes include *eval.parent()*, *setRefClass()*, *R.oo* packages etc.  
 
-Update: while there is no pointer in R, it is possible to use reference semantic under *environment*. I notice this property when I try unload a list to the environment so that I do not need to access the list multiple times. This solution has been added to the comparison.  
+Update: while there is no pointer in R, it is possible to use reference semantic under *environment*. I notice this property when I try unload a list to the environment so that I do not need to access the list multiple times.
+```{r example4, eval=T}
+example4 = function(X, E)
+{
+  if (is.null(E$x.min)) E$x.min = E$x.max = X
+  if (X < E$x.min) E$x.min = X
+  if (X > E$x.max) E$x.max = X
+}
+# running example4
+data = c(9,5,2,7,11)
+E = new.env()
+E$x.max = E$x.min = NULL
+for (i in 1:length(data))
+{
+  example4(data[i], E)
+  print(c(E$x.min, E$x.max))
+}
+```
+This solution has been added to the comparison.
 
 # Comparison
-While different methods are proposed during the discussion in our research group, we did not find any comprehensive comparison of them online. Intuitively, different methods incur different amounts of overhead when the variables are accessed. In order to develop the best package for our [project](index.html), we try to compare them with different number of variables to be passed and different number of iterations. The functions that implement different solutions are as follows:
+While different methods are proposed during the discussion in our research group, we did not find any comprehensive comparison of them online. Intuitively, different methods incur different amounts of overhead when the variables are accessed. In order to develop the best package for [our project](index.html), we try to compare them with different number of variables to be passed and different number of iterations. The functions that implement different solutions are as follows:
 ```{r function, eval=T}
 # super assignment
 add.global = function(n) #arbitrary number of variables
@@ -81,7 +99,7 @@ add.list = function(n, L)
 {
   for (i in 1:n)
     eval(parse(text=paste0("L$x",i,"=","L$x",i,"+1")))
-  return(L)
+  L
 }
 # environment
 add.env = function(n, E)
@@ -89,15 +107,22 @@ add.env = function(n, E)
   for (i in 1:n)
     eval(parse(text=paste0("E$x",i,"=","E$x",i,"+1")))
 }
-
+# use with() to avoid access environment multiple times
 add.env.with = function(E)
 {
-  with(E, for (i in 1:n)
-    eval(parse(text=paste0("x",i,"=","x",i,"+1")))
-  )
+  with(E, {
+    for (i in 1:n)
+      eval(parse(text=paste0("x",i,"=","x",i,"+1")))
+  })
+}
+# use super assignment in a pre-set environment
+add.env.set = function(n)
+{
+  for (i in 1:n)
+    eval(parse(text=paste0("x",i,"<<-","x",i,"+1")))
 }
 ```
-We compare them with the following setting:
+We compare them with the following setting and functions to perform simulation:
 ```{r setting, eval=T, warning=F}
 library(microbenchmark)
 # setting
@@ -105,33 +130,36 @@ nRep = 30
 n.iter = c(1e3, 1e4)
 n.var = c(5, 50)
 # iterating the solutions
-run.global = function(nIter, nVar)
+f.global = function(nIter, nVar)
 {
   for (i in 1:nVar)
     eval(parse(text=paste0("x.global",i,"<<-0")))
   for (i in 1:nIter)
     add.global(nVar)
+  x.global1
 }
 
-run.list = function(nIter, nVar)
+f.list = function(nIter, nVar)
 {
   L = list()
   for (i in 1:nVar)
     eval(parse(text=paste0("L$x",i,"=0")))
   for (i in 1:nIter)
     L = add.list(nVar, L)
+  L$x1
 }
 
-run.env = function(nIter, nVar)
+f.env = function(nIter, nVar)
 {
   E = new.env()
   for (i in 1:nVar)
     eval(parse(text=paste0("E$x",i,"=0")))
   for (i in 1:nIter)
     add.env(nVar, E)
+  E$x1
 }
 
-run.env.with = function(nIter, nVar)
+f.env.with = function(nIter, nVar)
 {
   E = new.env()
   for (i in 1:nVar)
@@ -139,7 +167,29 @@ run.env.with = function(nIter, nVar)
   E$n = nVar # need to put n into the environment
   for (i in 1:nIter)
     add.env.with(E)
+  E$x1
 }
+
+f.env.set = function(nIter, nVar)
+{
+  E = new.env()
+  for (i in 1:nVar)
+    eval(parse(text=paste0("E$x",i,"=0")))
+  environment(add.env.set) = E #pre-set the environment
+  for (i in 1:nIter)
+    add.env.set(nVar)
+  E$x1
+}
+```
+We try to confirm their equivalence by looking at the first variables:
+```{r equivalence, eval=T}
+n = n.iter[1]
+m = n.var[1]
+cat(c(f.global(n,m), 
+        f.list(n,m), 
+        f.env(n,m), 
+        f.env.with(n,m), 
+        f.env.set(n,m)))
 ```
 The results can be found below:
 ```{r compare, eval=T}
@@ -152,15 +202,21 @@ for (i in 1:length(n.iter))
     m = n.var[j]
     cat(paste0(n, " iterations, ", m, " variables\n"))
     print(microbenchmark(
-      run.global(n,m),
-      run.list(n,m),
-      run.env(n,m),
-      run.env.with(n,m), times=nRep)
+      f.global(n,m),
+      f.list(n,m),
+      f.env(n,m),
+      f.env.with(n,m),
+      f.env.set(n,m), times=nRep)
     )
     cat("\n")
   }
 }
 ```
+
+# Conclusion
+From the simulations, we can see that accessing a list or environment with \$ incurs a considerable amount of overhead. Besides, it is not convenient to do so in the code. Therefore, we should avoid accessing their elements with \$ if we have many variables to update.  
+
+For super assignment, we should only use it if the environment can be well controlled. As in *add.env.set()*, the environment has to be set outside before we call it in *f.env.set()*. If we want to set the environment in the add function, we have to use *with()* instead.
 
 # Reference links
 1. [Stack Overflow: Can you pass-by-reference in R?](https://stackoverflow.com/questions/2603184/can-you-pass-by-reference-in-r)  

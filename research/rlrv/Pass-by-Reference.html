@@ -1680,7 +1680,7 @@ for (i in 1:length(data))
 {
   if (is.null(L$x.min) || X &lt; L$x.min) L$x.min = X
   if (is.null(L$x.max) || X &gt; L$x.max) L$x.max = X
-  return(L)
+  L
 }
 # running example3
 data = c(9,5,2,7,11)
@@ -1700,11 +1700,32 @@ for (i in 1:length(data))
 <div id="reference-semantic" class="section level1">
 <h1>Reference semantic</h1>
 <p>The last category of solutions is to use ‘pass by reference’ discussed in many elementary programming courses. This is in fact the first solution that came up in my mind as I learnt C before R. Unfortunately, there is no natural support of pointer in R. Some substitutes include <em>eval.parent()</em>, <em>setRefClass()</em>, <em>R.oo</em> packages etc.</p>
-<p>Update: while there is no pointer in R, it is possible to use reference semantic under <em>environment</em>. I notice this property when I try unload a list to the environment so that I do not need to access the list multiple times. This solution has been added to the comparison.</p>
+<p>Update: while there is no pointer in R, it is possible to use reference semantic under <em>environment</em>. I notice this property when I try unload a list to the environment so that I do not need to access the list multiple times.</p>
+<pre class="r"><code>example4 = function(X, E)
+{
+  if (is.null(E$x.min)) E$x.min = E$x.max = X
+  if (X &lt; E$x.min) E$x.min = X
+  if (X &gt; E$x.max) E$x.max = X
+}
+# running example4
+data = c(9,5,2,7,11)
+E = new.env()
+E$x.max = E$x.min = NULL
+for (i in 1:length(data))
+{
+  example4(data[i], E)
+  print(c(E$x.min, E$x.max))
+}</code></pre>
+<pre><code>## [1] 9 9
+## [1] 5 9
+## [1] 2 9
+## [1] 2 9
+## [1]  2 11</code></pre>
+<p>This solution has been added to the comparison.</p>
 </div>
 <div id="comparison" class="section level1">
 <h1>Comparison</h1>
-<p>While different methods are proposed during the discussion in our research group, we did not find any comprehensive comparison of them online. Intuitively, different methods incur different amounts of overhead when the variables are accessed. In order to develop the best package for our <a href="index.html">project</a>, we try to compare them with different number of variables to be passed and different number of iterations. The functions that implement different solutions are as follows:</p>
+<p>While different methods are proposed during the discussion in our research group, we did not find any comprehensive comparison of them online. Intuitively, different methods incur different amounts of overhead when the variables are accessed. In order to develop the best package for <a href="index.html">our project</a>, we try to compare them with different number of variables to be passed and different number of iterations. The functions that implement different solutions are as follows:</p>
 <pre class="r"><code># super assignment
 add.global = function(n) #arbitrary number of variables
 {
@@ -1716,7 +1737,7 @@ add.list = function(n, L)
 {
   for (i in 1:n)
     eval(parse(text=paste0(&quot;L$x&quot;,i,&quot;=&quot;,&quot;L$x&quot;,i,&quot;+1&quot;)))
-  return(L)
+  L
 }
 # environment
 add.env = function(n, E)
@@ -1724,47 +1745,57 @@ add.env = function(n, E)
   for (i in 1:n)
     eval(parse(text=paste0(&quot;E$x&quot;,i,&quot;=&quot;,&quot;E$x&quot;,i,&quot;+1&quot;)))
 }
-
+# use with() to avoid access environment multiple times
 add.env.with = function(E)
 {
-  with(E, for (i in 1:n)
-    eval(parse(text=paste0(&quot;x&quot;,i,&quot;=&quot;,&quot;x&quot;,i,&quot;+1&quot;)))
-  )
+  with(E, {
+    for (i in 1:n)
+      eval(parse(text=paste0(&quot;x&quot;,i,&quot;=&quot;,&quot;x&quot;,i,&quot;+1&quot;)))
+  })
+}
+# use super assignment in a pre-set environment
+add.env.set = function(n)
+{
+  for (i in 1:n)
+    eval(parse(text=paste0(&quot;x&quot;,i,&quot;&lt;&lt;-&quot;,&quot;x&quot;,i,&quot;+1&quot;)))
 }</code></pre>
-<p>We compare them with the following setting:</p>
+<p>We compare them with the following setting and functions to perform simulation:</p>
 <pre class="r"><code>library(microbenchmark)
 # setting
 nRep = 30
 n.iter = c(1e3, 1e4)
 n.var = c(5, 50)
 # iterating the solutions
-run.global = function(nIter, nVar)
+f.global = function(nIter, nVar)
 {
   for (i in 1:nVar)
     eval(parse(text=paste0(&quot;x.global&quot;,i,&quot;&lt;&lt;-0&quot;)))
   for (i in 1:nIter)
     add.global(nVar)
+  x.global1
 }
 
-run.list = function(nIter, nVar)
+f.list = function(nIter, nVar)
 {
   L = list()
   for (i in 1:nVar)
     eval(parse(text=paste0(&quot;L$x&quot;,i,&quot;=0&quot;)))
   for (i in 1:nIter)
     L = add.list(nVar, L)
+  L$x1
 }
 
-run.env = function(nIter, nVar)
+f.env = function(nIter, nVar)
 {
   E = new.env()
   for (i in 1:nVar)
     eval(parse(text=paste0(&quot;E$x&quot;,i,&quot;=0&quot;)))
   for (i in 1:nIter)
     add.env(nVar, E)
+  E$x1
 }
 
-run.env.with = function(nIter, nVar)
+f.env.with = function(nIter, nVar)
 {
   E = new.env()
   for (i in 1:nVar)
@@ -1772,7 +1803,28 @@ run.env.with = function(nIter, nVar)
   E$n = nVar # need to put n into the environment
   for (i in 1:nIter)
     add.env.with(E)
+  E$x1
+}
+
+f.env.set = function(nIter, nVar)
+{
+  E = new.env()
+  for (i in 1:nVar)
+    eval(parse(text=paste0(&quot;E$x&quot;,i,&quot;=0&quot;)))
+  environment(add.env.set) = E #pre-set the environment
+  for (i in 1:nIter)
+    add.env.set(nVar)
+  E$x1
 }</code></pre>
+<p>We try to confirm their equivalence by looking at the first variables:</p>
+<pre class="r"><code>n = n.iter[1]
+m = n.var[1]
+cat(c(f.global(n,m), 
+        f.list(n,m), 
+        f.env(n,m), 
+        f.env.with(n,m), 
+        f.env.set(n,m)))</code></pre>
+<pre><code>## 1000 1000 1000 1000 1000</code></pre>
 <p>The results can be found below:</p>
 <pre class="r"><code># compare the performance
 for (i in 1:length(n.iter))
@@ -1783,55 +1835,55 @@ for (i in 1:length(n.iter))
     m = n.var[j]
     cat(paste0(n, &quot; iterations, &quot;, m, &quot; variables\n&quot;))
     print(microbenchmark(
-      run.global(n,m),
-      run.list(n,m),
-      run.env(n,m),
-      run.env.with(n,m), times=nRep)
+      f.global(n,m),
+      f.list(n,m),
+      f.env(n,m),
+      f.env.with(n,m),
+      f.env.set(n,m), times=nRep)
     )
     cat(&quot;\n&quot;)
   }
 }</code></pre>
 <pre><code>## 1000 iterations, 5 variables
 ## Unit: milliseconds
-##                expr     min      lq     mean   median      uq      max neval
-##    run.global(n, m) 62.6774 63.9952 65.73813 64.55460 66.4944  73.3805    30
-##      run.list(n, m) 72.1669 73.4068 74.62492 74.15090 75.2061  81.7707    30
-##       run.env(n, m) 70.8194 71.9073 73.45439 72.69885 73.8167  85.1367    30
-##  run.env.with(n, m) 67.8069 68.6992 71.58565 69.54045 72.0410 105.2609    30
+##              expr     min      lq     mean   median      uq     max neval
+##    f.global(n, m) 62.6507 64.2941 65.29962 64.71595 65.3437 72.8843    30
+##      f.list(n, m) 72.5899 72.9904 73.79888 73.35795 73.9477 81.9056    30
+##       f.env(n, m) 69.3427 72.3090 72.69684 72.66405 73.1303 77.2786    30
+##  f.env.with(n, m) 66.2744 68.6742 69.79636 69.01050 70.2823 75.5699    30
+##   f.env.set(n, m) 59.8187 62.3075 63.89641 62.48345 62.8760 96.6574    30
 ## 
 ## 1000 iterations, 50 variables
 ## Unit: milliseconds
-##                expr      min       lq     mean   median       uq       max
-##    run.global(n, m) 626.7084 647.8453 656.1601 654.0330 660.1937  689.7040
-##      run.list(n, m) 733.0987 755.0143 764.6449 764.3720 771.5014  799.8708
-##       run.env(n, m) 704.9999 726.0231 771.8555 733.1263 749.2975 1307.3424
-##  run.env.with(n, m) 614.1207 639.7436 648.5356 646.5213 655.8432  678.6291
-##  neval
-##     30
-##     30
-##     30
-##     30
+##              expr      min       lq     mean   median       uq      max neval
+##    f.global(n, m) 632.6913 643.4070 648.6035 646.6416 651.3560 676.5365    30
+##      f.list(n, m) 727.6148 752.8430 755.7736 756.9351 761.8968 792.7547    30
+##       f.env(n, m) 703.3076 723.4363 728.6458 725.7711 730.7909 762.4145    30
+##  f.env.with(n, m) 609.1059 624.6730 631.8855 633.3892 636.1545 671.5078    30
+##   f.env.set(n, m) 603.5491 622.0154 627.9367 628.6824 630.8707 665.4141    30
 ## 
 ## 10000 iterations, 5 variables
 ## Unit: milliseconds
-##                expr      min       lq     mean   median       uq      max neval
-##    run.global(n, m) 636.2143 647.6219 706.0596 651.5329 660.0269 1455.086    30
-##      run.list(n, m) 731.6815 739.9363 814.9074 746.1263 756.9365 1527.401    30
-##       run.env(n, m) 723.1062 728.8507 767.9477 734.0691 740.8250 1651.232    30
-##  run.env.with(n, m) 680.4924 695.6920 731.6125 701.5426 711.5711 1186.629    30
+##              expr      min       lq     mean   median       uq      max neval
+##    f.global(n, m) 641.7234 645.1672 651.3296 647.7379 651.2587 687.7432    30
+##      f.list(n, m) 729.6711 733.8312 737.9047 736.3810 737.9839 773.3437    30
+##       f.env(n, m) 722.2199 726.2229 730.5405 727.2925 730.5958 767.5532    30
+##  f.env.with(n, m) 686.1373 688.4164 693.6996 691.3629 693.6030 732.8450    30
+##   f.env.set(n, m) 613.9361 622.5752 631.9774 628.3284 630.2193 665.1760    30
 ## 
 ## 10000 iterations, 50 variables
 ## Unit: seconds
-##                expr      min       lq     mean   median       uq       max
-##    run.global(n, m) 5.751313 5.858452 6.223366 6.061730 6.500276  8.629475
-##      run.list(n, m) 6.703989 6.870823 7.453239 7.163200 7.553348 10.142491
-##       run.env(n, m) 6.489029 6.664821 7.088150 6.926004 7.272635  9.625552
-##  run.env.with(n, m) 5.707195 5.887523 6.577116 6.371334 6.587317  9.370766
-##  neval
-##     30
-##     30
-##     30
-##     30</code></pre>
+##              expr      min       lq     mean   median       uq      max neval
+##    f.global(n, m) 6.396850 6.416284 6.435752 6.435482 6.452797 6.475530    30
+##      f.list(n, m) 7.517962 7.543795 7.558136 7.557651 7.571331 7.607847    30
+##       f.env(n, m) 7.201885 7.221154 7.242742 7.236901 7.250907 7.464927    30
+##  f.env.with(n, m) 6.283786 6.298064 6.315226 6.307654 6.332223 6.382697    30
+##   f.env.set(n, m) 6.184889 6.199760 6.216334 6.215632 6.226908 6.260251    30</code></pre>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>From the simulations, we can see that accessing a list or environment with $ incurs a considerable amount of overhead. Besides, it is not convenient to do so in the code. Therefore, we should avoid accessing their elements with $ if we have many variables to update.</p>
+<p>For super assignment, we should only use it if the environment can be well controlled. As in <em>add.env.set()</em>, the environment has to be set outside before we call it in <em>f.env.set()</em>. If we want to set the environment in the add function, we have to use <em>with()</em> instead.</p>
 </div>
 <div id="reference-links" class="section level1">
 <h1>Reference links</h1>
