@@ -1,0 +1,19 @@
+---
+title: "STAT3005 Resources"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Fall, 2020
+
+### Notes
+To be updated
+
+### Online Reference
+1. [Course website](https://sites.google.com/site/kwchankeith/teaching/s3005)  
+This should be your major reference for revision  
+2. [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)  
+Rmd is very useful if you want to incorporate R, LaTeX or other languages like Python in the same documentation. You can use it for your HW  

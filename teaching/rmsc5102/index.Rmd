@@ -7,10 +7,23 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Spring, 2020
+## Spring, 2021
 
 ### Notes
 1. [Tutorial notes](notes.pdf)  
+
+### Online Reference
+1. [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)  
+Rmd is very useful if you want to incorporate R, LaTeX or other languages like Python in the same documentation. You can use it for your HW  
+2. [R Programming for Data Science](https://bookdown.org/rdpeng/rprogdatascience/)  
+If you want to learn more about R after reading the guide provided by our professors, you may try this. It also gives an introduction to vectorization which I sometimes use in our tutorials  
+3. [Monte Carlo Tree Search](https://www.youtube.com/watch?v=UXW2yZndl7U)  
+It is actually possible to apply simulation in AI development. One of the methods is Monte Carlo Tree Search. This video explains one particular algorithm called UCT with step-by-step illustration
+
+## Spring, 2020
+
+### Notes
+1. [Tutorial notes](2020S/notes.pdf)  
 2. [Midterm review](2020S/review_midterm.pdf)  
 3. [Final review](2020S/review_final.pdf)  
 
@@ -23,11 +36,3 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Extra Exercise
 1. [Stochastic calculus](2020S/EX-Stochastic-Calculus.html)  
 2. [General simulation](2020S/EX-General-Simulation.html)
-
-### Online Reference
-1. [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)  
-Rmd is very useful if you want to incorporate R, LaTeX or other languages like Python in the same documentation. You can use it for your HW  
-2. [R Programming for Data Science](https://bookdown.org/rdpeng/rprogdatascience/)  
-If you want to learn more about R after reading the guide provided by our professors, you may try this. It also gives an introduction to vectorization which I sometimes use in our tutorials  
-3. [Monte Carlo Tree Search](https://www.youtube.com/watch?v=UXW2yZndl7U)  
-It is actually possible to apply simulation in AI development. One of the methods is Monte Carlo Tree Search. This video explains one particular algorithm called UCT with step-by-step illustration
