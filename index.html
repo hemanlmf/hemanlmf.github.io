@@ -72,8 +72,15 @@ My research interests include statistical inference, time series and statistical
 			<div class="about">
 				<div class="about-top">
 					<div class="grid-about">
-						<img src="images/cover.jpg">
-						<span class="img-caption">Photo taken in Yosemite National Park</span>
+						<img id="cover-img">
+						<span id="cover-cap" class="img-caption"></span>
+						<script>
+							var coverImg = ["yosemite","yokohama","riga"];
+							var coverCap = ["Yosemite National Park","Port of Yokohama","Riga"]
+							var rnd = Math.floor(Math.random() * 3);
+							document.getElementById("cover-img").src = "images/"+coverImg[rnd]+".jpg";
+							document.getElementById("cover-cap").innerHTML = "Photo taken in "+coverCap[rnd];
+						</script>
 					</div>
 				</div>
 				<div class="about-in">
