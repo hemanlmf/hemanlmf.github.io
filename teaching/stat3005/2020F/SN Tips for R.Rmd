@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Introduction
-Please follow a more structured guide like Keith's notes if you have no programming experience at all. This short note aims to give some practical tips in R as compared with some common languages that I know.
+Please follow a more structured guide like Keith's notes if you have no programming experience at all. This short note aims to give some practical tips for R as compared with some common languages that I know.
 
 # Basic
 ## The Survival "?"
@@ -32,7 +32,7 @@ We can even inspect more elementary commands (though you will need to add quotat
 ?"+"
 ?"for"
 ```
-Looking at the documentation is helpful when we are not sure or forget about how to use a function. The help manual typically tells us how to use the function, its expected output and provides some examples that we can learn from.
+Looking at the documentation is helpful when we are not sure or forget about how to use some functions. The help manual typically tells us how to use the function, its expected output and provides some examples that we can learn from.
 
 ## Long Statement
 (If you just want a quick fix, you can toggle the soft-warp. For R-studio, go to Tools > Global Options > Code and check "Soft-warp R source files".)
@@ -81,7 +81,7 @@ z["school"] # this returns a list
 ```
 List can be used to store heterogeneous data so it is less often used in this course.
 
-# Looping
+## Looping
 There are several common ways to do iterations in R:
 
 1) Traditional control flow such as "for", "while" and "repeat"  
@@ -90,7 +90,7 @@ There are several common ways to do iterations in R:
 
 For beginners, you may stick to traditional control flow until you are more familiar with R. We will discuss vectorization if we have time.
 
-# Order of Arguments
+## Order of Arguments
 When we call a function, we do not need to follow the order of arguments if we name the arguments. For example,
 ```{r, eval=T}
 # cov(x, y = NULL, use = "everything",

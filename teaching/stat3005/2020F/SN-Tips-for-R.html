@@ -1641,7 +1641,7 @@ summary {
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Please follow a more structured guide like Keith’s notes if you have no programming experience at all. This short note aims to give some practical tips in R as compared with some common languages that I know.</p>
+<p>Please follow a more structured guide like Keith’s notes if you have no programming experience at all. This short note aims to give some practical tips for R as compared with some common languages that I know.</p>
 </div>
 <div id="basic" class="section level1">
 <h1>Basic</h1>
@@ -1653,7 +1653,7 @@ summary {
 <p>We can even inspect more elementary commands (though you will need to add quotation marks for those):</p>
 <pre class="r"><code>?&quot;+&quot;
 ?&quot;for&quot;</code></pre>
-<p>Looking at the documentation is helpful when we are not sure or forget about how to use a function. The help manual typically tells us how to use the function, its expected output and provides some examples that we can learn from.</p>
+<p>Looking at the documentation is helpful when we are not sure or forget about how to use some functions. The help manual typically tells us how to use the function, its expected output and provides some examples that we can learn from.</p>
 </div>
 <div id="long-statement" class="section level2">
 <h2>Long Statement</h2>
@@ -1719,9 +1719,8 @@ z$code</code></pre>
 ## [1] &quot;CUHK&quot;</code></pre>
 <p>List can be used to store heterogeneous data so it is less often used in this course.</p>
 </div>
-</div>
-<div id="looping" class="section level1">
-<h1>Looping</h1>
+<div id="looping" class="section level2">
+<h2>Looping</h2>
 <p>There are several common ways to do iterations in R:</p>
 <ol style="list-style-type: decimal">
 <li>Traditional control flow such as “for”, “while” and “repeat”<br />
@@ -1732,8 +1731,8 @@ z$code</code></pre>
 </ol>
 <p>For beginners, you may stick to traditional control flow until you are more familiar with R. We will discuss vectorization if we have time.</p>
 </div>
-<div id="order-of-arguments" class="section level1">
-<h1>Order of Arguments</h1>
+<div id="order-of-arguments" class="section level2">
+<h2>Order of Arguments</h2>
 <p>When we call a function, we do not need to follow the order of arguments if we name the arguments. For example,</p>
 <pre class="r"><code># cov(x, y = NULL, use = &quot;everything&quot;,
 #    method = c(&quot;pearson&quot;, &quot;kendall&quot;, &quot;spearman&quot;))
@@ -1746,6 +1745,7 @@ cov(method=&quot;kendall&quot;, use=&quot;everything&quot;, x=a, y=b)</code></pr
 <p>In practice, we can use this fact to skip specifying some arguments which have default value that we are fine with. For example,</p>
 <pre class="r"><code>cov(a, b, method=&quot;kendall&quot;)</code></pre>
 <pre><code>## [1] 90</code></pre>
+</div>
 </div>
 
 
