@@ -1,0 +1,106 @@
+---
+title: "STAT3005 2020F A Short Note on Tips for R"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    toc: no
+    toc_depth: 2
+  pdf_document:
+    number_sections: yes
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+Please follow a more structured guide like Keith's notes if you have no programming experience at all. This short note aims to give some practical tips in R as compared with some common languages that I know.
+
+# Basic
+## The Survival "?"
+We can inspect the documentation of everything in R. For example,
+```{r, eval=F}
+?mean
+?var
+```
+We can even inspect more elementary commands (though you will need to add quotation marks for those):
+```{r, eval=F}
+?"+"
+?"for"
+```
+Looking at the documentation is helpful when we are not sure or forget about how to use a function. The help manual typically tells us how to use the function, its expected output and provides some examples that we can learn from.
+
+## Long Statement
+(If you just want a quick fix, you can toggle the soft-warp. For R-studio, go to Tools > Global Options > Code and check "Soft-warp R source files".)
+
+Sometimes we may have some long statements that exceed the width of editor. This can be inconvenient when we read the same code later. As R do not have end statement like ";" in other languages, whenever we break down a long statement we have to make sure that it is not ended yet. Here is an example:
+```{r, eval=T}
+# Correct multiline statement
+x = 1 +2 +3 +4 +5 +
+  6 +7 +8 +9
+x # 45
+# Incorrect multiline statement
+y = 1 +2 +3 +4 +5
+  +6 +7 +8 +9
+y # not 45
+```
+There is no error for the second case because "+6 +7 +8 +9" is also a valid statement. However, the code is not working as we want.
+
+## Subsetting
+In general, we subset vector, matrix or vector-like data structure with "[". For matrix, the order of indexes should be row and then column (same as the tradition in Math). Note that the index in R starts from 1 unlike some other languages. Here are some examples:
+```{r, eval=T}
+# Vector
+x = 1:9
+x[5] # extract single element
+x[5:7] # extract multiple elements
+x[-1] # drop single element
+x[-c(3,5)] # drop multiple elements
+# Matrix
+y = matrix(1:9, nrow=3, ncol=3)
+y
+y[1:2, 2:3] # subset a matrix
+```
+It is also possible to use string as the index provided that the data structure has names:
+```{r, eval=T}
+# Name the previous matrix
+colnames(y) = c("S","T","A")
+y[1:2, c("S","A")] # subset a matrix with string
+y[1:2, c(1,3)] # same as above
+```
+For list-like data structure, we extract an element with "[[" (or "$" provided that the element is named). For example:
+```{r, eval=T}
+# List
+z = list(code=3005, subject="STAT", school="CUHK")
+z$code
+z[["subject"]]
+z["school"] # this returns a list
+```
+List can be used to store heterogeneous data so it is less often used in this course.
+
+# Looping
+There are several common ways to do iterations in R:
+
+1) Traditional control flow such as "for", "while" and "repeat"  
+2) Functional programming such as "apply" and "lapply"  
+3) Vectorization  
+
+For beginners, you may stick to traditional control flow until you are more familiar with R. We will discuss vectorization if we have time.
+
+# Order of Arguments
+When we call a function, we do not need to follow the order of arguments if we name the arguments. For example,
+```{r, eval=T}
+# cov(x, y = NULL, use = "everything",
+#    method = c("pearson", "kendall", "spearman"))
+a = c(1:10)
+b = c(11:20)
+cov(method="kendall", use="everything", x=a, y=b)
+cov(a, b, "everything", "kendall") # same as above
+```
+In practice, we can use this fact to skip specifying some arguments which have default value that we are fine with. For example,
+```{r, eval=T}
+cov(a, b, method="kendall")
+```
