@@ -2,11 +2,11 @@
 title: "STAT3005 2020F A Question on Monte Carlo Experiment"
 author: "LEUNG Man Fung, Heman"
 output:
-  html_document:
-    df_print: paged
+  pdf_document:
     toc: no
     toc_depth: 2
-  pdf_document:
+  html_document:
+    df_print: paged
     toc: no
     toc_depth: 2
 fontsize: 12pt
@@ -45,8 +45,7 @@ for (i in 1:n)
   if (sqrt(U[1]^2+U[2]^2) <= 1)
   {
     V[i] = 1
-  }
-  else
+  } else
   {
     V[i] = 0
   }
