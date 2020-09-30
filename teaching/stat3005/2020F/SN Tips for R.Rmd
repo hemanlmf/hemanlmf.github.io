@@ -4,7 +4,8 @@ author: "LEUNG Man Fung, Heman"
 output:
   html_document:
     df_print: paged
-    toc: no
+    number_sections: yes
+    toc: yes
     toc_depth: 2
   pdf_document:
     number_sections: yes
@@ -21,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Please follow a more structured guide like Keith's notes if you have no programming experience at all. This short note aims to give some practical tips for R as compared with some common languages that I know.
 
 # Basic
-## The Survival "?"
+## The Survival *?*
 We can inspect the documentation of everything in R. For example,
 ```{r, eval=F}
 ?mean
@@ -31,10 +32,11 @@ We can even inspect more elementary commands (though you will need to add quotat
 ```{r, eval=F}
 ?"+"
 ?"for"
+?"?"
 ```
-Looking at the documentation is helpful when we are not sure or forget about how to use some functions. The help manual typically tells us how to use the function, its expected output and provides some examples that we can learn from.
+Looking at the documentation is helpful when we are not sure about how to use some functions (e.g., from a new package). The help manual typically tells us how to use the function, its expected output and provides some examples that we can learn from.
 
-## Long Statement
+## Long Statements
 (If you just want a quick fix, you can toggle the soft-warp. For R-studio, go to Tools > Global Options > Code and check "Soft-warp R source files".)
 
 Sometimes we may have some long statements that exceed the width of editor. This can be inconvenient when we read the same code later. As R do not have end statement like ";" in other languages, whenever we break down a long statement we have to make sure that it is not ended yet. Here is an example:
@@ -84,8 +86,8 @@ List can be used to store heterogeneous data so it is less often used in this co
 ## Looping
 There are several common ways to do iterations in R:
 
-1) Traditional control flow such as "for", "while" and "repeat"  
-2) Functional programming such as "apply" and "lapply"  
+1) Traditional control flow such as *for*, *while* and *repeat*  
+2) Functional programming such as *apply* and *lapply*  
 3) Vectorization  
 
 For beginners, you may stick to traditional control flow until you are more familiar with R. We will discuss vectorization if we have time.
@@ -104,3 +106,23 @@ In practice, we can use this fact to skip specifying some arguments which have d
 ```{r, eval=T}
 cov(a, b, method="kendall")
 ```
+
+## Plotting
+
+# Intermediate
+## Ternary Operator
+
+## Pre-allocation
+
+## Looping with Functionals
+
+## Sourcing
+
+## Command Line
+
+# Advance
+## Vectorization
+
+## Environments
+
+## Rcpp

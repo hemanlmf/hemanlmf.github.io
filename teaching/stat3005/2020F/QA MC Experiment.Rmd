@@ -1,0 +1,127 @@
+---
+title: "STAT3005 2020F A Question on Monte Carlo Experiment"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    toc: no
+    toc_depth: 2
+  pdf_document:
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question
+How to implement a Monte Carlo experiment in R?
+
+# Answer
+The flow of a Monte Carlo experiment is as follows:
+
+1. Generate data from some probabilistic models
+2. Perform a deterministic computation on the data
+3. Aggregate the results
+
+Applying this flow on approximating the value of $\pi$ (a graphical illustration can be found on [Wikipedia](https://en.wikipedia.org/wiki/Monte_Carlo_method#/media/File:Pi_30K.gif)), the flow becomes:
+
+1. Generate $U_1, U_2 \sim U(0,1)$
+2. If $\sqrt{U_1^2+U_2^2} \le 1$, then set $V_i = 1$. Otherwise set $V_i = 0$. The idea here is to check whether the point falls inside 1/4 of a unit circle
+3. Repeat step 1 and 2 for $n$ times. The approximated value of $\pi$ is $4n^{-1} \sum_{i=1}^n V_i$
+
+We try to implement the above in R:
+```{r, eval=T}
+n = 10000
+V = vector(length=n)
+# 3. Repeat step 1 and 2 for n times
+for (i in 1:n)
+{
+  # 1. Generate U1, U2
+  U = runif(2)
+  # 2. Check whether the point falls inside 1/4 of a unit circle
+  if (sqrt(U[1]^2+U[2]^2) <= 1)
+  {
+    V[i] = 1
+  }
+  else
+  {
+    V[i] = 0
+  }
+}
+4*sum(V)/n # Approximated value of pi
+```
+
+We can further try different radius to check the validity, which is similar to the idea of *n.all* or *delta.all* in this course. The flow becomes:
+
+1. Generate $U_1, U_2 \sim U(0,r_j)$
+2. If $\sqrt{U_1^2+U_2^2} \le r_j$, then set $V_i^{(j)} = 1$. Otherwise set $V_i^{(j)} = 0$. The idea here is to check whether the point falls inside 1/4 of a circle with radius $r_j$
+3. Repeat step 1 and 2 for $i=1,\dots,n$ and $j = 1,\dots,m$. The approximated values of $\pi$ are $\hat{\pi}^{(j)} = 4n^{-1} \sum_{i=1}^n V_i^{(j)}$
+
+We try to implement the above in R. Note that some parts are extended compared with the last snippet.
+
+```{r, eval=T}
+n.rep = 10000
+rad.all = c(1, 1.5, 2, 2.5, 3)
+n.rad = length(rad.all)
+V = matrix(nrow=n.rep, ncol=n.rad)
+rownames(V) = paste0("i.rep=",1:n.rep)
+colnames(V) = paste0("rad=",rad.all)
+# 3. Repeat for different radius
+for (i.rad in 1:n.rad)
+{
+  # 3. Repeat for different replications
+  for (i.rep in 1:n.rep)
+  {
+    # 1. Generate U1, U2 according to radius r
+    r = rad.all[i.rad]
+    U = runif(2, 0, r)
+    # 2. Check whether the point falls inside 1/4 of a circle with radius r
+    V[i.rep, i.rad] = (sqrt(sum(U^2)) <= r)
+  }
+}
+4*colSums(V)/n # Approximated value of pi
+```
+
+The output conveys two messages. Firstly, the method seems to be working for different radius. Second and more importantly, the approximated value when radius is 1 probably differs from previous one. This is because step 1 of Monte Carlo experiment involves randomness and so error is likely to exist. To make the results reproducible, we can leverage on the *set.seed* function. For instance,
+
+```{r, eval=T}
+for (i.rad in 1:n.rad)
+{
+  set.seed(i.rad) # control randomness for reproducible results
+  for (i.rep in 1:n.rep)
+  {
+    r = rad.all[i.rad]
+    U = runif(2, 0, r)
+    V[i.rep, i.rad] = (sqrt(U[1]^2+U[2]^2) <= r)
+  }
+}
+4*colSums(V)/n
+```
+
+The result can be reproduced when we run the same snippet:
+```{r, eval=T}
+for (i.rad in 1:n.rad)
+{
+  set.seed(i.rad) # control randomness for reproducible results
+  for (i.rep in 1:n.rep)
+  {
+    r = rad.all[i.rad]
+    U = runif(2, 0, r)
+    V[i.rep, i.rad] = (sqrt(U[1]^2+U[2]^2) <= r)
+  }
+}
+4*colSums(V)/n
+```
+
+We can also report to relative error so that it is more readable:
+```{r, eval=T}
+4*colSums(V)/n/pi-1
+```
+
+Finally, we comment on several R functions that we have used for simulation so far:
+
+1. *array*: it is just a multi-dimensional "storage space" for our simulated values. When we try different radius above, we change *V* from 1D vector to 2D matrix during initialization
+2. *apply*: it is a functional programming device for looping. If we are not familiar with it, we can always implement the same thing using traditional device like for loop
