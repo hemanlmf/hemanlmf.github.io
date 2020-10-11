@@ -147,7 +147,7 @@ all.equal(f_if(U), f_eif(U), f_eif_vec(U)) # sanity check
 # evaluate execution time systematically
 print(microbenchmark(f_if(U), f_eif(U), f_eif_vec(U), times=50))
 ```
-There are two messages here. First, *\`if\` is the correct ternary if operator since it is much faster when a single element is concerned. Second, vectorization can speed up the implementation in R. The general idea is to use vectors instead of single elements as inputs into a vectorized function.
+There are two messages here. First, *\`if\`* is the correct ternary if operator since it is much faster when a single element is concerned. Second, vectorization can speed up the implementation in R. The general idea is to use vectors instead of single elements as inputs into a vectorized function.
 
 ## Pre-allocation
 In simulations, we frequently pre-allocate the storage *out* in advance of the main loops. The reason is that dynamic memory allocation is usually costly in R. To see this, we try a simple example:
@@ -201,13 +201,13 @@ In this simple case, *for* is marginally faster than *apply* while the vectorize
 1) Readability: functional loops result in neater code in general
 2) Design pattern: functional style of programming may be preferred
 
-<!-- ## Sourcing -->
+## Sourcing
 
-<!-- ## Command Line -->
+## Command Line
 
-<!-- # Advance -->
-<!-- ## Vectorization -->
+# Advance
+## Vectorization
 
-<!-- ## Environments -->
+## Environments
 
-<!-- ## Rcpp -->
+## Rcpp

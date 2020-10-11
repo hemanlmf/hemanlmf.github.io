@@ -1652,6 +1652,13 @@ summary {
 <li><a href="#ternary-if-operator"><span class="toc-section-number">3.1</span> Ternary If Operator</a></li>
 <li><a href="#pre-allocation"><span class="toc-section-number">3.2</span> Pre-allocation</a></li>
 <li><a href="#looping-with-functionals"><span class="toc-section-number">3.3</span> Looping with Functionals</a></li>
+<li><a href="#sourcing"><span class="toc-section-number">3.4</span> Sourcing</a></li>
+<li><a href="#command-line"><span class="toc-section-number">3.5</span> Command Line</a></li>
+</ul></li>
+<li><a href="#advance"><span class="toc-section-number">4</span> Advance</a><ul>
+<li><a href="#vectorization"><span class="toc-section-number">4.1</span> Vectorization</a></li>
+<li><a href="#environments"><span class="toc-section-number">4.2</span> Environments</a></li>
+<li><a href="#rcpp"><span class="toc-section-number">4.3</span> Rcpp</a></li>
 </ul></li>
 </ul>
 </div>
@@ -1806,10 +1813,10 @@ all.equal(f_if(U), f_eif(U), f_eif_vec(U)) # sanity check</code></pre>
 print(microbenchmark(f_if(U), f_eif(U), f_eif_vec(U), times=50))</code></pre>
 <pre><code>## Unit: microseconds
 ##          expr      min       lq       mean    median       uq      max neval
-##       f_if(U)   81.401   83.901   89.04294   86.3010   90.002  137.401    50
-##      f_eif(U) 1299.401 1365.001 1569.53096 1399.2005 1745.801 2762.300    50
-##  f_eif_vec(U)   24.801   29.300   73.08304   35.5505   44.101 1772.601    50</code></pre>
-<p>There are two messages here. First, *`if` is the correct ternary if operator since it is much faster when a single element is concerned. Second, vectorization can speed up the implementation in R. The general idea is to use vectors instead of single elements as inputs into a vectorized function.</p>
+##       f_if(U)   81.701   82.601   89.93486   85.3510   89.901  137.201    50
+##      f_eif(U) 1296.801 1373.802 1611.93514 1400.3005 1858.902 2760.701    50
+##  f_eif_vec(U)   24.801   27.901   83.60294   32.2505   44.501 2378.301    50</code></pre>
+<p>There are two messages here. First, <em>`if`</em> is the correct ternary if operator since it is much faster when a single element is concerned. Second, vectorization can speed up the implementation in R. The general idea is to use vectors instead of single elements as inputs into a vectorized function.</p>
 </div>
 <div id="pre-allocation" class="section level2">
 <h2><span class="header-section-number">3.2</span> Pre-allocation</h2>
@@ -1833,9 +1840,9 @@ all.equal(f_pre(n), f_dyn(n))</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>print(microbenchmark(f_pre(n), f_dyn(n), times=50))</code></pre>
 <pre><code>## Unit: microseconds
-##      expr     min      lq       mean   median       uq      max neval
-##  f_pre(n)  41.300  42.801   46.87504   44.501   49.701   74.901    50
-##  f_dyn(n) 962.501 997.202 1375.44100 1071.301 1224.701 4904.201    50</code></pre>
+##      expr     min      lq       mean    median       uq      max neval
+##  f_pre(n)  41.401  42.701   46.96706   44.2515   49.501   77.002    50
+##  f_dyn(n) 959.202 983.901 1385.43302 1039.5010 1363.702 4234.801    50</code></pre>
 <p>By adjusting the value of <em>n</em>, we can see that dynamic memory allocation is not of constant time in this way. Therefore, we should try our best to pre-allocate the necessary storage to avoid performance issues.</p>
 </div>
 <div id="looping-with-functionals" class="section level2">
@@ -1863,21 +1870,33 @@ all.equal(f_for(x), f_apply(x), f_vec(x))</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>print(microbenchmark(f_for(x), f_apply(x), f_vec(x), times=50))</code></pre>
 <pre><code>## Unit: microseconds
-##        expr      min       lq       mean   median       uq      max neval
-##    f_for(x)  607.602  627.801  711.78314  661.351  688.601 1924.600    50
-##  f_apply(x) 1049.301 1104.702 1287.94494 1151.051 1302.900 2650.501    50
-##    f_vec(x)   15.801   18.100   51.10896   20.701   26.301 1383.001    50</code></pre>
+##        expr      min       lq       mean    median       uq      max neval
+##    f_for(x)  611.301  644.202  724.82900  661.5515  730.100 1895.102    50
+##  f_apply(x) 1062.001 1103.401 1268.88100 1129.8010 1179.801 3687.501    50
+##    f_vec(x)   16.100   18.100   50.95078   20.8010   26.301 1422.301    50</code></pre>
 <p>In this simple case, <em>for</em> is marginally faster than <em>apply</em> while the vectorized <em>rowSums</em> is much faster than both. When should we use functional loops in practice? There are several cases:</p>
 <ol style="list-style-type: decimal">
 <li>Readability: functional loops result in neater code in general</li>
 <li>Design pattern: functional style of programming may be preferred</li>
 </ol>
-<!-- ## Sourcing -->
-<!-- ## Command Line -->
-<!-- # Advance -->
-<!-- ## Vectorization -->
-<!-- ## Environments -->
-<!-- ## Rcpp -->
+</div>
+<div id="sourcing" class="section level2">
+<h2><span class="header-section-number">3.4</span> Sourcing</h2>
+</div>
+<div id="command-line" class="section level2">
+<h2><span class="header-section-number">3.5</span> Command Line</h2>
+</div>
+</div>
+<div id="advance" class="section level1">
+<h1><span class="header-section-number">4</span> Advance</h1>
+<div id="vectorization" class="section level2">
+<h2><span class="header-section-number">4.1</span> Vectorization</h2>
+</div>
+<div id="environments" class="section level2">
+<h2><span class="header-section-number">4.2</span> Environments</h2>
+</div>
+<div id="rcpp" class="section level2">
+<h2><span class="header-section-number">4.3</span> Rcpp</h2>
 </div>
 </div>
 
