@@ -1647,26 +1647,28 @@ summary {
 <li><a href="#subsetting"><span class="toc-section-number">2.3</span> Subsetting</a></li>
 <li><a href="#looping"><span class="toc-section-number">2.4</span> Looping</a></li>
 <li><a href="#order-of-arguments"><span class="toc-section-number">2.5</span> Order of Arguments</a></li>
-<li><a href="#plotting"><span class="toc-section-number">2.6</span> Plotting</a></li>
 </ul></li>
 <li><a href="#intermediate"><span class="toc-section-number">3</span> Intermediate</a><ul>
-<li><a href="#ternary-operator"><span class="toc-section-number">3.1</span> Ternary Operator</a></li>
+<li><a href="#ternary-if-operator"><span class="toc-section-number">3.1</span> Ternary If Operator</a></li>
 <li><a href="#pre-allocation"><span class="toc-section-number">3.2</span> Pre-allocation</a></li>
 <li><a href="#looping-with-functionals"><span class="toc-section-number">3.3</span> Looping with Functionals</a></li>
-<li><a href="#sourcing"><span class="toc-section-number">3.4</span> Sourcing</a></li>
-<li><a href="#command-line"><span class="toc-section-number">3.5</span> Command Line</a></li>
-</ul></li>
-<li><a href="#advance"><span class="toc-section-number">4</span> Advance</a><ul>
-<li><a href="#vectorization"><span class="toc-section-number">4.1</span> Vectorization</a></li>
-<li><a href="#environments"><span class="toc-section-number">4.2</span> Environments</a></li>
-<li><a href="#rcpp"><span class="toc-section-number">4.3</span> Rcpp</a></li>
 </ul></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>Please follow a more structured guide like Keith’s notes if you have no programming experience at all. This short note aims to give some practical tips for R as compared with some common languages that I know.</p>
+<p>This short note aims to give some practical tips for R as compared with some common languages that I know. Please follow a more structured guide if you want a reference on R. I have the following recommendations:</p>
+<ul>
+<li><a href="https://sites.google.com/site/kwchankeith/teaching/r1101/r1101-2021Fall">Notes of RMSC1101</a><br />
+These notes are relatively concise. Read it if you are completely new to R<br />
+</li>
+<li><a href="https://bookdown.org/rdpeng/rprogdatascience/">R Programming for Data Science</a><br />
+This book is fairly complete for beginners. Use it as a reference as not everything inside are relevant to our course<br />
+</li>
+<li><a href="https://adv-r.hadley.nz/">Advanced R</a><br />
+This book is, as its name suggests, an advance treatment. Read it if you would like to know more as an experience user</li>
+</ul>
 </div>
 <div id="basic" class="section level1">
 <h1><span class="header-section-number">2</span> Basic</h1>
@@ -1675,7 +1677,7 @@ summary {
 <p>We can inspect the documentation of everything in R. For example,</p>
 <pre class="r"><code>?mean
 ?var</code></pre>
-<p>We can even inspect more elementary commands (though you will need to add quotation marks for those):</p>
+<p>We can even inspect more elementary commands (though we will need to add quotation marks for those):</p>
 <pre class="r"><code>?&quot;+&quot;
 ?&quot;for&quot;
 ?&quot;?&quot;</code></pre>
@@ -1743,16 +1745,14 @@ z$code</code></pre>
 <pre class="r"><code>z[&quot;school&quot;] # this returns a list</code></pre>
 <pre><code>## $school
 ## [1] &quot;CUHK&quot;</code></pre>
-<p>List can be used to store heterogeneous data so it is less often used in this course.</p>
+<p>List can be used to store heterogeneous data so it is less often used as a data structure in our course.</p>
 </div>
 <div id="looping" class="section level2">
 <h2><span class="header-section-number">2.4</span> Looping</h2>
 <p>There are several common ways to do iterations in R:</p>
 <ol style="list-style-type: decimal">
-<li>Traditional control flow such as <em>for</em>, <em>while</em> and <em>repeat</em><br />
-</li>
-<li>Functional programming such as <em>apply</em> and <em>lapply</em><br />
-</li>
+<li>Traditional control flow such as <em>for</em>, <em>while</em> and <em>repeat</em></li>
+<li>Functional programming such as <em>apply</em> and <em>lapply</em></li>
 <li>Vectorization</li>
 </ol>
 <p>For beginners, you may stick to traditional control flow until you are more familiar with R. We will discuss vectorization if we have time.</p>
@@ -1772,38 +1772,112 @@ cov(method=&quot;kendall&quot;, use=&quot;everything&quot;, x=a, y=b)</code></pr
 <pre class="r"><code>cov(a, b, method=&quot;kendall&quot;)</code></pre>
 <pre><code>## [1] 90</code></pre>
 </div>
-<div id="plotting" class="section level2">
-<h2><span class="header-section-number">2.6</span> Plotting</h2>
-</div>
 </div>
 <div id="intermediate" class="section level1">
 <h1><span class="header-section-number">3</span> Intermediate</h1>
-<div id="ternary-operator" class="section level2">
-<h2><span class="header-section-number">3.1</span> Ternary Operator</h2>
+<div id="ternary-if-operator" class="section level2">
+<h2><span class="header-section-number">3.1</span> Ternary If Operator</h2>
+<p>In some common programming languages, <em>?:</em> is provided as a ternary if operator. For instance, the statement</p>
+<pre class="c"><code>a ? b : c</code></pre>
+<p>means “if a then b otherwise c”. However, <em>?</em> is the help operator, which is shown in <a href="#the-survival">The Survival <em>?</em></a>, so this is not true in R. Commonly, people think that <em>ifelse</em> is the ternary if operator but this is not accurate. The correct ternary if is <em>`if`</em> while <em>ifelse</em> is its vectorized version. We try to compare their speed with the microbenchmark library:</p>
+<pre class="r"><code>U = runif(1000)
+f_if = function(U, n=length(U)) # use `if`
+{
+  out = vector(length=n)
+  for (i in 1:n) # can skip {} if only 1 line
+    out[i] = `if`(U[i]&lt;0.5, 0, 1)
+  out
+}
+f_eif = function(U, n=length(U)) # use ifelse
+{
+  out = vector(length=n)
+  for (i in 1:n) # can skip {} if only 1 line
+    out[i] = ifelse(U[i]&lt;0.5, 0, 1)
+  out
+}
+f_eif_vec = function(U, n=length(U)) # use ifelse in a vectorized way
+{
+  out = ifelse(U&lt;0.5, 0, 1)
+  out
+}
+all.equal(f_if(U), f_eif(U), f_eif_vec(U)) # sanity check</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code># evaluate execution time systematically
+print(microbenchmark(f_if(U), f_eif(U), f_eif_vec(U), times=50))</code></pre>
+<pre><code>## Unit: microseconds
+##          expr      min       lq       mean    median       uq      max neval
+##       f_if(U)   81.401   83.901   89.04294   86.3010   90.002  137.401    50
+##      f_eif(U) 1299.401 1365.001 1569.53096 1399.2005 1745.801 2762.300    50
+##  f_eif_vec(U)   24.801   29.300   73.08304   35.5505   44.101 1772.601    50</code></pre>
+<p>There are two messages here. First, *`if` is the correct ternary if operator since it is much faster when a single element is concerned. Second, vectorization can speed up the implementation in R. The general idea is to use vectors instead of single elements as inputs into a vectorized function.</p>
 </div>
 <div id="pre-allocation" class="section level2">
 <h2><span class="header-section-number">3.2</span> Pre-allocation</h2>
+<p>In simulations, we frequently pre-allocate the storage <em>out</em> in advance of the main loops. The reason is that dynamic memory allocation is usually costly in R. To see this, we try a simple example:</p>
+<pre class="r"><code>n = 1000
+f_pre = function(n) # pre-allocate out
+{
+  out = vector(length=n)
+  for (i in 1:n)
+    out[i] = i
+  out
+}
+f_dyn = function(n) # combine elements dynamically
+{
+  out = 1
+  for (i in 2:n)
+    out = c(out, i)
+  out
+}
+all.equal(f_pre(n), f_dyn(n))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>print(microbenchmark(f_pre(n), f_dyn(n), times=50))</code></pre>
+<pre><code>## Unit: microseconds
+##      expr     min      lq       mean   median       uq      max neval
+##  f_pre(n)  41.300  42.801   46.87504   44.501   49.701   74.901    50
+##  f_dyn(n) 962.501 997.202 1375.44100 1071.301 1224.701 4904.201    50</code></pre>
+<p>By adjusting the value of <em>n</em>, we can see that dynamic memory allocation is not of constant time in this way. Therefore, we should try our best to pre-allocate the necessary storage to avoid performance issues.</p>
 </div>
 <div id="looping-with-functionals" class="section level2">
 <h2><span class="header-section-number">3.3</span> Looping with Functionals</h2>
-</div>
-<div id="sourcing" class="section level2">
-<h2><span class="header-section-number">3.4</span> Sourcing</h2>
-</div>
-<div id="command-line" class="section level2">
-<h2><span class="header-section-number">3.5</span> Command Line</h2>
-</div>
-</div>
-<div id="advance" class="section level1">
-<h1><span class="header-section-number">4</span> Advance</h1>
-<div id="vectorization" class="section level2">
-<h2><span class="header-section-number">4.1</span> Vectorization</h2>
-</div>
-<div id="environments" class="section level2">
-<h2><span class="header-section-number">4.2</span> Environments</h2>
-</div>
-<div id="rcpp" class="section level2">
-<h2><span class="header-section-number">4.3</span> Rcpp</h2>
+<p>In <a href="#looping">Looping</a>, I have recommended stick to traditional control flow. The rationale is that functional loops can usually be rewritten as traditional loops with similar performance. Consider the following:</p>
+<pre class="r"><code>x = matrix(runif(5000), nrow=1000, ncol=5)
+f_for = function(x, n=nrow(x)) # row sum with for loop
+{
+  out = vector(length=n)
+  for (i in 1:n)
+    out[i] = sum(x[i,])
+  out
+}
+f_apply = function(x) # row sum with apply
+{
+  out = apply(x, 1, sum)
+  out
+}
+f_vec = function(x) # vectorized row sum
+{
+  out = rowSums(x)
+  out
+}
+all.equal(f_for(x), f_apply(x), f_vec(x))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>print(microbenchmark(f_for(x), f_apply(x), f_vec(x), times=50))</code></pre>
+<pre><code>## Unit: microseconds
+##        expr      min       lq       mean   median       uq      max neval
+##    f_for(x)  607.602  627.801  711.78314  661.351  688.601 1924.600    50
+##  f_apply(x) 1049.301 1104.702 1287.94494 1151.051 1302.900 2650.501    50
+##    f_vec(x)   15.801   18.100   51.10896   20.701   26.301 1383.001    50</code></pre>
+<p>In this simple case, <em>for</em> is marginally faster than <em>apply</em> while the vectorized <em>rowSums</em> is much faster than both. When should we use functional loops in practice? There are several cases:</p>
+<ol style="list-style-type: decimal">
+<li>Readability: functional loops result in neater code in general</li>
+<li>Design pattern: functional style of programming may be preferred</li>
+</ol>
+<!-- ## Sourcing -->
+<!-- ## Command Line -->
+<!-- # Advance -->
+<!-- ## Vectorization -->
+<!-- ## Environments -->
+<!-- ## Rcpp -->
 </div>
 </div>
 

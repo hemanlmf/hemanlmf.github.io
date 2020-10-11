@@ -16,10 +16,18 @@ fontsize: 12pt
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(microbenchmark)
 ```
 
 # Introduction
-Please follow a more structured guide like Keith's notes if you have no programming experience at all. This short note aims to give some practical tips for R as compared with some common languages that I know.
+This short note aims to give some practical tips for R as compared with some common languages that I know. Please follow a more structured guide if you want a reference on R. I have the following recommendations:
+
+- [Notes of RMSC1101](https://sites.google.com/site/kwchankeith/teaching/r1101/r1101-2021Fall)  
+These notes are relatively concise. Read it if you are completely new to R  
+- [R Programming for Data Science](https://bookdown.org/rdpeng/rprogdatascience/)  
+This book is fairly complete for beginners. Use it as a reference as not everything inside are relevant to our course  
+- [Advanced R](https://adv-r.hadley.nz/)  
+This book is, as its name suggests, an advance treatment. Read it if you would like to know more as an experience user  
 
 # Basic
 ## The Survival *?*
@@ -28,7 +36,7 @@ We can inspect the documentation of everything in R. For example,
 ?mean
 ?var
 ```
-We can even inspect more elementary commands (though you will need to add quotation marks for those):
+We can even inspect more elementary commands (though we will need to add quotation marks for those):
 ```{r, eval=F}
 ?"+"
 ?"for"
@@ -40,7 +48,7 @@ Looking at the documentation is helpful when we are not sure about how to use so
 (If you just want a quick fix, you can toggle the soft-warp. For R-studio, go to Tools > Global Options > Code and check "Soft-warp R source files".)
 
 Sometimes we may have some long statements that exceed the width of editor. This can be inconvenient when we read the same code later. As R do not have end statement like ";" in other languages, whenever we break down a long statement we have to make sure that it is not ended yet. Here is an example:
-```{r, eval=T}
+```{r}
 # Correct multiline statement
 x = 1 +2 +3 +4 +5 +
   6 +7 +8 +9
@@ -54,7 +62,7 @@ There is no error for the second case because "+6 +7 +8 +9" is also a valid stat
 
 ## Subsetting
 In general, we subset vector, matrix or vector-like data structure with "[". For matrix, the order of indexes should be row and then column (same as the tradition in Math). Note that the index in R starts from 1 unlike some other languages. Here are some examples:
-```{r, eval=T}
+```{r}
 # Vector
 x = 1:9
 x[5] # extract single element
@@ -67,34 +75,34 @@ y
 y[1:2, 2:3] # subset a matrix
 ```
 It is also possible to use string as the index provided that the data structure has names:
-```{r, eval=T}
+```{r}
 # Name the previous matrix
 colnames(y) = c("S","T","A")
 y[1:2, c("S","A")] # subset a matrix with string
 y[1:2, c(1,3)] # same as above
 ```
 For list-like data structure, we extract an element with "[[" (or "$" provided that the element is named). For example:
-```{r, eval=T}
+```{r}
 # List
 z = list(code=3005, subject="STAT", school="CUHK")
 z$code
 z[["subject"]]
 z["school"] # this returns a list
 ```
-List can be used to store heterogeneous data so it is less often used in this course.
+List can be used to store heterogeneous data so it is less often used as a data structure in our course.
 
 ## Looping
 There are several common ways to do iterations in R:
 
-1) Traditional control flow such as *for*, *while* and *repeat*  
-2) Functional programming such as *apply* and *lapply*  
-3) Vectorization  
+1) Traditional control flow such as *for*, *while* and *repeat*
+2) Functional programming such as *apply* and *lapply*
+3) Vectorization
 
 For beginners, you may stick to traditional control flow until you are more familiar with R. We will discuss vectorization if we have time.
 
 ## Order of Arguments
 When we call a function, we do not need to follow the order of arguments if we name the arguments. For example,
-```{r, eval=T}
+```{r}
 # cov(x, y = NULL, use = "everything",
 #    method = c("pearson", "kendall", "spearman"))
 a = c(1:10)
@@ -103,26 +111,103 @@ cov(method="kendall", use="everything", x=a, y=b)
 cov(a, b, "everything", "kendall") # same as above
 ```
 In practice, we can use this fact to skip specifying some arguments which have default value that we are fine with. For example,
-```{r, eval=T}
+```{r}
 cov(a, b, method="kendall")
 ```
 
-## Plotting
-
 # Intermediate
-## Ternary Operator
+## Ternary If Operator
+In some common programming languages, *?:* is provided as a ternary if operator. For instance, the statement
+```{c, eval=F}
+a ? b : c
+```
+means "if a then b otherwise c". However, *?* is the help operator, which is shown in [The Survival *?*], so this is not true in R. Commonly, people think that *ifelse* is the ternary if operator but this is not accurate. The correct ternary if is *\`if\`* while *ifelse* is its vectorized version. We try to compare their speed with the microbenchmark library:
+```{r}
+U = runif(1000)
+f_if = function(U, n=length(U)) # use `if`
+{
+  out = vector(length=n)
+  for (i in 1:n) # can skip {} if only 1 line
+    out[i] = `if`(U[i]<0.5, 0, 1)
+  out
+}
+f_eif = function(U, n=length(U)) # use ifelse
+{
+  out = vector(length=n)
+  for (i in 1:n) # can skip {} if only 1 line
+    out[i] = ifelse(U[i]<0.5, 0, 1)
+  out
+}
+f_eif_vec = function(U, n=length(U)) # use ifelse in a vectorized way
+{
+  out = ifelse(U<0.5, 0, 1)
+  out
+}
+all.equal(f_if(U), f_eif(U), f_eif_vec(U)) # sanity check
+# evaluate execution time systematically
+print(microbenchmark(f_if(U), f_eif(U), f_eif_vec(U), times=50))
+```
+There are two messages here. First, *\`if\` is the correct ternary if operator since it is much faster when a single element is concerned. Second, vectorization can speed up the implementation in R. The general idea is to use vectors instead of single elements as inputs into a vectorized function.
 
 ## Pre-allocation
+In simulations, we frequently pre-allocate the storage *out* in advance of the main loops. The reason is that dynamic memory allocation is usually costly in R. To see this, we try a simple example:
+```{r}
+n = 1000
+f_pre = function(n) # pre-allocate out
+{
+  out = vector(length=n)
+  for (i in 1:n)
+    out[i] = i
+  out
+}
+f_dyn = function(n) # combine elements dynamically
+{
+  out = 1
+  for (i in 2:n)
+    out = c(out, i)
+  out
+}
+all.equal(f_pre(n), f_dyn(n))
+print(microbenchmark(f_pre(n), f_dyn(n), times=50))
+```
+By adjusting the value of *n*, we can see that dynamic memory allocation is not of constant time in this way. Therefore, we should try our best to pre-allocate the necessary storage to avoid performance issues.
 
 ## Looping with Functionals
+In [Looping], I have recommended stick to traditional control flow. The rationale is that functional loops can usually be rewritten as traditional loops with similar performance. Consider the following:
+```{r}
+x = matrix(runif(5000), nrow=1000, ncol=5)
+f_for = function(x, n=nrow(x)) # row sum with for loop
+{
+  out = vector(length=n)
+  for (i in 1:n)
+    out[i] = sum(x[i,])
+  out
+}
+f_apply = function(x) # row sum with apply
+{
+  out = apply(x, 1, sum)
+  out
+}
+f_vec = function(x) # vectorized row sum
+{
+  out = rowSums(x)
+  out
+}
+all.equal(f_for(x), f_apply(x), f_vec(x))
+print(microbenchmark(f_for(x), f_apply(x), f_vec(x), times=50))
+```
+In this simple case, *for* is marginally faster than *apply* while the vectorized *rowSums* is much faster than both. When should we use functional loops in practice? There are several cases:
 
-## Sourcing
+1) Readability: functional loops result in neater code in general
+2) Design pattern: functional style of programming may be preferred
 
-## Command Line
+<!-- ## Sourcing -->
 
-# Advance
-## Vectorization
+<!-- ## Command Line -->
 
-## Environments
+<!-- # Advance -->
+<!-- ## Vectorization -->
 
-## Rcpp
+<!-- ## Environments -->
+
+<!-- ## Rcpp -->
