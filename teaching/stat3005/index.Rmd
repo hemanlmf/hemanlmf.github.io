@@ -20,3 +20,5 @@ knitr::opts_chunk$set(echo = TRUE)
 This should be your major reference for revision  
 2. [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)  
 Rmd is very useful if you want to incorporate R, LaTeX or other languages like Python in the same documentation. You can use it for your HW  
+3. [Wolfram Alpha](https://www.wolframalpha.com/)  
+Wolfram Alpha provides symbolic computation (and many other functions) which is useful for HW (e.g. simplifing algebraic expression)  

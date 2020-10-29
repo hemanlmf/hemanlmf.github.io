@@ -1,0 +1,148 @@
+---
+title: "STAT3005: Midterm Review"
+author: "LEUNG Man Fung, Heman"
+date: "Fall 2020"
+output: 
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+header-includes:
+  - \newcommand{\I}{\mathbb{I}}
+  - \newcommand{\E}{\mathbb{E}}
+  - \newcommand{\pr}{\mathbb{P}}
+  - \newcommand{\Var}{\textrm{Var}}
+  - \newcommand{\Cov}{\textrm{Cov}}
+  - \newcommand{\ind}{\perp \!\!\! \perp}
+---
+<style>
+blockquote{
+  background: #f9f9f9;
+  border-left: 5px solid #ccc;
+  margin: 0.5em 10px;
+  padding: 0.5em 1.5em;
+}
+</style>
+
+## Introduction
+- We will quickly review selected materials
+- Please refer to the lecture notes for complete materials
+  - e.g., be careful with the detail like in A3.3.2
+
+## Ch1: Nonparametric inference
+- Infinite-dimensional
+  - the number of parameters is not fixed or
+  - there are infinitely many parameters
+- Model-free
+  - **DOES NOT** mean no statistical model
+  - only invariant to a wider class of models
+- Vs parametric
+  - Represents different beliefs
+  - No silver bullet for all statistical problems
+
+## Ch2: Tower expectation
+- Useful in proofs to deal with dependency (example: A3.2)
+- Basic form: 
+$$
+\E(X) = \E(X \mid Y)
+$$
+- Extension used in A3.2:
+$$
+\pr(X_2<X_1, X_3<X_1) = \E\{ \pr(X_2<X_1 \mid X_1) \pr(X_3<X_1 \mid X_1)\}
+$$
+  - Note that $\E\{\pr(X_2<X_1 \mid X_1)\}$ and $\E\{\pr(X_3<X_1 \mid X_1)\}$ are still dependent
+  - Thus we cannot remove the conditional expectation yet
+
+- Rewrite probability as expectation of indicator
+$$
+\pr(X_2<X_1) = \E( \I_{X_2<X_1} )
+$$
+  - This is called the fundamental bridge between $\pr$ and $\I$ in the notes
+  - It also explains why the tower in A3.2 is an extension
+
+## Ch2: Some basic relationships
+- If $X \ind Y$, then $g(X) \ind h(Y)$ for some functions $g,h$
+  - Usage in A1.1.4: consider $g(R_1^+, \ldots, R_n^+) = R_1^+$. Apply Theorem 2.2 with this fact
+
+- Property of covariance in A1.2.3:
+$$
+\Cov(X_1+X_2,X_3+X_4) = \Cov(X_1,X_3)+\Cov(X_1,X_4)+\Cov(X_2,X_3)+\Cov(X_2,X_4)
+$$
+  - Other properties, e.g., $\Cov(a,X) = 0$ if $a$ is non-random can be found online easily
+- **Useful trick**: full sum of ranks is non-random if permutation does not affect its value
+  - Example in A2.1.3: $\sum_{i=1}^{2n} \sqrt{R_i} \equiv \sum_{i=1}^{2n} \sqrt{i}$
+  - $\sum_{i=1}^n \sqrt{R_i}$ is not a full sum, thus still random
+  - $\sum_{i=1}^{2n} i \sqrt{R_i}$ is a full sum but permutation affects its value, thus still random
+- Other basic relationships are less frequently or not used so far
+  - Read hypothesis testing terminologies if you are not familiar with them
+  
+## Ch2-4: Ranks and Signs
+- Focus on the principles and concepts
+  - Since you have 48 hours for the project, it is more than sufficient to check any theory or example
+  - Thus memorizing formulas are not necessary as well
+- Broad idea of ranks: the ordinal information is "better" than the value itself
+  - "better" can be, e.g., in terms of robustness
+- Broad idea of signs: the side (if symmetric) is "better" than the value itself
+- Common problems with ranks or signs (see A2.3.2):
+  - Data are dependent (e.g., time series)
+  - Data are discrete (tied observations)
+  - Sample size is small when we want to use asymptotic results
+
+## Ch3-4: Testing Problems
+- A large focus is testing in the project
+  - As we can also tell from the mock
+  - Here we discuss the general flow of answering some question types
+
+> Discuss whether $T$ is a sensible statistic for testing...
+
+1. Identify the target problem (e.g. location, trend, scale)
+2. Under $H_0$, discuss the likely value of $T$ and its standardized version
+3. Under $H_1$, discuss the likely value of $T$ and its standardized version
+4. Argue if $T$ can reject $H_0$ in flavor of $H_1$ (see mock 1.3 for a counterexample)
+5. Additional comments, e.g., visualization, simulations, assumptions...
+
+## Ch3-4: Testing Problems
+> Propose two other sensible tests statistics $T_2$ and $T_3$...
+
+1. Identify the target problem (e.g. location, trend, scale)
+2. Check the summary table in Section 3.1
+3. Use a few sentence to describe our ideas, e.g.
+    - (Mock Q3.2) I propose van der Waerden test as I believe data from normal distribution are quite common for Google trend. Doing so enhances robustness under Principle 3.1 with flavor of a common data generating process.
+    - (Mock Q3.2) I propose rank sum test as well because it is quite classical. While it may not be most powerful for the problem, it serves as a benchmark in comparison.
+    - These are possible enhancement to our analysis
+4. Conduct simulation experiments (if required by the question)
+
+## Ch3-4: Testing Problems
+> Test this claim by using the statistic $T$. Is your test reasonable? Is it improvable? How?
+
+1. State the assumptions, hypothesis, $p$-value and decision...
+2. Arguing reasonable is similar to sensible. See previous discussion
+3. For real data, we may check the data properties such as dependent, discrete, small sample...
+4. Arguing improvable and how from the problems that we have pinpointed
+5. Additional comments, e.g., visualization, simulations, reference readings...
+
+## Ch3-4: Testing Problems
+> Design a simulation experiment to compare their testing performance...
+
+0. Assume we have chosen the tests and data generating process
+1. Generate data with the models
+    - R function: typically *r* + distribution name, e.g., *rexp*, *rnorm*
+2. Perform the tests on the data
+    - If you plan to use "exact" test, generate the pivotal values once only (and set seed)
+3. Store the testing results in, e.g., an array
+    - Typical dimensions: replications, parameter of interest, models, tests
+    - Check mock project [suggested code](https://drive.google.com/file/d/14qR5BGymHdcX_ziR7y33hBBSPKwk1A4n/view)
+4. Plot the power curves
+    - Remember to change the parameters, e.g., axis label if you use our code
+5. Comment of the plot
+
+## General Tips
+- The only thing that you **CANNOT** do is communicating with others
+- In other words, you can:
+  - Use [WolframAlpha](https://www.wolframalpha.com/) to check algebra
+    - A3.2: [integrate 2*x*abs(x) +abs(x) from -0.5 to 0.5](https://www.wolframalpha.com/input/?i=integrate+2*x*abs%28x%29+%2Babs%28x%29+from+-0.5+to+0.5)
+  - Read [Stack Overflow](https://stackoverflow.com/) to debug R code
+    - But you cannot ask questions there
+  - Watch [YouTube](https://www.youtube.com/) video tutorials...
+- Remember to cite the source
+
+# All the best with the midterm! 
