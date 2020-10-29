@@ -136,6 +136,9 @@ $$
 5. Comment of the plot
 
 ## General Tips
+- Answer **ALL** questions
+  - Blank answer must score 0 (do not waste the chance!)
+  - We give partial credit if you can show understanding of the materials
 - The only thing that you **CANNOT** do is communicating with others
 - In other words, you can:
   - Use [WolframAlpha](https://www.wolframalpha.com/) to check algebra
@@ -144,5 +147,6 @@ $$
     - But you cannot ask questions there
   - Watch [YouTube](https://www.youtube.com/) video tutorials...
 - Remember to cite the source
+- Submit on time
 
 # All the best with the midterm! 
