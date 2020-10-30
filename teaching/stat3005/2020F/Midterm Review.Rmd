@@ -43,7 +43,7 @@ blockquote{
 - Useful in proofs to deal with dependency (example: A3.2)
 - Basic form: 
 $$
-\E(X) = \E(X \mid Y)
+\E(X) = \E\{ \E(X \mid Y) \}
 $$
 - Extension used in A3.2:
 $$
