@@ -2,14 +2,14 @@
 title: "STAT3005 2020F A Short Note on Tips for R"
 author: "LEUNG Man Fung, Heman"
 output:
+  pdf_document:
+    number_sections: yes
+    toc: no
+    toc_depth: 2
   html_document:
     df_print: paged
     number_sections: yes
     toc: yes
-    toc_depth: 2
-  pdf_document:
-    number_sections: yes
-    toc: no
     toc_depth: 2
 fontsize: 12pt
 ---
@@ -202,11 +202,105 @@ In this simple case, *for* is marginally faster than *apply* while the vectorize
 2) Design pattern: functional style of programming may be preferred
 
 ## Sourcing
+The concept of package in R is similar to the concept of library in the other programming languages. However, creating packages to manage our code can be time consuming. A quicker way to save and reuse common R code is through the function *source*. For example,
+```{r}
+x = "stat"
+source("example.R") # the code inside covered last line
+x
+```
+We can see that the value of *x* changes because it was "covered" by the code in example.R, which consists of
+```{r, eval=F}
+# Content of example.R
+x # this will not be printed
+x = 3005
+```
+There are several things to note:
+
+1) Intuitively, *source* "import" R code by running every line. If global variables/operations are used in the to-be-imported file, they might affect the result unexpectedly. Put only functions in the to-be-imported file to avoid this issue  
+2) By the above example, we can see that some operations might not have effect. For example, calling *x* (the second line in example.R) did not result in auto-printing the value of *x*, which was "stat". Read the documentation for details about the behavior of *source*  
+3) It is possible to import global code chunks separately if we use R markdown. See [this](https://bookdown.org/yihui/rmarkdown-cookbook/read-chunk.html). However, we still need to name the chunks so that we can pinpoint which one to be called  
 
 ## Command Line
+While R studio or other IDE is more user friendly, running R code in them is usually slower than running via command line. One of the reasons is the dynamic interaction with the environments. In R studio, we can inspect the variables usually by clicking their names in the environment panel. However, this convenience comes at cost of tracing and showing the memories associated with the names. Therefore, if execution speed is of concern after the development stage, we should run our R code via terminal directly (e.g., using *source*)
 
 # Advance
 ## Vectorization
+Vectorization, or array programming, refers to applying operations to the whole array instead of its individual elements one by one. It is an important concept in R because suitable vectorization can speed up R program a lot in practice. We have presented two simple examples in [Ternary If Operator] and [Looping with Functionals]. Here we try to give clearer picture via another example.
+
+In some common programming languages, a sum of vector elements function is usually implemented as follows:
+```{r}
+sum_loop = function(v)
+{
+  s = 0
+  for (i in 1:length(v))
+    s = s +v[i]
+  s
+}
+```
+We compare this with the built-in *sum* function, which is vectorized:
+```{r}
+x = 1:1000
+all.equal(sum_loop(x), sum(x))
+print(microbenchmark(sum_loop(x), sum(x), times=50))
+```
+Obviously, the built-in *sum* is much faster. Nevertheless, if we think about this and the previous two examples carefully, we will realize that we cannot write vectorized R functions ourselves in some sense. The *ifelse*, *rowSums* and *sum* functions are vectorized because they are built-in with highly optimized compiled code (probably in C). It would be difficult to write a vectorized R function without using them because we would not deal with those (probably C) code in general.
+
+In other words, the building blocks of vectorization in R are usually the functions provided in system library (take a look at the package panel in R studio). As long as we operate with arrays directly with suitable built-in functions, we are doing vectorization in R in a narrow sense. To illustrate different possibilities, we try to give a more complex example. Consider a data series with missing data:
+```{r}
+set.seed(3005) # to ensure A will not change
+n = 10000
+X = round(runif(n), 3)
+A = sort(sample(1:n, n/2, F))
+head(X, 10) # full data series
+head(X[A], 10) # observed data series
+head(A, 10) # index of observed data
+```
+We are interested in constructing an index series of last observed data, i.e.,
+$$
+0,0,0,0,5,5,7,8,9,10,10,10,\ldots
+$$
+A naive implementation is
+```{r}
+f_naive = function(A, n)
+{
+  out = rep(0, n)
+  j = 1
+  for (i in A[1]:n)
+  {
+    if (j == n/2) next
+    if (i == A[j+1]) j = j +1
+    out[i] = A[j]
+  }
+  out
+}
+```
+A marginally better implementation is
+```{r}
+f_naive2 = function(A, n)
+{
+  out = rep(0, n)
+	out[A] = A
+  for (i in A[1]:n)
+    out[i] = `if`(out[i]==0, out[i-1], out[i])
+  out
+}
+```
+A vectorized implementation that uses *cumsum* is
+```{r}
+f_vec = function(A, n)
+{
+  I = rep(0, n)
+  I[A] = 1 # indicator of observed data
+  I = cumsum(I) # cumsum is vectorized
+  out = A[I]
+  out
+}
+```
+Finally, we compare their speed below:
+```{r}
+all.equal(f_naive(A,n), f_naive2(A,n), f_vec(A,n))
+print(microbenchmark(f_naive(A,n), f_naive2(A,n), f_vec(A,n), times=50))
+```
 
 ## Environments
 
