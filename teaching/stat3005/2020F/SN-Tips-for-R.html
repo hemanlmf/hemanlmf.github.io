@@ -1812,10 +1812,10 @@ all.equal(f_if(U), f_eif(U), f_eif_vec(U)) # sanity check</code></pre>
 <pre class="r"><code># evaluate execution time systematically
 print(microbenchmark(f_if(U), f_eif(U), f_eif_vec(U), times=50))</code></pre>
 <pre><code>## Unit: microseconds
-##          expr    min     lq     mean  median     uq    max neval
-##       f_if(U)   82.4   83.9   86.868   86.85   89.0   98.8    50
-##      f_eif(U) 1336.0 1388.3 1593.488 1471.70 1740.7 2929.9    50
-##  f_eif_vec(U)   27.1   31.6   75.760   36.85   48.2 1802.5    50</code></pre>
+##          expr      min       lq       mean   median       uq      max neval
+##       f_if(U)   68.501   70.501   83.43096   72.301   91.401  159.300    50
+##      f_eif(U) 1127.701 1227.000 1464.07900 1421.400 1527.101 3349.001    50
+##  f_eif_vec(U)   22.100   26.501   67.43102   31.251   41.200 1596.801    50</code></pre>
 <p>There are two messages here. First, <em>`if`</em> is the correct ternary if operator since it is much faster when a single element is concerned. Second, vectorization can speed up the implementation in R. The general idea is to use vectors instead of single elements as inputs into a vectorized function.</p>
 </div>
 <div id="pre-allocation" class="section level2">
@@ -1840,9 +1840,9 @@ all.equal(f_pre(n), f_dyn(n))</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>print(microbenchmark(f_pre(n), f_dyn(n), times=50))</code></pre>
 <pre><code>## Unit: microseconds
-##      expr   min     lq     mean  median     uq    max neval
-##  f_pre(n)  41.1   42.3   47.872   44.25   50.8   88.1    50
-##  f_dyn(n) 974.6 1007.4 1382.624 1027.80 1215.4 5273.4    50</code></pre>
+##      expr     min      lq       mean   median       uq      max neval
+##  f_pre(n)  34.001  35.102   39.29898  36.6510   41.701   55.001    50
+##  f_dyn(n) 814.701 860.602 1253.21494 921.8005 1337.300 4425.901    50</code></pre>
 <p>By adjusting the value of <em>n</em>, we can see that dynamic memory allocation is not of constant time in this way. Therefore, we should try our best to pre-allocate the necessary storage to avoid performance issues.</p>
 </div>
 <div id="looping-with-functionals" class="section level2">
@@ -1870,10 +1870,10 @@ all.equal(f_for(x), f_apply(x), f_vec(x))</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>print(microbenchmark(f_for(x), f_apply(x), f_vec(x), times=50))</code></pre>
 <pre><code>## Unit: microseconds
-##        expr    min     lq     mean  median     uq    max neval
-##    f_for(x)  611.2  645.3  713.964  665.40  689.0 2358.7    50
-##  f_apply(x) 1054.0 1094.6 1272.770 1138.30 1289.5 3755.8    50
-##    f_vec(x)   16.0   17.8   51.792   20.25   25.2 1458.0    50</code></pre>
+##        expr     min      lq       mean    median       uq      max neval
+##    f_for(x) 513.601 549.300  622.40098  568.3515  644.201 1714.501    50
+##  f_apply(x) 872.702 970.001 1125.08908 1014.8010 1221.101 2259.101    50
+##    f_vec(x)  13.200  14.901   53.92094   17.5010   24.901 1695.701    50</code></pre>
 <p>In this simple case, <em>for</em> is marginally faster than <em>apply</em> while the vectorized <em>rowSums</em> is much faster than both. When should we use functional loops in practice? There are several cases:</p>
 <ol style="list-style-type: decimal">
 <li>Readability: functional loops result in neater code in general</li>
@@ -1924,9 +1924,9 @@ all.equal(sum_loop(x), sum(x))</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>print(microbenchmark(sum_loop(x), sum(x), times=50))</code></pre>
 <pre><code>## Unit: nanoseconds
-##         expr   min    lq  mean median    uq   max neval
-##  sum_loop(x) 43000 43100 43866  43350 43500 56800    50
-##       sum(x)   100   200   346    200   200  6900    50</code></pre>
+##         expr   min    lq     mean median    uq   max neval
+##  sum_loop(x) 35901 36101 38407.00  36901 37201 65601    50
+##       sum(x)   100   102   279.04    200   202  3100    50</code></pre>
 <p>Obviously, the built-in <em>sum</em> is much faster. Nevertheless, if we think about this and the previous two examples carefully, we will realize that we cannot write vectorized R functions ourselves in some sense. The <em>ifelse</em>, <em>rowSums</em> and <em>sum</em> functions are vectorized because they are built-in with highly optimized compiled code (probably in C). It would be difficult to write a vectorized R function without using them because we would not deal with those (probably C) code in general.</p>
 <p>In other words, the building blocks of vectorization in R are usually the functions provided in system library (take a look at the package panel in R studio). As long as we operate with arrays directly with suitable built-in functions, we are doing vectorization in R in a narrow sense. To illustrate different possibilities, we try to give a more complex example. Consider a data series with missing data:</p>
 <pre class="r"><code>set.seed(3005) # to ensure A will not change
@@ -1940,7 +1940,7 @@ head(X, 10) # full data series</code></pre>
 <pre class="r"><code>head(A, 10) # index of observed data</code></pre>
 <pre><code>##  [1]  1  4  5  6  7  8 13 14 15 16</code></pre>
 <p>We are interested in constructing an index series of last observed data, i.e., <span class="math display">\[
-0,0,0,0,5,5,7,8,9,10,10,10,\ldots
+1, 1, 1, 4, 5, 6, 7, 8, 8, 8,\ldots
 \]</span> A naive implementation is</p>
 <pre class="r"><code>f_naive = function(A, n)
 {
@@ -1977,10 +1977,10 @@ head(X, 10) # full data series</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>print(microbenchmark(f_naive(A,n), f_naive2(A,n), f_vec(A,n), times=50))</code></pre>
 <pre><code>## Unit: microseconds
-##            expr    min     lq     mean  median     uq    max neval
-##   f_naive(A, n) 1518.1 1638.4 1696.744 1713.60 1747.9 1943.1    50
-##  f_naive2(A, n)  945.6 1059.9 1076.858 1075.65 1097.7 1275.5    50
-##     f_vec(A, n)   98.3  102.5  172.094  106.05  140.5 2805.2    50</code></pre>
+##            expr      min       lq      mean    median       uq      max neval
+##   f_naive(A, n) 1420.600 1454.201 1530.5850 1504.2015 1568.401 2424.401    50
+##  f_naive2(A, n)  887.901  895.501  949.9208  934.6510  971.101 1179.801    50
+##     f_vec(A, n)   83.601   85.200  156.1169   89.2505  124.601 2687.701    50</code></pre>
 </div>
 <div id="environments" class="section level2">
 <h2><span class="header-section-number">4.2</span> Environments</h2>

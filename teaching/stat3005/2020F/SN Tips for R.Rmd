@@ -2,14 +2,14 @@
 title: "STAT3005 2020F A Short Note on Tips for R"
 author: "LEUNG Man Fung, Heman"
 output:
-  pdf_document:
-    number_sections: yes
-    toc: no
-    toc_depth: 2
   html_document:
     df_print: paged
     number_sections: yes
     toc: yes
+    toc_depth: 2
+  pdf_document:
+    number_sections: yes
+    toc: no
     toc_depth: 2
 fontsize: 12pt
 ---
@@ -257,7 +257,7 @@ head(A, 10) # index of observed data
 ```
 We are interested in constructing an index series of last observed data, i.e.,
 $$
-0,0,0,0,5,5,7,8,9,10,10,10,\ldots
+1, 1, 1, 4, 5, 6, 7, 8, 8, 8,\ldots
 $$
 A naive implementation is
 ```{r}
