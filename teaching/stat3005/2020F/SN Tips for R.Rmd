@@ -2,14 +2,14 @@
 title: "STAT3005 2020F A Short Note on Tips for R"
 author: "LEUNG Man Fung, Heman"
 output:
+  pdf_document:
+    number_sections: yes
+    toc: no
+    toc_depth: 2
   html_document:
     df_print: paged
     number_sections: yes
     toc: yes
-    toc_depth: 2
-  pdf_document:
-    number_sections: yes
-    toc: no
     toc_depth: 2
 fontsize: 12pt
 ---
@@ -17,6 +17,7 @@ fontsize: 12pt
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(microbenchmark)
+library(Rcpp)
 ```
 
 # Introduction
@@ -303,5 +304,117 @@ print(microbenchmark(f_naive(A,n), f_naive2(A,n), f_vec(A,n), times=50))
 ```
 
 ## Environments
+Environment is a special data structure in R. For ordinary users, it is not necessary to learn it as list provides similar storage for heterogeneous data as well. However, if you want to implement some advance data structures (e.g., queue, stack, tree), you probably need to use environment in R.
+
+To begin with, the operations associated with environment is similar to that with a named list; see [Subsetting]. For example,
+```{r}
+e = new.env() #create an environment
+e$code = 3005 #add variables to the environment
+e[["subject"]] = "STAT"
+c(e$subject, e[["code"]]) #similar subsetting syntax
+```
+We can even convert an environment to a list, vice versa.
+```{r}
+z = as.list(e, all.names=TRUE)
+z
+```
+However, there is one key difference which makes the role of environment special in developing data structure. Consider the following function which changes the element named *code* in a list or environment *e*:
+```{r}
+f_change = function(e, v)
+{
+  e$code = v
+}
+```
+If we input a list, then
+```{r}
+f_change(z, 4010) #z is a list replicated from e in the above
+z$code #remains unchanged
+```
+The element named *code* is not changed to the input 4010 because changes in a function are local if we do not return the list. Informally, the variable *z* is passed into *f_change* by value and a local copy of *z* is created within the function. However, if we input an environment instead, then
+```{r}
+f_change(e, 4010)
+e$code #it changes from 3005 to 4010
+```
+Informally, the variable *e* is passed into *f_change* by reference and changes to its content are permanent even in the function. This can be a desirable behavior especially for implementing advance data structures since there is no pointer in R. Alternatively, we may use R6 or a similar OOP system in order to have such reference semantic but environment is available in base R without additional complications.
+
+Before ending this section, let me share my implementation of queue with environment in R. There is a package doing it but I need more flexibility for my research, which motivates me to code it myself. Please feel free to let me know if there is any bug.
+```{r}
+queue_init = function() {
+  queue = new.env()
+  queue
+}
+
+queue_push = function(queue, value) {
+  E = new.env()
+  E$value = value
+  E$nextE = NULL
+  # If there is no elements in queue, insert E as both head and tail
+  if (is.null(queue$head)) {
+    E$lastE = NULL
+    queue$tail = queue$head = E
+  } else {
+    E$lastE = queue$tail
+    queue$tail$nextE = E
+    queue$tail = E
+  }
+}
+
+queue_pop = function(queue) {
+  if (is.null(queue$head)) {
+    NULL
+  } else {
+    value = queue$head$value
+    queue$head = queue$head$nextE
+    queue$head$lastE = NULL
+  }
+}
+```
 
 ## Rcpp
+Recall in [Vectorization] that array operation with suitable built-in functions is equivalent to vectorization in R in a narrow sense, we now turn our focus to improving performance in a general sense. While we may not be able to deal with the underlying (probably C) code in R, we can write our own C++ code via the Rcpp package.
+
+To motivate the performance improvement, consider bootstrapping the variance of sample mean. By slightly modifying Algorithm 7.1, we have
+```{r}
+bootVar_r = function(x, B=10000)
+{
+  n = length(x)
+  out = rep(NA, B)
+  for (b in 1:B)
+  {
+    xb = x[floor(runif(n, 0, n))]
+    out[b] = mean(xb)
+  }
+  var(out)*(B-1)/B
+}
+```
+For the Rcpp implementation, we may use
+```{Rcpp}
+#include <Rcpp.h>
+using namespace Rcpp;
+
+//[[Rcpp::export]]
+double bootVar_cpp(NumericVector x, int B=10000)
+{
+  int n = x.size();
+  NumericVector out(B);
+  for (int i=0; i<B; i++)
+  {
+    NumericVector xb = x[floor(runif(n, 0, n))];
+    out[i] = mean(xb);
+  }
+  return(var(out)*(B-1)/B);
+}
+```
+We compare them as follows:
+```{r, eval=T}
+x = rnorm(100, sd=31.4)
+set.seed(3005)
+bootVar_r(x)
+bootVar_cpp(x) #values differ slightly because bootstrap introduces randomness
+print(microbenchmark(bootVar_r(x), bootVar_cpp(x), times=50))
+```
+Clearly the Rcpp implementation is faster. However, there are several remarks:
+
+1) We can see that we need (sort of) new terms if we want to use Rcpp. For example, we declare x as *Rcpp::NumericVector* instead of *std::vector* as in ordinary C++ code. To this end, I recommend [this](https://teuder.github.io/rcpp4everyone_en/) as a reference  
+2) Calling Rcpp functions may incur some overheads. Therefore, it is not always the case that Rcpp implementation is faster. It usually improves performance when there are long loops  
+3) If Rcpp functions are simply included in the global environment, they may reside in random addresses. Consequently, we may not call these functions in a parallel computing setting. From my personal experience (and Q&As on the Internet), one of the solutions is to create a personal package with these functions so that they can be called "statically" from the package
