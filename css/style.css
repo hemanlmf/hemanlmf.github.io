@@ -1,4 +1,4 @@
-/*--A Design by W3layouts 
+/*--A Design by W3layouts
 Author: W3layout
 Author URL: http://w3layouts.com
 License: Creative Commons Attribution 3.0 Unported
@@ -30,7 +30,7 @@ img{max-width:100%; display:block;}
 /*end reset*/
 body{
 	background:#e2e1dd;
-	font-family: 'Roboto', sans-serif;	
+	font-family: 'Roboto', sans-serif;
 }
 body a{
 	transition: 0.5s all;
@@ -121,14 +121,14 @@ ul.social-in {
   padding: 2em 1em 2em 0;
 }
 ul.social-in li{
-	display: inline-block;	
+	display: inline-block;
 }
 ul.social-in li  i{
 	background: url(../images/img-sprite.png)no-repeat -411px -9px;
 	width: 28px;
 	height: 28px;
 	display: inline-block;
-	margin: 0 3px;	
+	margin: 0 3px;
 }
 ul.social-in li  i.gmail{
 	background-position: -74px -8px;
@@ -149,7 +149,7 @@ ul.social-in li  i:hover{
 	background-position: -444px -9px;
 }
 ul.social-in li  i.gmail:hover{
-	
+
 	background-position:-109px -9px;
 }
 ul.social-in li  i.twitter:hover{
@@ -173,10 +173,10 @@ p.footer-class{
 }
 p.footer-class a{
 	color:#fff;
-	text-decoration:none;	
+	text-decoration:none;
 }
 p.footer-class a:hover{
-	color:#6b7072;	
+	color:#6b7072;
 }
 span.img-caption{
 	font-style: italic;
@@ -217,7 +217,7 @@ hr{
 	text-align:center;
 	color:#ffffff;
 	overflow:hidden;
-	
+
 }
 /*	Animation effects*/
 .b-animate-go{
@@ -277,7 +277,7 @@ hr{
 ul.social{
 	background: rgba(55, 53, 52, 0.73);
 	padding: 1.5em 5em 1.5em 1.5em;
-	text-align:left;  
+	text-align:left;
 }
 ul.social li{
 	list-style:none;
@@ -663,7 +663,7 @@ h4.author{
 .our:hover .simple{
 	display:block;
 }
-.services h3{
+.about h3{
 	color:#000;
 	font-size:1.2em;
 	font-weight:300;
@@ -720,7 +720,7 @@ ul.service-grid li i{
   font-size: 1em;
   color: #e2e2e2;
   margin: 0 0 0 2%;
-  float:left;  
+  float:left;
 }
 .grid-contact-in textarea{
   border: 1px solid #e2e2e2;
@@ -1112,7 +1112,7 @@ ul.social-in {
 }
 
 .blog-top:nth-child(2) {
- margin:0; 
+ margin:0;
 }
 .contact {
   width: 71%;
@@ -1380,7 +1380,7 @@ ul.social li span, ul.social li a {
   margin: 0 0 0 58.5%;
 }
 .arrow-at img {
-   margin: 0; 
+   margin: 0;
 }
 .contact h1, .top-contact h3 {
   font-size: 1.5em;
@@ -1445,7 +1445,7 @@ span.menu {
 	font-size: 1em;
 }
 .top-nav-in ul li a:hover{
-	color:#242b2e;	
+	color:#242b2e;
 }
 .top-nav-in ul li a i {
 	display:none;
@@ -1462,14 +1462,14 @@ span.menu {
 	font-size:0.9em;
 	background:#242b2e;
 	padding:1.5em 0;
-	color:#6b7072;	
+	color:#6b7072;
 }
 .footer-class-in a{
 	text-decoration:none;
-	color:#fff;	
+	color:#fff;
 }
 .footer-class-in a:hover{
-	color:#6b7072;	
+	color:#6b7072;
 }
 .our img{
 	width:100%;

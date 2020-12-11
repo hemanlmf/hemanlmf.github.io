@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- jquery script must be imported before the bootstrap stylesheet -->
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.9.0"></script>
+	<title>华山论剑</title>
+</head>
+
+<body>
+	<div id="loadContainer" class="modal">
+		<img class="modal-content" id="loadImg" />
+		<span id="closeBtn" class="close" onclick="closeImg()">&times;</span>
+	</div>
+	<div id="playerForm" class="modal-dialog">
+		<div class="modal-content">
+			<form class="form-horizontal" autocomplete="off" action="">
+				<div class="modal-header">
+					<h3>初出茅庐</h3>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="playerName" class="col-sm-2 control-label">高姓大名</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" id="playerName" placeholder="">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="email" class="col-sm-2 control-label">阵营选择</label>
+						<div class="col-sm-6">
+							<div class="btn-group dropdown" id="dropdown">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<span id="standTxt">率性而为，亦正亦邪</span>
+									<span class="caret"></span>
+								</button>
+								<input type="hidden" name="stand" id="stand" value="率性而为，亦正亦邪"/>
+								<ul id="standList" class="dropdown-menu">
+									<li><a onclick="setStand(this);">嫉恶如仇·侠义典范</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a onclick="setStand(this);">率性而为·亦正亦邪</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a onclick="setStand(this);" >魔焰滔天·唯我独尊</a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-sm-4 tips"></div>
+					</div>
+					<div class="form-group">
+						<label for="email" class="col-sm-2 control-label">挑战难度</label>
+						<div class="col-sm-6">
+							<div class="btn-group dropdown" id="dropdown">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<span id="diffTxt">技冠群雄</span>
+									<span class="caret"></span>
+								</button>
+								<input type="hidden" name="diff" id="diff" value="技冠群雄"/>
+								<ul id="diffList" class="dropdown-menu">
+									<li><a onclick="setDifficulty(this);">无名小卒</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a onclick="setDifficulty(this);" >声名鹊起</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a onclick="setDifficulty(this);" >技冠群雄</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a onclick="setDifficulty(this);" >一代宗师</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a onclick="setDifficulty(this);" >震古烁今</a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-sm-4 tips"></div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="playerFormSubmit" class="btn btn-primary" onclick="setPlayerInfo();">闯荡江湖</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="gameWarpper">
+		<div id="gameStat">
+			<h1 id="playerStat"></h1>
+			<h1 id="enemyStat"></h1>
+		</div>
+
+		<div id="hpBar" style="width: 1200px; height: 50px;">
+			<div id="playerProgress" class="progress" style="float: left;">
+				<div id="playerBar" class="progress-bar progress-bar-danger" style="width: 100%;"></div>
+			</div>
+			<div id="enemyProgress" class="progress" style="float: right;">
+				<div id="enemyBar" class="progress-bar progress-bar-danger" style="width: 100%;"></div>
+			</div>
+		</div>
+
+		<div id="gameVisual">
+			<audio id="bgm" src="" loop="loop" hidden></audio>
+			<audio id="se" src="" hidden></audio>
+			<video id="playerCamera" autoplay="autoplay"></video>
+			<img id="gameTimer" src="img/time/3.jpg">
+			<img id="rps" src="img/rps/rps.gif">
+		</div>
+
+		<div id="gameControl" class="jumbotron">
+			<h3 id="fightTxt">载入中...</h3>
+			<img id="start">
+		</div>
+
+		<canvas id="cameraCap"></canvas>
+
+		<p id="history"></p>
+
+		<p id="hash">hash: </p>
+	</div>
+	<link rel="stylesheet" href="game.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.10.0/js/md5.js"></script>
+	<script src="game.js"></script>
+</body>
+</html>

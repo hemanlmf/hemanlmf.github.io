@@ -1,0 +1,19 @@
+---
+title: "PPHP: Project Hand Pose"
+output: html_document
+author: LEUNG Man Fung, Heman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Main
+1. [Documentation](report.pdf) (Last updated: 16 Oct 2019)  
+We explored the application of deep learning models on personal devices during our internship at Institute of Software, Chinese Academy of Sciences.  
+
+2. [Presentation](presentation.pdf) (Last updated: 26 Oct 2019)  
+We presented and discussed some findings with peers who interned at other institutes after we got back to Hong Kong.  
+
+3. [Mini web-based game](game.html)  
+A mini game was designed during our exploration to check the performance of the developed model.  
