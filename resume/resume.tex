@@ -16,14 +16,21 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 
-\documentclass{resume} % Use the custom resume.cls style
+\documentclass[10pt]{resume} % Use the custom resume.cls style
 
-\usepackage[left=0.75in,top=0.6in,right=0.75in,bottom=0.6in]{geometry} % Document margins
+\usepackage[left=1in,top=0.8in,right=1in,bottom=0.8in]{geometry} % Document margins
+% \usepackage[left=0.75in,top=0.6in,right=0.75in,bottom=0.6in]{geometry} % Document margins
 \usepackage{hyperref}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\cfoot{\thepage}
 
 \name{Man Fung (Heman) LEUNG}
 \address{Phone: +852 3943 8535
@@ -32,29 +39,108 @@
 
 \begin{document}
 
-%----------------------------------------------------------------------------------------
-%	EDUCATION SECTION
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
+%	RESEARCH INTERESTS SECTION
+%------------------------------------------------------------------------------------
 
-\begin{rSection}{Education}
+\begin{rSection}{Research interests}
 
-{\bf The Chinese University of Hong Kong} \\
-M.Phil. in Risk Management Science \hfill {Aug 2019 - Present} \\
-CGPA: 4.00/4.00 \smallskip \\
-B.Sc. in Quantitative Finance and Risk Management Science, First Class Honors \hfill {Sep 2015 - Jul 2019} \\
-Minor in Statistics \smallskip \\
-{\bf University of California, Davis} \\
-Academic Exchange, UC Education Abroad Program  \hfill {Sep 2017 - Dec 2017}
+Time Series, Statistical Computing, Causal Inference, Machine Learning
 
 \end{rSection}
 
-%----------------------------------------------------------------------------------------
-%	EXPERIENCE SECTION
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
+%	EDUCATION SECTION
+%------------------------------------------------------------------------------------
 
-\begin{rSection}{Experience}
+\begin{rSection}{Education}
 
-\begin{rSubsection}{Chinese Academy of Science, Institute of Software}{Jun 2019 - Jul 2019}{Research Intern}{Beijing, China}
+{\bf The Chinese University of Hong Kong (CUHK)} \\
+M.Phil. in Risk Management Science \hfill {Jul 2021 (Expected)} \\
+\hspace*{1em} Thesis: \textit{A General Theory of Recursive Nonparametric Estimation} \\
+\hspace*{1em} Advisor: Kin Wai CHAN \\
+\hspace*{1em} CGPA: 4.00/4.00 \smallskip \\
+B.Sc. in Quantitative Finance and Risk Management Science, First Class Honors \hfill {Jul 2019} \\
+\hspace*{1em} Minor: Statistics \\
+\hspace*{1em} CGPA: 3.76/4.00 \smallskip \\
+{\bf University of California, Davis} \\
+Academic Exchange, UC Education Abroad Program  \hfill {Sep -- Dec 2017}
+
+\end{rSection}
+
+%------------------------------------------------------------------------------------
+%	RESEARCH PROJECTS SECTION
+%------------------------------------------------------------------------------------
+
+\begin{rSection}{Research projects}
+
+\begin{rSubsection}{General and Super-optimal Recursive Estimators of Long-run Variance}{Jan 2020 -- Present}{Supervised by Kin Wai CHAN}{Available upon request}
+\item Proposes online estimators with super-optimal MSE compared with non-recursive benchmarks
+\item Derives the first sufficient condition for $O(1)$-time or space update, and the first mini-batch estimator
+\item Discusses applications in Markov chain Monte Carlo and stochastic gradient descent
+\end{rSubsection}
+
+%------------------------------------------------
+
+\begin{rSubsection}{A Remark About a Learning Risk Lower Bound}{Mar -- Oct 2020}{Collaborated with Yiqi LIN and Nicolas WICKER}{Submitted}
+\item Corrected a learning risk lower bound in the non-realizable case appearing in some classical textbooks
+\end{rSubsection}
+
+\end{rSection}
+
+%------------------------------------------------------------------------------------
+%	PRESENTATION SECTION
+%------------------------------------------------------------------------------------
+
+\begin{rSection}{Presentation}
+
+\begin{rSubsection}{Diagnosing Learning Algorithms with Super-optimal Recursive Estimators}{Dec 2020}{ICSA 2020 Applied Statistics Symposium}{Poster}
+\end{rSubsection}
+
+\end{rSection}
+
+%------------------------------------------------------------------------------------
+%	SOFTWARE SECTION
+%------------------------------------------------------------------------------------
+
+\begin{rSection}{Software}
+
+\textbf{rlaser}: an R package for Recursive Long-run Variance Estimation \hfill {Available upon request}
+
+\end{rSection}
+
+%------------------------------------------------------------------------------------
+%	TEACHING EXPERIENCE SECTION
+%------------------------------------------------------------------------------------
+
+\begin{rSection}{Teaching experience}
+
+\begin{rSubsection}{Department of Statistics, CUHK}{Sep 2019 -- Present}{Teaching Assistant}{}
+\item Selected as the teaching assistant for a postgraduate core course about Monte Carlo simulation
+\item Published diverse learning materials for both undergraduate and postgraduate on personal website
+\item Led and presented in reading group meetings on `Asymptotic Theory in Time Series' in 2020
+\end{rSubsection}
+
+\end{rSection}
+
+%------------------------------------------------------------------------------------
+%	PROFESSIONAL SERVICE SECTION
+%------------------------------------------------------------------------------------
+
+\begin{rSection}{Professional Service}
+
+\begin{rSubsection}{Hong Kong Statistical Society}{Jun 2020}{Statistical Project Competition for Secondary School Students}{Adjudicator}
+\end{rSubsection}
+
+\end{rSection}
+
+%------------------------------------------------------------------------------------
+%	WORK EXPERIENCE SECTION
+%------------------------------------------------------------------------------------
+
+\begin{rSection}{Work experience}
+
+\begin{rSubsection}{Institute of Software, Chinese Academy of Sciences}{Jun -- Jul 2019}{Research Intern}{}
 \item Analyzed the ideas behind different cutting-edge image classification networks
 \item Designed a deep hand pose detection model with 98.6\% validation accuracy using Python
 \item Extended the developed model to a web-based application with the other two teammates
@@ -62,15 +148,15 @@ Academic Exchange, UC Education Abroad Program  \hfill {Sep 2017 - Dec 2017}
 
 %------------------------------------------------
 
-\begin{rSubsection}{The Chinese University of Hong Kong, Finance Department}{Sep 2018 - Dec 2018}{Practicum}{Hong Kong}
+\begin{rSubsection}{Department of Finance, CUHK}{Sep -- Dec 2018}{Practicum}{}
 \item Explored and extracted high-level features from volatility surface using machine learning
-\item Hypothesized and tested the causality between stock return and features in multiple models
-\item Developed a trading algorithm to profit from the tested causality for Contrendian Limited
+\item Hypothesized and tested the relationship between stock return and features in multiple models
+\item Developed a trading algorithm to profit from the tested relationship for Contrendian Limited
 \end{rSubsection}
 
 %------------------------------------------------
 
-\begin{rSubsection}{Hong Kong Monetary Authority, Research Department}{Jun 2018 - Aug 2018}{Summer Intern}{Hong Kong}
+\begin{rSubsection}{Research Department, Hong Kong Monetary Authority}{Jun -- Aug 2018}{Summer Intern}{}
 \item Investigated the impact of IPO on interbank and exchange rate markets using econometrics
 \item Optimized research procedures by employing automation and NLP with JavaScript and R
 \item Conducted preliminary analysis in a SME financing project collaborated with the FSB
@@ -78,7 +164,7 @@ Academic Exchange, UC Education Abroad Program  \hfill {Sep 2017 - Dec 2017}
 
 %------------------------------------------------
 
-\begin{rSubsection}{Ernst \& Young Advisory Limited, Risk Advisory}{May 2017 - Aug 2017}{Summer Intern}{Hong Kong}
+\begin{rSubsection}{Risk Advisory, Ernst \& Young Advisory Limited}{May -- Aug 2017}{Summer Intern}{}
 \item Developed an impairment analytics tool in an IFRS 9 project for CCB (Asia) with VBA
 \item Designed and conducted statistical tests and adjustments on PD and LGD models
 \item Collaborated with other teams to prepare disclosure guidance and strategic advice
@@ -86,22 +172,34 @@ Academic Exchange, UC Education Abroad Program  \hfill {Sep 2017 - Dec 2017}
 
 \end{rSection}
 
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 %	AWARD SECTION
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 
-\begin{rSection}{Award}
+\begin{rSection}{Selected awards}
 
-Centaline Charity Fund Scholarships \hfill {Sep 2015 - Present} \\
+Centaline Charity Fund Scholarship \hfill {Sep 2015 -- Present} \\
 CLP Centenary Scholarship \hfill {Aug 2018} \\
 Best Essay Award 2015-16, Silver Award \hfill {Mar 2017} \\
 Peak Time 2016, 1st Runner-up \hfill {Apr 2016}
 
 \end{rSection}
 
-%----------------------------------------------------------------------------------------
-%	TECHNICAL SKILLS SECTION
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
+%	COMMUNITY SERVICE SECTION
+%------------------------------------------------------------------------------------
+
+\begin{rSection}{Community Service}
+
+\begin{rSubsection}{Hong Kong BioBlitz 2015}{Sep -- Dec 2015}{Social Media Administrator and Volunteer}{}
+\item Assisted in promoting and organzing the first ecological quick check in HK to protect biodiversity
+\end{rSubsection}
+
+\end{rSection}
+
+%------------------------------------------------------------------------------------
+%	SKILLS SECTION
+%------------------------------------------------------------------------------------
 
 \begin{rSection}{Technical Skills}
 
@@ -113,9 +211,9 @@ Tools &  MS Office, Eviews, Bloomberg Terminal, GIMP
 
 \end{rSection}
 
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 %	EXAMPLE SECTION
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 
 %\begin{rSection}{Section Name}
 
@@ -123,6 +221,6 @@ Tools &  MS Office, Eviews, Bloomberg Terminal, GIMP
 
 %\end{rSection}
 
-%----------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 
 \end{document}
