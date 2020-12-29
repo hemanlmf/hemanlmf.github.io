@@ -2,14 +2,14 @@
 title: "STAT3005 2020F A Short Note on Tips for R"
 author: "LEUNG Man Fung, Heman"
 output:
-  pdf_document:
-    number_sections: yes
-    toc: no
-    toc_depth: 2
   html_document:
     df_print: paged
     number_sections: yes
     toc: yes
+    toc_depth: 2
+  pdf_document:
+    number_sections: yes
+    toc: no
     toc_depth: 2
 fontsize: 12pt
 ---
@@ -381,7 +381,7 @@ bootVar_r = function(x, B=10000)
   out = rep(NA, B)
   for (b in 1:B)
   {
-    xb = x[floor(runif(n, 0, n))]
+    xb = x[ceiling(runif(n, 0, n))]
     out[b] = mean(xb)
   }
   var(out)*(B-1)/B
@@ -410,7 +410,8 @@ We compare them as follows:
 x = rnorm(100, sd=31.4)
 set.seed(3005)
 bootVar_r(x)
-bootVar_cpp(x) #values differ slightly because bootstrap introduces randomness
+set.seed(3005)
+bootVar_cpp(x) #same as above
 print(microbenchmark(bootVar_r(x), bootVar_cpp(x), times=50))
 ```
 Clearly the Rcpp implementation is faster. However, there are several remarks:

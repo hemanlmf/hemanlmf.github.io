@@ -1813,9 +1813,9 @@ all.equal(f_if(U), f_eif(U), f_eif_vec(U)) # sanity check</code></pre>
 print(microbenchmark(f_if(U), f_eif(U), f_eif_vec(U), times=50))</code></pre>
 <pre><code>## Unit: microseconds
 ##          expr    min     lq     mean  median     uq    max neval
-##       f_if(U)   74.9   77.6   82.930   81.95   87.5  101.5    50
-##      f_eif(U) 1358.3 1395.1 1544.076 1493.80 1590.3 3350.7    50
-##  f_eif_vec(U)   25.6   27.9   91.862   30.40   39.5 2918.7    50</code></pre>
+##       f_if(U)   75.7   77.1   89.164   80.60   88.8  149.7    50
+##      f_eif(U) 1314.6 1369.8 1559.078 1437.50 1687.5 2892.3    50
+##  f_eif_vec(U)   25.6   30.4   86.876   36.55   39.4 2496.7    50</code></pre>
 <p>There are two messages here. First, <em>`if`</em> is the correct ternary if operator since it is much faster when a single element is concerned. Second, vectorization can speed up the implementation in R. The general idea is to use vectors instead of single elements as inputs into a vectorized function.</p>
 </div>
 <div id="pre-allocation" class="section level2">
@@ -1840,9 +1840,9 @@ all.equal(f_pre(n), f_dyn(n))</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>print(microbenchmark(f_pre(n), f_dyn(n), times=50))</code></pre>
 <pre><code>## Unit: microseconds
-##      expr   min     lq     mean median     uq    max neval
-##  f_pre(n)  39.3   40.1   45.026   42.5   48.5   69.0    50
-##  f_dyn(n) 996.0 1030.8 1448.344 1078.6 1227.3 4569.4    50</code></pre>
+##      expr   min     lq     mean  median     uq    max neval
+##  f_pre(n)  37.9   39.6   45.674   41.65   47.9   96.5    50
+##  f_dyn(n) 949.2 1006.2 1388.438 1074.85 1322.4 4674.7    50</code></pre>
 <p>By adjusting the value of <em>n</em>, we can see that dynamic memory allocation is not of constant time in this way. Therefore, we should try our best to pre-allocate the necessary storage to avoid performance issues.</p>
 </div>
 <div id="looping-with-functionals" class="section level2">
@@ -1871,9 +1871,9 @@ all.equal(f_for(x), f_apply(x), f_vec(x))</code></pre>
 <pre class="r"><code>print(microbenchmark(f_for(x), f_apply(x), f_vec(x), times=50))</code></pre>
 <pre><code>## Unit: microseconds
 ##        expr    min     lq     mean  median     uq    max neval
-##    f_for(x)  626.8  683.5  896.484  812.55  920.6 2448.8    50
-##  f_apply(x) 1089.8 1149.5 1366.416 1267.40 1457.0 3111.2    50
-##    f_vec(x)   15.9   21.3   55.026   25.45   34.7 1310.0    50</code></pre>
+##    f_for(x)  629.7  661.8  738.726  676.00  706.9 2074.8    50
+##  f_apply(x) 1085.4 1113.9 1201.542 1158.40 1193.2 2633.5    50
+##    f_vec(x)   15.6   16.6   55.822   19.05   23.2 1749.4    50</code></pre>
 <p>In this simple case, <em>for</em> is marginally faster than <em>apply</em> while the vectorized <em>rowSums</em> is much faster than both. When should we use functional loops in practice? There are several cases:</p>
 <ol style="list-style-type: decimal">
 <li>Readability: functional loops result in neater code in general</li>
@@ -1925,8 +1925,8 @@ all.equal(sum_loop(x), sum(x))</code></pre>
 <pre class="r"><code>print(microbenchmark(sum_loop(x), sum(x), times=50))</code></pre>
 <pre><code>## Unit: nanoseconds
 ##         expr   min    lq  mean median    uq   max neval
-##  sum_loop(x) 40600 41100 44902  41750 43200 71900    50
-##       sum(x)   100   200   306    200   200  2800    50</code></pre>
+##  sum_loop(x) 42900 45600 53948  49400 55500 94400    50
+##       sum(x)   200   200   844    400   700  7800    50</code></pre>
 <p>Obviously, the built-in <em>sum</em> is much faster. Nevertheless, if we think about this and the previous two examples carefully, we will realize that we cannot write vectorized R functions ourselves in some sense. The <em>ifelse</em>, <em>rowSums</em> and <em>sum</em> functions are vectorized because they are built-in with highly optimized compiled code (probably in C). It would be difficult to write a vectorized R function without using them because we would not deal with those (probably C) code in general.</p>
 <p>In other words, the building blocks of vectorization in R are usually the functions provided in system library (take a look at the package panel in R studio). As long as we operate with arrays directly with suitable built-in functions, we are doing vectorization in R in a narrow sense. To illustrate different possibilities, we try to give a more complex example. Consider a data series with missing data:</p>
 <pre class="r"><code>set.seed(3005) # to ensure A will not change
@@ -1978,9 +1978,9 @@ head(X, 10) # full data series</code></pre>
 <pre class="r"><code>print(microbenchmark(f_naive(A,n), f_naive2(A,n), f_vec(A,n), times=50))</code></pre>
 <pre><code>## Unit: microseconds
 ##            expr    min     lq     mean  median     uq    max neval
-##   f_naive(A, n) 1380.9 1524.6 1585.794 1557.65 1621.2 1906.8    50
-##  f_naive2(A, n)  872.8  977.7 1013.290  992.40 1053.0 1222.6    50
-##     f_vec(A, n)   90.9   96.5  162.276   99.50  114.2 2692.1    50</code></pre>
+##   f_naive(A, n) 1276.8 1347.9 1494.482 1541.15 1586.7 1849.0    50
+##  f_naive2(A, n)  790.5  875.7  934.930  956.50  984.9 1060.2    50
+##     f_vec(A, n)   83.7   91.9  152.022   97.00  101.0 2677.4    50</code></pre>
 </div>
 <div id="environments" class="section level2">
 <h2><span class="header-section-number">4.2</span> Environments</h2>
@@ -2054,7 +2054,7 @@ queue_pop = function(queue) {
   out = rep(NA, B)
   for (b in 1:B)
   {
-    xb = x[floor(runif(n, 0, n))]
+    xb = x[ceiling(runif(n, 0, n))]
     out[b] = mean(xb)
   }
   var(out)*(B-1)/B
@@ -2079,14 +2079,15 @@ double bootVar_cpp(NumericVector x, int B=10000)
 <pre class="r"><code>x = rnorm(100, sd=31.4)
 set.seed(3005)
 bootVar_r(x)</code></pre>
-<pre><code>## [1] 9.973175</code></pre>
-<pre class="r"><code>bootVar_cpp(x) #values differ slightly because bootstrap introduces randomness</code></pre>
-<pre><code>## [1] 10.00453</code></pre>
+<pre><code>## [1] 10.02304</code></pre>
+<pre class="r"><code>set.seed(3005)
+bootVar_cpp(x) #same as above</code></pre>
+<pre><code>## [1] 10.02304</code></pre>
 <pre class="r"><code>print(microbenchmark(bootVar_r(x), bootVar_cpp(x), times=50))</code></pre>
 <pre><code>## Unit: milliseconds
-##            expr     min      lq     mean  median       uq      max neval
-##    bootVar_r(x) 93.8604 99.3799 99.54096 99.9890 100.6110 108.2089    50
-##  bootVar_cpp(x) 18.4974 18.6658 21.15797 18.9995  24.4697  25.9342    50</code></pre>
+##            expr      min       lq      mean   median       uq      max neval
+##    bootVar_r(x) 219.4565 233.2991 237.50889 238.9647 241.2498 258.7670    50
+##  bootVar_cpp(x)  25.7193  45.4139  50.07291  47.6068  55.7474  81.2899    50</code></pre>
 <p>Clearly the Rcpp implementation is faster. However, there are several remarks:</p>
 <ol style="list-style-type: decimal">
 <li>We can see that we need (sort of) new terms if we want to use Rcpp. For example, we declare x as <em>Rcpp::NumericVector</em> instead of <em>std::vector</em> as in ordinary C++ code. To this end, I recommend <a href="https://teuder.github.io/rcpp4everyone_en/">this</a> as a reference<br />
