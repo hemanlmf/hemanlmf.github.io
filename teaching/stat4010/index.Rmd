@@ -1,5 +1,5 @@
 ---
-title: "STAT3005 Resources"
+title: "STAT4010 Resources"
 output: html_document
 ---
 
@@ -7,17 +7,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Fall, 2020
+## Spring, 2021
 
 ### Short Notes
-1. [Tips for R](2020F/SN-Tips-for-R.html)  
-2. [Midterm Review](2020F/Midterm-Review.html)  
-
-### Q&A
-1. [Monte Carlo experiment](2020F/QA-MC-Experiment.html)  
+1. [Tips for R](../stat3005/2020F/SN-Tips-for-R.html) 
 
 ### Online Reference
-1. [Course website](https://sites.google.com/site/kwchankeith/teaching/s3005-2021Fall)  
+1. [Course website](https://sites.google.com/site/kwchankeith/teaching/s4010)  
 This should be your major reference for revision  
 2. [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)  
 Rmd is very useful if you want to incorporate R, LaTeX or other languages like Python in the same documentation. You can use it for your HW  
