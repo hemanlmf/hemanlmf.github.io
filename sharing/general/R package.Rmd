@@ -1,0 +1,43 @@
+---
+title: "Reading Group: R package"
+author: "LEUNG Man Fung, Heman"
+date: "Winter 2020"
+output: 
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.pos = "!ht", fig.asp = 0.618,
+                      fig.width = 10, out.width = "100%")
+```
+
+## Preliminaries
+- Before developing a R package, I recommend additional knowledge of
+  - functions, e.g., scoping, ... (dot-dot-dot), infix form; see [Advanced R Ch6](https://adv-r.hadley.nz/functions.html)
+  - environments; see [Advanced R Ch7](https://adv-r.hadley.nz/environments.html)
+  - signals, .e.g., <code>stop()</code>, <code>warning()</code>; see [Advanced R Ch8](https://adv-r.hadley.nz/conditions.html)
+  - at least one OO system, e.g., S3; see [Advanced R Ch13](https://adv-r.hadley.nz/s3.html)
+- Reference book: [R packages](https://r-pkgs.org/) by Hadley Wickham and Jenny Bryan
+  - read for details as I can only cover working knowledge
+  - vs [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
+    - the later is official but more difficult to read
+    - *package.skeleton* is also less developer friendly than R studio project
+- I will assume we have some R functions ready for bundling into a package
+
+## Workflows
+1. Name our package (nicely)
+    - avoid name collision, e.g., <code>available::available("rpkg", browse=F)</code>
+2. Create directory via File > New Project... > New Directory > R package
+3. Edit the DESCRIPTION file
+4. Put the ready R scripts in R/
+    - document these scripts with roxygen2, e.g., title, description, @param, @examples, @return
+    - put examples in separate files if they are long and use @example
+    - (optional) document the package as a whole
+5. Prepare unit tests, e.g., <code>usethis::use_testthat()</code>
+6. Check the package, e.g., <code>devtools::check()</code>
+7. Write vignettes when our package is relatively stable
+
+## Q&A
+- I will add the questions and answers here later if there is any
