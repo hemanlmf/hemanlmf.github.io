@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = FALSE, fig.pos = "!ht", fig.asp = 0.618,
   - read for details as I can only cover working knowledge
   - vs [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
     - the later is official but more difficult to read
-    - *package.skeleton* is also less developer friendly than R studio project
+    - <code>package.skeleton()</code> is also less developer friendly than R studio project
 - I will assume we have some R functions ready for bundling into a package
 
 ## Workflows
@@ -40,4 +40,5 @@ knitr::opts_chunk$set(echo = FALSE, fig.pos = "!ht", fig.asp = 0.618,
 7. Write vignettes when our package is relatively stable
 
 ## Q&A
-- I will add the questions and answers here later if there is any
+- How to build a pdf with all available functions' help manual?
+  - Use <code>devtools::build_manual()</code>.
