@@ -1,0 +1,166 @@
+---
+title: "RMSC5102 2021S Exercise for Stochastic Calculus"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    toc: no
+    toc_depth: '2'
+  pdf_document:
+    number_sections: yes
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Finding the SDE
+## Strategy
+1) Define $f(x,t)$ and $dX_t$.  
+2) Apply Ito's lemma to $f(X_t,t)$.
+
+
+## Exercise
+a) Find $d(e^{\sigma W_t -\frac{1}{2}\sigma^2 t})$ where $\sigma$ is a constant.  
+b) Suppose $dr_t = \alpha dt +\beta dW_t$. Show that $M_t = e^{r_t - (\alpha +\frac{\beta^2}{2})t}$ follows a geometric Brownian motion.
+
+## Solution
+a) Let $f(x,t) = e^{\sigma x -\frac{1}{2}\sigma^2 t}$. Then $\frac{\partial f}{\partial t} = -\frac{1}{2}\sigma^2 f$, $\frac{\partial f}{\partial x} = \sigma f$ and $\frac{\partial^2 f}{\partial x^2} = \sigma^2 f$.  
+Note that the underlying process is $dX_t = dW_t$. Hence by Ito's lemma,
+$$
+\begin{aligned}
+d(e^{\sigma W_t -\frac{1}{2}\sigma^2 t}) &= \left(-\frac{1}{2}\sigma^2 f +\frac{1}{2}\sigma^2 f  \right)dt +\sigma fdW_t \\
+&= \sigma e^{\sigma W_t -\frac{1}{2}\sigma^2 t} dW_t
+\end{aligned}
+$$
+
+b) Let $f(x,t) = e^{x - (\alpha +\frac{\beta^2}{2})t}$. Then $\frac{\partial f}{\partial t} = -(\alpha +\frac{\beta^2}{2}) f$, $\frac{\partial f}{\partial x} = f$ and $\frac{\partial^2 f}{\partial x^2} = f$.  
+Note that the underlying process is $dr_t = \alpha dt +\beta dW_t$. Hence by Ito's lemma,
+$$
+\begin{aligned}
+dM_t &= \left[-(\alpha +\frac{\beta^2}{2}) M_t +\alpha M_t +\frac{1}{2}\beta^2 M_t  \right]dt +\beta M_t dW_t \\
+&= \beta M_t dW_t
+\end{aligned}
+$$
+Hence $M_t$ follows a GBM with drift zero and volatility $\beta$.
+
+# Finding the Stochastic Integral
+## Strategy
+1) Guess the function such that it will contain the integrand in its SDE (you may use integration by parts $\int udv = uv - \int vdu$ to guess).  
+2) Use Ito's lemma to find the SDE of our guess.  
+3) Rearrange the terms and integrate both sides.  
+
+## Exercise
+a) Evaluate $\int_0^t e^{-s}dW_s$.  
+b) Prove or disprove $\int_0^t W_s e^{W_s^2}dW_s = \frac{1}{2}e^{W_t^2} -\int_0^t W_s^2 e^{W_s^2}ds$.  
+c) Evaluate $\int_0^T e^{-t}W_t dW_t$.  
+
+## Solution
+a) Let $f(x,t) = e^{-t}x$ (such guess comes from integration by parts $\int e^{-t}dx = e^{-t}x -\cdots$). Then $\frac{\partial f}{\partial t} = -e^{-t}x$, $\frac{\partial f}{\partial x} = e^{-t}$ and $\frac{\partial^2 f}{\partial x^2} = 0$.  
+Note that the underlying process is $dX_t = dW_t$. Hence by Ito's lemma,
+$$
+d(e^{-t}W_t) = -e^{-t}W_t dt +e^{-t}dW_t.
+$$
+Rearranging the terms,
+$$
+e^{-t}dW_t = d(e^{-t}W_t) +e^{-t}W_t dt.
+$$
+Since $W_0=0$ almost surely, we have
+$$
+\int_0^t e^{-s}dW_s = e^{-t}W_t +\int_0^t e^{-s}W_s ds.
+$$
+
+b) Note that the only term without integral is $\frac{1}{2}e^{W_t^2}$, so we shall begin with something similar to this and we may get back to it after integrating.  
+Now let $f(x,t) = e^{x^2}$. Then $\frac{\partial f}{\partial t} = 0$, $\frac{\partial f}{\partial x} = 2xe^{x^2}$ and $\frac{\partial^2 f}{\partial x^2} = 2e^{x^2} +4x^2 e^{x^2}$.  
+Note that the underlying process is $dX_t = dW_t$. Hence by Ito's lemma,
+$$
+d(e^{W_t^2}) = \frac{1}{2} (2e^{W_t^2} +4W_t^2 e^{W_t^2})dt +2W_t e^{W_t^2}dW_t.
+$$
+Rearranging the terms,
+$$
+W_t e^{W_t^2}dW_t = \frac{1}{2} d(e^{W_t^2}) - \frac{1}{2} e^{W_t^2} dt -W_t^2 e^{W_t^2}dt.
+$$
+Since $W_0=0$ almost surely, we have
+$$
+\int_0^t W_s e^{W_s^2}dW_s = \frac{1}{2} (e^{W_t^2} -1) - \frac{1}{2} \int_0^t e^{W_s^2} ds -\int_0^t W_s^2 e^{W_s^2}ds,
+$$
+which disproves the statement.
+
+c) Let $f(x,t) = e^{-t}x^2$ (such guess comes from integration by parts $\int e^{-t}xdx = \frac{1}{2} e^{-t}x^2 -\cdots$). Then $\frac{\partial f}{\partial t} = -e^{-t}x^2$, $\frac{\partial f}{\partial x} = 2e^{-t}x$ and $\frac{\partial^2 f}{\partial x^2} = 2e^{-t}$.  
+Note that the underlying process is $dX_t = dW_t$. Hence by Ito's lemma,
+$$
+d(e^{-t}W_t^2) = (-e^{-t}W_t +e^{-t}) dt +2e^{-t}W_t dW_t.
+$$
+Rearranging the terms,
+$$
+e^{-t}W_t dW_t = \frac{1}{2} d(e^{-t}W_t^2) -\frac{1}{2}e^{-t} dt +\frac{1}{2} e^{-t}W_t dt.
+$$
+Since $W_0=0$ almost surely, we have
+$$
+\int_0^T e^{-t}W_t dW_t = \frac{1}{2} e^{-T}W_T^2 -\frac{1}{2} (1-e^{-T}) +\frac{1}{2} \int_0^T e^{-t}W_t dt.
+$$
+
+# Solving an SDE
+SDE may not have closed form solution in general (thus we need simulation). Hence usually hints will be given if you are required to solve an SDE. You may refer to the tutorial notes for some commonly used SDE in finance and their solution. I think GBM is the main focus of this course so you can just memorize its solution.  
+
+## Strategy
+If you "know" the solution, just check it using Ito's lemma. Otherwise, you may try the following:  
+
+1) Apply Ito's lemma to a transformation (e.g. log) of the process or multiply both sides with an integrating factor (e.g., $e^{rt}$; target: cancel some terms).  
+2) Integrate the SDE.  
+3) Reverse the transformation or multiply both sides with inverse of the integrating factor.
+
+## Exercise
+a) Solve $dS_t = \mu S_tdt +\sigma S_t dW_t$ (GBM).  
+b) Solve $dX_t = \mu X_tdt +\sigma dW_t$ (OU process).  
+c) Solve $dr_t = (\alpha -\beta r_t)dt +\sigma dW_t$ (Vasicek model).
+
+## Solution
+a) By Ito's lemma,
+$$
+d(\ln S_t) = (\mu -\frac{1}{2}\sigma^2)dt +\sigma dW_t.
+$$
+Integrating both sides from 0 to t, we have
+$$
+\ln S_t -\ln S_0 = (\mu -\frac{1}{2}\sigma^2)t +\sigma W_t.
+$$
+Hence
+$$
+S_t = S_0 e^{(\mu -\frac{1}{2}\sigma^2)t +\sigma W_t},
+$$
+which is the equation we used a lot for this course.
+
+b) Let $f(X_t,t) = e^{-\mu t}X_t$. By Ito's lemma,
+$$
+\begin{aligned}
+d(e^{-\mu t}X_t) &= (-\mu e^{-\mu t}X_t +\mu X_t e^{-\mu t})dt +\sigma e^{-\mu t} dW_t\\
+&= \sigma e^{-\mu t} dW_t.
+\end{aligned}
+$$
+Integrating both sides from 0 to $t$, we have
+$$
+e^{-\mu t}X_t - X_0 = \sigma \int_0^t e^{-\mu s} dW_s.
+$$
+Hence
+$$
+X_t = e^{\mu t}X_0 +\sigma \int_0^t e^{-\mu (t-s)} dW_s.
+$$
+
+c) Let $f(X_t,t) = e^{\beta t}X_t$. By Ito's lemma,
+$$
+\begin{aligned}
+d(e^{\beta t}X_t) &= (\beta e^{\beta t}r_t +(\alpha -\beta r_t) e^{\beta t})dt +\sigma e^{\beta t} dW_t\\
+&= \alpha e^{\beta t} dW_t +\sigma e^{\beta t} dW_t.
+\end{aligned}
+$$
+Integrating both sides from 0 to t, we have
+$$
+e^{\beta t}r_t - r_0 = \alpha \int_0^t e^{\beta s} dW_s +\sigma \int_0^t e^{\beta s} dW_s.
+$$
+Hence
+$$
+r_t = e^{-\beta t}r_0 +\frac{\alpha}{\beta} (1-e^{-\beta t})+\sigma \int_0^t e^{\beta (s-t)} dW_s.
+$$
