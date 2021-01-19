@@ -92,15 +92,15 @@ which disproves the statement.
 c) Let $f(x,t) = e^{-t}x^2$ (such guess comes from integration by parts $\int e^{-t}xdx = \frac{1}{2} e^{-t}x^2 -\cdots$). Then $\frac{\partial f}{\partial t} = -e^{-t}x^2$, $\frac{\partial f}{\partial x} = 2e^{-t}x$ and $\frac{\partial^2 f}{\partial x^2} = 2e^{-t}$.  
 Note that the underlying process is $dX_t = dW_t$. Hence by Ito's lemma,
 $$
-d(e^{-t}W_t^2) = (-e^{-t}W_t +e^{-t}) dt +2e^{-t}W_t dW_t.
+d(e^{-t}W_t^2) = (-e^{-t}W_t^2 +e^{-t}) dt +2e^{-t}W_t dW_t.
 $$
 Rearranging the terms,
 $$
-e^{-t}W_t dW_t = \frac{1}{2} d(e^{-t}W_t^2) -\frac{1}{2}e^{-t} dt +\frac{1}{2} e^{-t}W_t dt.
+e^{-t}W_t dW_t = \frac{1}{2} d(e^{-t}W_t^2) -\frac{1}{2}e^{-t} dt +\frac{1}{2} e^{-t}W_t^2 dt.
 $$
 Since $W_0=0$ almost surely, we have
 $$
-\int_0^T e^{-t}W_t dW_t = \frac{1}{2} e^{-T}W_T^2 -\frac{1}{2} (1-e^{-T}) +\frac{1}{2} \int_0^T e^{-t}W_t dt.
+\int_0^T e^{-t}W_t dW_t = \frac{1}{2} e^{-T}W_T^2 -\frac{1}{2} (1-e^{-T}) +\frac{1}{2} \int_0^T e^{-t}W_t^2 dt.
 $$
 
 # Solving an SDE

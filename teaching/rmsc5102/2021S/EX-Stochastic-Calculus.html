@@ -1721,11 +1721,11 @@ W_t e^{W_t^2}dW_t = \frac{1}{2} d(e^{W_t^2}) - \frac{1}{2} e^{W_t^2} dt -W_t^2 e
 \]</span> which disproves the statement.</p></li>
 <li><p>Let <span class="math inline">\(f(x,t) = e^{-t}x^2\)</span> (such guess comes from integration by parts <span class="math inline">\(\int e^{-t}xdx = \frac{1}{2} e^{-t}x^2 -\cdots\)</span>). Then <span class="math inline">\(\frac{\partial f}{\partial t} = -e^{-t}x^2\)</span>, <span class="math inline">\(\frac{\partial f}{\partial x} = 2e^{-t}x\)</span> and <span class="math inline">\(\frac{\partial^2 f}{\partial x^2} = 2e^{-t}\)</span>.<br />
 Note that the underlying process is <span class="math inline">\(dX_t = dW_t\)</span>. Hence by Ito’s lemma, <span class="math display">\[
-d(e^{-t}W_t^2) = (-e^{-t}W_t +e^{-t}) dt +2e^{-t}W_t dW_t.
+d(e^{-t}W_t^2) = (-e^{-t}W_t^2 +e^{-t}) dt +2e^{-t}W_t dW_t.
 \]</span> Rearranging the terms, <span class="math display">\[
-e^{-t}W_t dW_t = \frac{1}{2} d(e^{-t}W_t^2) -\frac{1}{2}e^{-t} dt +\frac{1}{2} e^{-t}W_t dt.
+e^{-t}W_t dW_t = \frac{1}{2} d(e^{-t}W_t^2) -\frac{1}{2}e^{-t} dt +\frac{1}{2} e^{-t}W_t^2 dt.
 \]</span> Since <span class="math inline">\(W_0=0\)</span> almost surely, we have <span class="math display">\[
-\int_0^T e^{-t}W_t dW_t = \frac{1}{2} e^{-T}W_T^2 -\frac{1}{2} (1-e^{-T}) +\frac{1}{2} \int_0^T e^{-t}W_t dt.
+\int_0^T e^{-t}W_t dW_t = \frac{1}{2} e^{-T}W_T^2 -\frac{1}{2} (1-e^{-T}) +\frac{1}{2} \int_0^T e^{-t}W_t^2 dt.
 \]</span></p></li>
 </ol>
 </div>
