@@ -1,0 +1,112 @@
+---
+title: "STAT4010 2021S Karte 1"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    number_sections: no
+    toc: no
+    toc_depth: 2
+  pdf_document:
+    number_sections: no
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+## Resources
+Below are some useful URLs when you take this course. They are included in [my website](https://hemanlmf.github.io/) but let me briefly introduce them:
+
+1. [Course website](https://sites.google.com/site/kwchankeith/teaching/s4010/s4010-2021Spring)  
+Since Keith's notes are quite comprehensive, I will not write notes about the mathematical materials again. I do extract some question types and answering strategies before midterm and final. Other than that, I will mostly cover assignments and supplement some technical materials (e.g., R).
+
+2. [Tips for R](https://hemanlmf.github.io/teaching/stat3005/2020F/SN-Tips-for-R.html)  
+When you learn Bayesian computation later, different implementations may differ a lot in computational efficiency. If time allows, I will cover how to use Rcpp as suggested by Keith. For reference seeker, please read the notes/books stated in the above short note.
+
+3. [Wolfram Alpha](https://www.wolframalpha.com/)  
+In assignments and projects, it is fine to use any symbolic computation tools (preferably with the source). It is also a good idea to cross check your derivation with them.
+
+4. [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)  
+I will use Rmd in the tutorials and provide you the source documents so that you can learn something about typesetting. This is not mandatory and you are not required to use it for your assignments.
+
+## General Advice
+Below are some advice from STAT3005 last semester:
+
+- Answer ALL question. If you write nothing, I can only give zero for that part.
+- Write down your ideas/difficulties if you cannot work out the answer. They can be credited as long as you demonstrate some knowledge in the course.
+- Utilize forum on Blackboard and Q&A sessions after lecture/tutorial.
+- Do NOT copy from your friends. You can discuss with them and cite their names (or any other source) in the assignments. Projects must be individual works.
+
+# Assignment 1
+If I omit a question, that usually means the hints are sufficient so you can just refer to the Remark in the assignment.
+
+## Ex1.2.1
+Let $Z_0, \ldots, Z_n, Z_{n+1} \stackrel{\textrm{IID}}{\sim} \textrm{Exp}(1)$. Using representation, we can express $\theta(x_1-1)$ and $\theta(x_{n+1}-1)$ in terms of $Z$. If the indices of those $Z$ are different, they are independent by construction.
+
+## Ex1.2.2
+Be careful with the indicators. Some of them can be dropped but some cannot in the posterior.
+
+## Ex1.2.3
+The following explains the trick in Remark 1.2.3:
+$$
+\begin{aligned}
+\int_0^{\infty} \theta^{\alpha-1} e^{-\beta \theta}\, d\theta
+&= \frac{\Gamma(\alpha)}{\beta^{\alpha}} \int_0^{\infty} \frac{\beta^{\alpha}}{\Gamma(\alpha)} \theta^{\alpha-1} e^{-\beta \theta}\, d\theta \\
+&= \frac{\Gamma(\alpha)}{\beta^{\alpha}} \cdot 1
+= \frac{\Gamma(\alpha)}{\beta^{\alpha}}.
+\end{aligned}
+$$
+Therefore, you need to identify $\alpha$ and $\beta$ if you encounter an integral of the same form.
+
+## Ex1.2.5
+```{r ex1.2.5, eval=F}
+x = c(1.028, 1.473, 1.103, 1.096, 1.077, 1.089, 1.058, 1.015, 1.065)
+#---------------------------------------------
+# Suggested work flow:
+# 1. Write a function that accept (a) x-coordinate (b) data (c) others, if any
+#    The output should be the y-coordinate of the posterior predictive
+# 2. Define a vector x-coordinate that you want to compute y, e.g.
+#    at = seq(from=1.001, to=1.5, length=11)
+# 3. Compute and store the y-coordinate based on different input x-coordinate and data
+#---------------------------------------------
+col = colorRampPalette(c("red", "blue"))(10)
+matplot(... ,col=col)           # you need to compute the ... part
+legend("topright",... ,col=col) # you need to compute the ... part
+```
+Consider Example 1.9, the posterior predictive is
+$$
+f(x_{n+1} \mid x_{1:n}) = \binom{N}{x_{n+1}} \frac{B(\alpha_n+x_{n+1}, \beta_n+N-x_{n+1})}{B(\alpha_n, \beta_n)}.
+$$
+The work flow becomes (parameters not given in Example 1.9 are assumed):
+```{r eg1.9}
+x = rep(1, 5)
+postPred = function(x, data, alpha, beta, N) {
+  if (is.null(data)) {
+    alphaN = alpha
+    betaN = beta
+  } else {
+    alphaN = alpha +sum(data)
+    betaN = beta +length(data)*N -sum(data)
+  }
+  choose(N, x) *beta(alphaN+x, betaN+N-x) /beta(alphaN, betaN)
+}
+at = seq(from=1, to=5, length=5)
+out = matrix(nrow=length(at), ncol=length(x)+1)
+out[,1] = postPred(at, NULL, 1, 1, 10)
+for (i in 1:length(x)) {
+  out[,i+1] = postPred(at, x[1:i], 1, 1, 10)
+}
+```
+
+## Ex1.3.2
+Let $V_{n+1}, \ldots, V_{n+m} \sim \chi_1^2$ and $U_n \sim \chi_{2 \alpha_n}^2$ be mutually independent. Using the representation in Remarks 1.3 and 1.4, we have for $i = n+1, \ldots, n+m$,
+$$
+\theta = \frac{2\beta_n}{U_n} \quad \textrm{and} \quad
+x_i = \sqrt{2\theta V_i}.
+$$
+Note that the $\theta$ above is the posterior instead of prior as we want to derive the posterior predictive, and $\alpha_n, \beta_n$ are answers from Ex1.3.1.
