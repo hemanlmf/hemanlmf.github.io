@@ -10,7 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Spring, 2021
 
 ### Short Notes
-1. [Karte 1](2021S/Karte-1.html) 
+1. [Karte 1](2021S/Karte-1.html)  
+2. [Karte 2](2021S/Karte-2.html) 
 
 ### Online Reference
 1. [Course website](https://sites.google.com/site/kwchankeith/teaching/s4010/s4010-2021Spring)  

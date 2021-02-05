@@ -1,0 +1,84 @@
+---
+title: "STAT4010 2021S Karte 2"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    number_sections: no
+    toc: no
+    toc_depth: 2
+  pdf_document:
+    number_sections: no
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Announcement
+1. No tutorial next week due to lunar new year holiday.
+
+2. New TA and our division of works
+    - Heman (me): teaching tutorial, consultation by appointment, writing assignment solution
+    - Zhang Zheng: grading assignment, consultation by appointment, writing project solution
+    - Both of us will grade the projects
+
+3. Rules for seeking help
+    - Use forum instead of email to ask questions about course materials/assignments. We want to minimize the number of duplicating questions
+    - Do not try to confirm assignment answers before the submission deadline. You need not to worry about making mistakes as assignments are graded very leniently
+    - Attend any Q&A sessions after lecture/tutorial to seek individual help
+
+4. Solution of assignment 1 will be posted next week. I recommend reading the comment questions (Ex1.2.5 and Ex1.3.3) as the messages are quite interesting.
+
+# Assignment 2
+If I omit a question, that usually means the hints are sufficient so you can just refer to the Remark in the assignment.
+
+## Ex2.1.1
+This question is open-ended. However, I would like to remind you that you cannot use information from last semester's STAT/RMSC courses. Otherwise, you might use the data twice. Some possible data sources are:
+
+- Courses offered by department other than Statistics
+- Courses offered before Fall 2020
+- Courses offered by other universities in HK
+
+## Ex2.2.2
+From 2.2.1, you have obtained the form of
+$$
+f(\theta \mid y_{1:n}) \propto f(y_{1:n} \mid \theta) f(\theta).
+$$
+To derive the posterior under re-parametrization quickly, you may use the fact that $f(y_{1:n} \mid \phi) \equiv f(y_{1:n} \mid \theta)$ when $\phi$ and $\theta$ have one-to-one relationship.
+
+## Ex2.3.2
+Deriving the required posterior is quite tedious. Try to factor out $\exp( -\beta_n/\sigma^2)$ first and simplify the remaining terms to compare with Remark 2.3.2.
+
+## Ex2.3.4
+There are two difficulties in this question. First, we cannot directly compute, e.g., $\Gamma(799)/2^{6550}$ in R:
+```{r ex2.3.4_gamma}
+gamma(799) /2^6550
+```
+To compute this ratio, we can write:
+```{r ex2.3.4_lgamma}
+ exp(lgamma(799) -6550*log(2))
+```
+Since
+$$
+\frac{\Gamma(799)}{2^{6550}}
+= \exp \left\{ \log \left( \frac{\Gamma(799)}{2^{6550}} \right) \right\}
+= \exp \left\{ \log\Gamma(799) - 6550\log 2  \right\},
+$$
+we can "transform" the problem to computing smaller numbers. Similar problems appear in machine learning as well. For example, the standard logistic function can be defined as either
+$$
+w(t) = \frac{e^t}{e^t+1} \quad \textrm{or} \quad
+w(t) = \frac{1}{1+e^{-t}}.
+$$
+When $t$ is large, observe that
+```{r ex2.3.4_logit}
+t = 1e5
+exp(t)/(exp(t)-1)
+1/(1+exp(-t))
+```
+Therefore, the formula used for computation can make a difference.
+
+Second, the question requires the function to return a vector. In other words, the function should compute $f(\theta \mid x_{1:n})$ for each value in the argument $\theta$.
