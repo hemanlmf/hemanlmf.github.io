@@ -1,0 +1,57 @@
+---
+title: "STAT4010 2021S Karte 3"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    number_sections: no
+    toc: no
+    toc_depth: 2
+  pdf_document:
+    number_sections: no
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Supplement
+## Admissibility
+In the lecture, Keith said inadmissible estimators $\approx$ useless. Here I will discuss some reasons why we may still use an inadmissible estimator.
+
+1. Automatic nature/wide applicability  
+Example 3.18 shows that the MLE of $\sigma^2$ is inadmissible. However, the principle of likelihood is widely applicable and we can use it easily when there is a new problem; see Appendix D. Admissibility is a sound concept but it does not automatically construct an estimator for us.
+
+2. Computational efficiency  
+Admissibility concerns (only) the statistical efficiency of an estimator or estimation procedure. Nevertheless, the time to compute/update an estimate matters more in some applications, e.g., convergence diagnostics.
+
+3. Other properties  
+Admissible estimators may not have some desirable theoretical properties. For example, we may want a variance estimator guaranteed to be non-negative.
+
+# Assignment 3
+If I omit a question, that usually means the hints are sufficient so you can just refer to the Remark in the assignment. I do not discuss bonus question in general.
+
+## Ex3.1.2
+Apart from using Example 3.13, you can also use Example 2.14.
+
+## Ex3.1.4
+When does $\hat{\theta}_1 = \bar{x}$?
+
+## Ex3.1.6
+Derive $R_1(\theta, c+d\bar{x})$ stated in Remark 3.1.5 first. You can express $\hat{\theta}_1$ in form of $c+d\bar{x}$. This result is also useful in Ex3.1.8.
+
+## Ex3.1.9
+If you are going to use data related to other entities in the given dataset, please be careful of any systematic difference such as population and epidemiological situation. For example,
+```{r ex3.1.9, eval=F}
+data = read.csv("covid.csv")
+colnames(data) = c("entity","date","case","death")
+data[which(data$entity=="Taiwan"), "death"]
+# 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0
+data[which(data$entity=="United States"), "death"]
+# 1995 3750 3890 3950 4037 3251 1824 2006 4466 3964
+# 3930 3805 3352 1751 1405 2774 4377 4203 3760 3329
+# 1775 1917 4084 3943 4001 3603 2731 1794 2031 3389
+```
