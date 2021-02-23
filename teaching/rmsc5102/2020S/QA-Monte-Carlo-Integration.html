@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -1602,6 +1601,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -1645,22 +1645,22 @@ summary {
 </div>
 <div id="answer" class="section level1">
 <h1>Answer</h1>
-<p>When <span class="math inline">\((a,b) = (0,1)\)</span>, we generate <span class="math inline">\(U \sim U(0,1)\)</span> as the underlying random variable in standard Monte Carlo since the support of <span class="math inline">\(U\)</span> is same as interval of integration. The idea is essentially <span class="math display">\[
-\int_0^1 g(x) dx = \int_0^1 g(u) f(u) du = E[g(U)] 
-\]</span> since the pdf of <span class="math inline">\(U\)</span> is <span class="math inline">\(f(u)=1\)</span></p>
+<p>When <span class="math inline">\((a,b) = (0,1)\)</span>, we generate <span class="math inline">\(U \sim \textrm{Unif}(0,1)\)</span> as the underlying random variable in standard Monte Carlo since the support of <span class="math inline">\(U\)</span> is same as interval of integration. The idea is essentially <span class="math display">\[
+\int_0^1 g(x) dx = \int_0^1 g(u) f(u) du = \mathbb{E}\{g(U)\}, 
+\]</span> since the pdf of <span class="math inline">\(U\)</span> is <span class="math inline">\(f(u)=1\)</span>.</p>
 <p>Similarly, for <span class="math inline">\(\theta = \int_a^b g(x) dx\)</span>, we generate <span class="math inline">\(V \sim U(a,b)\)</span>. Then <span class="math display">\[
-\int_a^b g(x) dx = (b-a)\int_a^b g(v) \frac{1}{b-a} dv = (b-a)E[g(V)] 
-\]</span> since the pdf of <span class="math inline">\(V\)</span> is <span class="math inline">\(f(v)=\frac{1}{b-a}\)</span>. This means we need to multiply <span class="math inline">\((b-a)\)</span> to the original sample average from simulation</p>
-<p>The following is an illustration with estimation of <span class="math inline">\(\theta = \int_{1.7}^{7.1} e^x dx\)</span></p>
+\int_a^b g(x) dx = (b-a)\int_a^b g(v) \frac{1}{b-a} dv = (b-a)\mathbb{E}\{g(V)\},
+\]</span> since the pdf of <span class="math inline">\(V\)</span> is <span class="math inline">\(f(v)=\frac{1}{b-a}\)</span>. This means we need to multiply <span class="math inline">\((b-a)\)</span> to the original sample average from simulation.</p>
+<p>The following is an illustration with estimation of <span class="math inline">\(\theta = \int_{1.7}^{7.1} e^x dx\)</span>:</p>
 <pre class="r"><code>n = 100000
 a = 1.7
 b = 7.1
 U = runif(n, a, b)
 thetaH = mean(exp(U))
 thetaH #original sample average</code></pre>
-<pre><code>## [1] 223.7219</code></pre>
+<pre><code>## [1] 220.9045</code></pre>
 <pre class="r"><code>(b-a)*thetaH #adjusted sample average</code></pre>
-<pre><code>## [1] 1208.098</code></pre>
+<pre><code>## [1] 1192.885</code></pre>
 <pre class="r"><code>exp(b)-exp(a) #theoretical value</code></pre>
 <pre><code>## [1] 1206.493</code></pre>
 </div>

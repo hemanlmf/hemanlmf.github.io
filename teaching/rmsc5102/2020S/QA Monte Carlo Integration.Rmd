@@ -15,19 +15,19 @@ knitr::opts_chunk$set(echo = TRUE)
 How to use standard Monte Carlo to estimate $\theta = \int_a^b g(x) dx$ when $(a,b) \neq (0,1)$?
 
 # Answer
-When $(a,b) = (0,1)$, we generate $U \sim U(0,1)$ as the underlying random variable in standard Monte Carlo since the support of $U$ is same as interval of integration. The idea is essentially
+When $(a,b) = (0,1)$, we generate $U \sim \textrm{Unif}(0,1)$ as the underlying random variable in standard Monte Carlo since the support of $U$ is same as interval of integration. The idea is essentially
 $$
-\int_0^1 g(x) dx = \int_0^1 g(u) f(u) du = E[g(U)] 
+\int_0^1 g(x) dx = \int_0^1 g(u) f(u) du = \mathbb{E}\{g(U)\}, 
 $$
-since the pdf of $U$ is $f(u)=1$  
+since the pdf of $U$ is $f(u)=1$.  
 
 Similarly, for $\theta = \int_a^b g(x) dx$, we generate $V \sim U(a,b)$. Then
 $$
-\int_a^b g(x) dx = (b-a)\int_a^b g(v) \frac{1}{b-a} dv = (b-a)E[g(V)] 
+\int_a^b g(x) dx = (b-a)\int_a^b g(v) \frac{1}{b-a} dv = (b-a)\mathbb{E}\{g(V)\},
 $$
-since the pdf of $V$ is $f(v)=\frac{1}{b-a}$. This means we need to multiply $(b-a)$ to the original sample average from simulation  
+since the pdf of $V$ is $f(v)=\frac{1}{b-a}$. This means we need to multiply $(b-a)$ to the original sample average from simulation.  
 
-The following is an illustration with estimation of $\theta = \int_{1.7}^{7.1} e^x dx$
+The following is an illustration with estimation of $\theta = \int_{1.7}^{7.1} e^x dx$:
 ```{r answer}
 n = 100000
 a = 1.7

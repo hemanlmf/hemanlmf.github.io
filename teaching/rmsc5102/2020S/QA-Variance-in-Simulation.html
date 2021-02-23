@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -1602,6 +1601,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -1645,32 +1645,32 @@ summary {
 </div>
 <div id="answer" class="section level1">
 <h1>Answer</h1>
-<p>There are two interpretations of “variance” in variance reduction. Firstly, it can be the <strong>variance of samples</strong> that you generate for calculating 1 estimate. Secondly, it can be the <strong>variance of estimates</strong> that you calculate using multiple estimates. In tutorial, I told you to always use <strong>variance of estimates</strong></p>
-<p>However, there are some tricky parts here. For instance, antithetic variable can actually reduce variance of samples (thus variance of estimates since they decrease together usually) when we use antithetic variables as half of the samples. In this regard, variance of samples is sometimes used instead of variance of estimates in the lecture slides to illustrate the reduction</p>
+<p>There are two interpretations of “variance” in variance reduction. Firstly, it can be the <strong>variance of samples</strong> that you generate for calculating 1 estimate. Secondly, it can be the <strong>variance of estimates</strong> that you calculate using multiple estimates. In tutorial, I told you to always use <strong>variance of estimates</strong>.</p>
+<p>However, there are some tricky parts here. For instance, antithetic variable can actually reduce variance of samples (thus variance of estimates since they decrease together usually) when we use antithetic variables as half of the samples. In this regard, variance of samples is sometimes used instead of variance of estimates in the lecture slides to illustrate the reduction.</p>
 <p>Then why do we need to use <strong>variance of estimates</strong>? There are several reasons:</p>
 <ol style="list-style-type: decimal">
-<li><p>Some variance reduction methods (in particular control variates) do not affect the samples being generated. As it affects the estimate <span class="math inline">\(\hat{\theta}\)</span> directly, we have to use variance of estimates. Similar problem happens with dependent samples</p></li>
-<li><p>Variance of estimates is more meaningful in the sense that it measures the accuracy of your estimation procedure. If you are aware of, variance of estimates is the Monte Carlo approximation of <span class="math inline">\(Var(\hat{\theta})\)</span>, which gives us the accuracy of <span class="math inline">\(\hat{\theta}\)</span> (assume unbiased)</p></li>
-<li><p>Variance of samples needs to account for convergence rate for reporting. Hence we need to report the standard error (but not the raw variance) if we use it. Meanwhile variance of estimates is very intutitive and you do not need to do adjustment in R</p></li>
+<li><p>Some variance reduction methods (in particular control variates) do not affect the samples being generated. As it affects the estimate <span class="math inline">\(\hat{\theta}\)</span> directly, we have to use variance of estimates. Similar problem happens with dependent samples.</p></li>
+<li><p>Variance of estimates is more meaningful in the sense that it measures the accuracy of your estimation procedure. If you are aware of, variance of estimates is the Monte Carlo approximation of <span class="math inline">\(\textrm{Var}(\hat{\theta})\)</span>, which gives us the accuracy of <span class="math inline">\(\hat{\theta}\)</span> (assume unbiased).</p></li>
+<li><p>Variance of samples needs to account for convergence rate for reporting. Hence we need to report the standard error (but not the raw variance) if we use it. Meanwhile variance of estimates is very intutitive and you do not need to do adjustment in R.</p></li>
 </ol>
 <p>Let me illustrate an importance sampling example for <span class="math inline">\(\theta = \int_0^1 2x^2 dx\)</span> using <span class="math inline">\(g(x)=2x, 0 \leq x \leq 1\)</span>. Note that the likelihood ratio is <span class="math inline">\(\frac{1}{2x}\)</span>. Hence <span class="math display">\[
-h(x) \frac{f(x)}{g(x)} = x
+h(x) \frac{f(x)}{g(x)} = x.
 \]</span> If we want to simulate <span class="math inline">\(X \sim G\)</span>, then <span class="math display">\[
 G(x) = \int_0^x 2t dt = x^2 \implies
-X = G^{-1}(U) = \sqrt{U}
+X = G^{-1}(U) = \sqrt{U}.
 \]</span> The algorithm is as follows:<br />
-1) Generate <span class="math inline">\(U_i \sim U(0,1)\)</span> for <span class="math inline">\(i=1,...,n\)</span><br />
+1) Generate <span class="math inline">\(U_i \sim \textrm{Unif}(0,1)\)</span> for <span class="math inline">\(i=1,...,n\)</span><br />
 2) Set <span class="math inline">\(X_i=\sqrt{U_i}\)</span> for <span class="math inline">\(i=1,...,n\)</span><br />
 3) Compute <span class="math inline">\(\hat{\theta} = \frac{1}{n} \sum_{i=1}^n X_i\)</span></p>
 <p>Note that the theoretical variance of sample is <span class="math display">\[
-Var(X) = Var(\sqrt{U}) = \int_0^1 udu - \left( \int_0^1 \sqrt{u}du \right)^2 = \frac{1}{18}
+\textrm{Var}(X) = \textrm{Var}(\sqrt{U}) = \int_0^1 udu - \left( \int_0^1 \sqrt{u}du \right)^2 = \frac{1}{18}.
 \]</span> While the theoretical variance of estimator is <span class="math display">\[
 \begin{aligned}
-Var(\hat{\theta}) &amp;= \frac{1}{n^2} Var(\sum_{i=1}^n X_i) \\
-&amp;= \frac{1}{n} Var(X_1) \\
-&amp;= \frac{1}{18n}
+\textrm{Var}(\hat{\theta}) &amp;= \frac{1}{n^2} \textrm{Var}(\sum_{i=1}^n X_i) \\
+&amp;= \frac{1}{n} \textrm{Var}(X_1) \\
+&amp;= \frac{1}{18n}.
 \end{aligned}
-\]</span> The <span class="math inline">\(n\)</span> represent number of samples here. We can see that theoretical variance of estimator is proportional to theoretical variance of sample, which verifies my claim that they usually decrease together. At the same time, it proves reason 1 of using variance of estimates since we do not always have variance of sample from estimation. Reporting standard error in that case requires estimation or close form of <span class="math inline">\(Var(X)\)</span></p>
+\]</span> The <span class="math inline">\(n\)</span> represent number of samples here. We can see that theoretical variance of estimator is proportional to theoretical variance of sample, which verifies my claim that they usually decrease together. At the same time, it proves reason 1 of using variance of estimates since we do not always have variance of sample from estimation. Reporting standard error in that case requires estimation or close form of <span class="math inline">\(\textrm{Var}(X)\)</span>.</p>
 <p>Finally, we end this Q&amp;A with a comparison in R:</p>
 <pre class="r"><code>nSample = 1000
 nEstimate = 1000
@@ -1688,7 +1688,7 @@ v[3] = 1/(18*nSample) #theoretical variance of estimator
 v[4] = var(thetaH) #estimated variance of estimator
 v[5] = var(X)/nSample #standard error
 v</code></pre>
-<pre><code>## [1] 5.555556e-02 5.489821e-02 5.555556e-05 5.364703e-05 5.489821e-05</code></pre>
+<pre><code>## [1] 5.555556e-02 5.716429e-02 5.555556e-05 5.924343e-05 5.716429e-05</code></pre>
 </div>
 
 
