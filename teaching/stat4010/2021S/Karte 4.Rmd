@@ -1,0 +1,103 @@
+---
+title: "STAT4010 2021S Karte 4"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    number_sections: no
+    toc: no
+    toc_depth: 2
+  pdf_document:
+    number_sections: no
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 10, out.width = "100%")
+```
+
+# Supplement
+## Confidence Region vs Hypothesis Test
+In last lecture, Keith has discussed the pros and cons of confidence region and hypothesis test. Here I will give some remarks:
+
+1. Duality  
+In STAT2006, we have learned that the confidence interval and hypothesis test are equivalent. For example, given the hypotheses
+$$
+H_0: \theta = \theta_0 \quad \textrm{against} \quad
+H_1: \theta \ne \theta_0,
+$$
+we can test this null hypothesis at significance level $\alpha$ by checking if the confidence interval with confidence level $1-\alpha$ contains $\theta_0$. However, this duality is not always true; see the two-sample overlapping problem in [Wikipedia](https://en.wikipedia.org/wiki/Confidence_interval#Statistical_hypothesis_testing) and read the reference if you are interested. For students who have taken STAT3005, you can think about bootstrap and permutation test; see this [Q&A](https://stats.stackexchange.com/questions/20217/bootstrap-vs-permutation-hypothesis-testing).
+
+2. Presentation  
+When we go to work, the choice of confidence region or hypothesis test usually depends on the background of our colleagues and senior management. Frequently, we will be storing our result on spreadsheet. In that case, we can present the confidence region (numbers) and show the result of hypothesis test through conditional formatting (colors). I did that when I worked as a summer intern because my colleagues had statistics background but the senior management did not.
+
+3. Philosophy  
+We now know that the philosophy of hypothesis testing is different between frequentist and Bayesian. Similarly, they also differ in region estimation. The (frequentist) confidence interval is a long-run frequency concept, while the (Bayesian) credible interval is a (posterior) probabilistic concept. This will be discussed in Ch5.  
+On the other hand, the philosophy of hypothesis testing is also different among frequentist; see the historical development in [Wikipedia](https://en.wikipedia.org/wiki/Statistical_hypothesis_testing#Modern_origins_and_early_controversy). Modern statistical education seems to teach a mix of Fisher and Neyman–Pearson theory.
+
+## Monte Carlo Experiment
+Since the midterm project is still being designed, I am not sure if you need to do any simulation. Anyway, it is a good time to review the basics. For students who are not very familiar with this topic, you can read this [Q&A](https://hemanlmf.github.io/teaching/stat3005/2020F/QA-MC-Experiment.html) from STAT3005 first. In the following, I will discuss how to generate the graph in Example 3.24 if we do not know the close form of MSE.
+
+To begin with, we want to compare the following estimators:
+$$
+\hat{\theta}_{\textrm{MLE}} = \bar{x} \quad \textrm{and} \quad
+\hat{\theta}_{\textrm{minimax}} = \left( \frac{\sqrt{n}}{1+\sqrt{n}} \right) \bar{x} +\left( \frac{1}{1+\sqrt{n}} \right) \frac{1}{2}.
+$$
+The criteria to do comparison is MSE. In the assignment or project, we may need to derive the above estimators and decide the criteria ourselves. Nevertheless, the sub-questions will usually guide us to do so.
+
+Next, to conduct Monte Carlo experiment, we need to simulate multiple replications of a dataset according to the DGP. The reason is that we want to approximate the theoretical quantity, e.g., $\mathbb{E}\big\{ (\hat{\theta}_{\textrm{MLE}} - \theta)^2 \big\}$, with the sample quantity, e.g., $m^{-1} \sum_{i=1}^m \big( \hat{\theta}_{\textrm{MLE}}^{(i)} -\theta \big)^2$ where $\hat{\theta}_{\textrm{MLE}}^{(i)}$ is the realization from the $i$-th replication and $m$ is the total number of replications. Note that $m$ and $n$ (sample size) can be different.
+
+Now we are ready to implement the experiment:
+```{r mce, fig.asp=0.4}
+# Variables to be used in simulation
+nRep = 1000
+n = c(1e2, 1e3, 1e4)
+nSample = length(n)
+theta = seq(0, 1, by=0.1)
+nTheta = length(theta)
+nEst = 2
+estimate = array(dim=c(nRep, nSample, nTheta, nEst),
+                 dimnames=list(paste0("iRep=", 1:nRep),
+                               paste0("n=", n),
+                               paste0("theta=", theta),
+                               c("MLE", "minimax")))
+# Methods to be used in simulation
+mle = function(x) {
+  mean(x)
+}
+minimax = function(x) {
+  n = length(x)
+  sqrt(n)/(1+sqrt(n))*mean(x) +1/2/(1+sqrt(n))
+}
+# Main simulation
+for (iTheta in 1:nTheta) {
+  for (iRep in 1:nRep) {
+    set.seed(iRep)
+    for (iSample in 1:nSample) {
+      X = rbinom(n[iSample], 1, theta[iTheta])
+      estimate[iRep, iSample, iTheta, 1] = mle(X)
+      estimate[iRep, iSample, iTheta, 2] = minimax(X)
+    }
+  }
+}
+mse = array(dim=c(nSample, nTheta, nEst),
+            dimnames=list(paste0("n=", n),
+                          paste0("theta=", theta),
+                          c("MLE", "minimax")))
+for (iTheta in 1:nTheta) {
+  for (iSample in 1:nSample) {
+    mse[iSample, iTheta, 1] = mean((estimate[,iSample, iTheta, 1] -theta[iTheta])^2)
+    mse[iSample, iTheta, 2] = mean((estimate[,iSample, iTheta, 2] -theta[iTheta])^2)
+  }
+}
+# Plot
+par(mfcol=c(1,3))
+for (iSample in 1:nSample) {
+  matplot(theta, mse[iSample,,], 
+          type="l", lwd=3, lty=c(2,1), col=c("red","blue"),
+          main=paste0("n = ", n[iSample]), ylab="MSE", xlab=bquote(theta))
+}
+```
+The non-smooth curves are due to Monte Carlo error but the messages are the same as in Example 3.24.
