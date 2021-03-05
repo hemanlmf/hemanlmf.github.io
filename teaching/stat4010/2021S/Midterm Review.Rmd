@@ -1,0 +1,123 @@
+---
+title: "STAT4010: Midterm Review"
+author: "LEUNG Man Fung, Heman"
+date: "Spring 2021"
+output: 
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+---
+<style>
+blockquote{
+  background: #f9f9f9;
+  border-left: 5px solid #ccc;
+  margin: 0.5em 10px;
+  padding: 0.5em 1.5em;
+}
+</style>
+
+## Introduction
+- We will quickly review selected materials and discuss some answering strategies
+- Please refer to the lecture notes for complete materials
+
+## Ch1: Bayesian philosophy
+- Frequentist
+  - parameter: $\theta$ is fixed
+  - data generating mechanism: $f(x \mid \theta)$
+  - procedure: long-run frequency guarantee
+- Bayesian
+  - parameter: $\theta$ is random
+  - data generating mechanism: $f(x,\theta)$
+  - procedure: coherence
+- Both Frequentist and Bayesian need to make assumptions and specify model
+
+## Ch1: Posterior calculation
+> Find the prior predictive/posterior/posterior predictive...
+
+- Basics
+  - use the formulas in Section 1.2 of the lecture notes
+  - check if the course materials contain a direct example
+  - proportionality constant
+    - not required or can be numerically done in plot (Ex2.3.4)
+    - required in point estimation (M0 Q3.1)
+- Tricks
+  - integrate gamma density (Ex1.2.3)
+  - use representation (Ex1.3.2)
+  - apply law of iterative expectation (useful for discrete r.v.; see M0 Q1.2)
+  
+## Ch1: Posterior calculation
+> Plot the prior predictive/posterior/posterior predictive...
+
+1. Derive the required density
+2. Implement the required density as a function in R
+3. Design the plot (useful function: <code>matplot,colorRampPalette,legend</code>)
+
+> Comment on the plot...
+
+- Describe the graph
+- Link the features with previous parts of the question
+- Discuss the impact of data (if any) on the graph
+
+## Ch2: Prior distribution
+> Suggest a conjugate/informative/non-informative/weakly-informative prior...
+
+- Basics
+  - refer to the summary in Section 2.1 of the lecture notes
+  - check if the course materials contain a direct example
+- Notes
+  - be careful with the support of $\theta$ (Ex2.1.2)
+  - weakly-informative $\approx$ large variance
+  - additional properties like invariance and properness may be asked
+- Issues with $\infty$ in computation
+  - $\exp\{\ln(\cdot)\}$ "transform" (Ex2.3.4; also see [Karte 2](https://hemanlmf.github.io/teaching/stat4010/2021S/Karte-2.html))
+  - potential machine dependence (Ex2.3.5)
+
+## Ch3: Point estimation
+- Bayes estimator
+  - commonly used estimators are optimal under specific losses (Theorem 3.2)
+  - admissible if unique (Theorem 3.5)
+  - minimax under certain conditions (Theorem 3.7 to 3.9)
+- Minimax estimator
+  - frequentist philosophy which concerns the least favorable situation
+  - free of the unknown $\theta$ fundamental problem in Example 3.11
+  - not practical (Example 3.21)
+
+## Ch3: Point estimation
+> Derive the Bayes estimator...
+
+- Basics
+  - derive the posterior
+  - check if the loss function appears in Theorem 3.2 and related examples
+  - apply Theorem 3.1 or Definition 3.6
+- Tricks
+  - use Lemma 3.4 (Ex3.1.2) or moment generating function
+  - browse the web for closed-form of mean, median, mode etc.
+
+## Ch3: Point estimation
+> Open-ended analysis related to point estimation
+
+- Bayesian basics (Ex3.1.9)
+  - propose a prior (sampling distribution is usually given)
+  - choose hyperparameter and discuss information on hand
+  - conduct point estimation
+  - interpret the estimate and relate with real data (if any)
+- Other topics
+  - prove theoretical properties
+  - compare different estimators via Monte Carlo experiment (M0 Q3.3; also see [Karte 4](https://hemanlmf.github.io/teaching/stat4010/2021S/Karte-4.html))
+  - discuss potential improvement of the analysis
+
+## General tips
+- Answer **ALL** questions
+  - Blank answer must score 0 (do not waste the chance!)
+  - We give partial credit if you can show understanding of the materials
+- The only thing that you **CANNOT** do is to communicate with others
+- In other words, you can:
+  - Use [WolframAlpha](https://www.wolframalpha.com/) to check algebra
+  - Read [Stack Overflow](https://stackoverflow.com/) to debug R code
+    - But you cannot ask questions there
+  - Watch [YouTube](https://www.youtube.com/) video tutorials...
+- Ask on Blackboard for clarification
+- Remember to cite the source
+- Submit on time
+
+# All the best with the midterm! 
