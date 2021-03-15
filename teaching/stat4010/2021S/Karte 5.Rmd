@@ -1,0 +1,125 @@
+---
+title: "STAT4010 2021S Karte 5"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    number_sections: no
+    toc: no
+    toc_depth: 2
+  pdf_document:
+    number_sections: no
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 10, out.width = "100%")
+```
+
+# Supplement
+## Computation of Credible Sets
+In last lecture, Keith implemented a function to find the highest posterior density (HPD) credible set. Now, we compare it with the "naive" method to introduce the concept of computational efficiency. First, we generate some data according to Example 5.10 (see the [handwritten notes](https://gocuhk-my.sharepoint.com/:b:/g/personal/kinwaichan_cuhk_edu_hk/EbEv_4vUeZpNmL-QzSthHd8BCK7fPScHrXk3s24qW_ZSzw?e=aJcak8)):
+```{r setting}
+set.seed(4010)
+n = 20
+x = rbinom(n, 1, .4)
+prior = function(theta) {
+  (3*dnorm(theta,.2,.03) 
+   +2*dnorm(theta,.5,.07)
+   +6*dnorm(theta,.9,.07))*(theta>=0)*(theta<=1)
+}
+posterior = function(theta, x) {
+	n = length(x)
+	s = sum(x)
+	theta^s *(1-theta)^(n-s) *prior(theta)
+}
+```
+Next, we slightly modified Keith's implementation:
+```{r keith, fig.asp=0.4}
+hpd_keith = function(x, posterior, support=c(0,1), alpha=0.005, plot=TRUE){
+	# step 1: values of posterior at different values of theta in the support
+	theta = seq(from=support[1], to=support[2], length=301)
+	d = posterior(theta, x)
+	d = d/sum(d)
+	# step 2: find the theta that satisfy the credibility requirement 
+	O = order(d, decreasing=TRUE)
+	N = sum(cumsum(d[O])<1-alpha) +1
+	selected = theta[O[1:N]]
+	# step 3: plot
+	if (plot) {
+	  plot(theta, d, type="l", lwd=2, col="red4",
+	       xlab=bquote(theta),
+	       ylab=bquote(pi(theta~"|"~italic(x[1:n]))))
+	  abline(v=selected, col="pink")
+	  abline(h=c(0,d[O[N]]), v=support, lty=2, lwd=.75)
+	}
+}
+hpd_keith(x, posterior, alpha=0.05)
+```
+We also implement a "naive" method:
+```{r naive, fig.asp=0.4}
+hpd_naive = function(x, posterior, support=c(0,1), alpha=0.005, plot=TRUE){
+	# step 1: values of posterior at different values of theta in the support
+	theta = seq(from=support[1], to=support[2], length=301)
+	d = posterior(theta, x)
+	d = d/sum(d)
+	# step 2: find the theta that satisfy the credibility requirement 
+	n = length(d)
+	dDsc = sort(d, decreasing=TRUE)
+	selected = rep(0, n)
+	for (N in 1:n) {
+	  if (sum(dDsc[1:N]) > 1-alpha)
+	    break
+	}
+	cutoff = dDsc[N]
+	# step 3: plot
+	if (plot) {
+	  plot(theta, d, type="l", lwd=2, col="red4",
+	       xlab=bquote(theta),
+	       ylab=bquote(pi(theta~"|"~italic(x[1:n]))))
+	  abline(v=theta[which(d>cutoff)], col="pink")
+	  abline(h=c(0,cutoff), v=support, lty=2, lwd=.75)
+	}
+}
+hpd_naive(x, posterior, alpha=0.05)
+```
+Finally, we compare their speed:
+```{r compare1}
+library(microbenchmark)
+speed = microbenchmark(keith=hpd_keith(x, posterior, plot=FALSE),
+                       naive=hpd_naive(x, posterior, plot=FALSE))
+print(speed)
+```
+We can see that Keith's implementation, which utilized the highly optimized *cumsum*, is faster than naively searching the cutoff. Theoretically, Keith's method runs in $O(n \log n)$ time (due to ordering) while the naive method runs in $O(n^2)$ time (due to for loop with sum).
+
+By using the concept of time complexity, we can also explain why equal tailed (ET) credible sets can be found more efficiently (in $O(n)$ time) as sorting is not needed. Let's try it in R:
+```{r et}
+et = function(x, posterior, support=c(0,1), alpha=0.005, plot=TRUE){
+	# step 1: values of posterior at different values of theta in the support
+	theta = seq(from=support[1], to=support[2], length=301)
+	d = posterior(theta, x)
+	d = d/sum(d)
+	# step 2: find the theta that satisfy the credibility requirement 
+	csd = cumsum(d)
+	L = sum(csd < alpha/2)
+	U = sum(csd < 1-alpha/2)
+	# step 3: plot
+	if (plot) {
+	  plot(theta, d, type="l", lwd=2, col="red4",
+	       xlab=bquote(theta),
+	       ylab=bquote(pi(theta~"|"~italic(x[1:n]))))
+	  abline(v=theta[L:U], col="pink")
+	  abline(v=c(support,L,U), lty=2, lwd=.75)
+	}
+}
+et(x, posterior, alpha=0.05)
+```
+We also compare their speed:
+```{r compare2}
+library(microbenchmark)
+speed = microbenchmark(hpd=hpd_keith(x, posterior, plot=FALSE),
+                       et=et(x, posterior, plot=FALSE))
+print(speed)
+```
