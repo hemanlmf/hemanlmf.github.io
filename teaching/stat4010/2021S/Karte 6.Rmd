@@ -1,0 +1,111 @@
+---
+title: "STAT4010 2021S Karte 6"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    number_sections: no
+    toc: no
+    toc_depth: 2
+  pdf_document:
+    number_sections: no
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 10, out.width = "100%")
+```
+
+# Announcement
+1. The midterm scores will be uploaded once Keith has finished the adjustments. Please ask Zhang Zheng if you have any questions. I have reviewed some of his gradings, which are fine in general. I will elaborate more in the tutorial (and in the review again before final).
+
+2. The mathematical stuffs in Ch6 will not be tested. However, you need to understand the concepts like difference in precision assessments between frequentist and Bayesian.
+
+3. The assignments will be more and more computational starting from A4. Please come to the tutorial if you need help with R.
+
+# Assignment 4
+If I omit a question, that usually means the hints are sufficient so you can just refer to the Remark in the assignment.
+
+## Ex4.1.1
+Modify the implementation in [Karte 5](https://hemanlmf.github.io/teaching/stat4010/2021S/Karte-5.html):
+```{r ex4.1.1, eval=FALSE}
+et = function(x, posterior, support=c(0,1), n=301, alpha=0.005, plot=TRUE){
+	# step 1: values of posterior at different values of theta in the support
+	theta = seq(from=support[1], to=support[2], length=n)
+	d = posterior(theta, x)
+	d = d/sum(d)
+	# step 2: find the theta that satisfy the credibility requirement 
+	csd = cumsum(d)
+	L = sum(csd < alpha/2)
+	U = sum(csd < 1-alpha/2)
+	# step 3: plot
+	if (plot) {
+	  plot(theta, d, type="l", lwd=2, col="red4",
+	       xlab=bquote(theta),
+	       ylab=bquote(pi(theta~"|"~italic(x[1:n]))))
+	  abline(v=theta[L:U], col="pink")
+	  abline(v=c(support,L,U), lty=2, lwd=.75)
+	}
+}
+```
+
+## Ex4.1.2
+There is a new computational problem in this question. To see it, note that the posterior can be written as:
+$$
+f(\theta \mid x_{1:n}) \propto \theta^{\sum_{i=1}^n x_i} e^{-n\theta} \texttt{dnorm}(\theta, \texttt{mean}=0.5, \texttt{sd}=0.1) \mathbb{I}(0\leq \theta\leq 5).
+$$
+If we implement it directly, an obvious problem is that $\theta^{\sum_{i=1}^n x_i}$ can be extremely small or large depending on $\theta$ (e.g., $0.9^{1101}$ and $1.1^{1101}$), which is invalid in computation. The first trick that we can think of is the $\exp\{\ln(\cdot)\}$ trick; see [Karte 2](https://hemanlmf.github.io/teaching/stat4010/2021S/Karte-2.html). Then the posterior can be written as:
+$$
+f(\theta \mid x_{1:n}) \propto \exp\left\{ \left(\sum_{i=1}^n x_i \right) \ln \theta -n\theta \right\} \texttt{dnorm}(\theta, \texttt{mean}=0.5, \texttt{sd}=0.1) \mathbb{I}(0\leq \theta\leq 5).
+$$
+However, this does not solve the problem as $\left(\sum_{i=1}^n x_i \right) \ln \theta -n\theta$ is quite small:
+```{r ex4.1.2_expln}
+theta = seq(from=0, to=5, length=11)
+1101*log(theta)-4010*theta
+exp(1101*log(theta)-4010*theta)
+```
+To solve this problem completely, note that
+$$
+f(\theta \mid x_{1:n}) \propto \exp\left\{ \left(\sum_{i=1}^n x_i \right) \ln \theta -n\theta +k \right\} \texttt{dnorm}(\theta, \texttt{mean}=0.5, \texttt{sd}=0.1) \mathbb{I}(0\leq \theta\leq 5)
+$$
+is valid as long as $k$ is a constant that does not depends on $\theta$. Then, we can choose $k$ such that $\max_{\theta \in [0,5]} \left(\sum_{i=1}^n x_i \right) \ln \theta -n\theta +k = 0$ to normalize the density. Below is a draft of the function for the posterior:
+```{r ex4.1.2_post, eval=FALSE}
+post = function(theta, x){
+  n = 4010 #ignore the argument x as the summary statistics are given
+  s = 1101
+  k = #find a reasonable k as described in the above
+  exp(s*log(theta)-n*theta+k) *dnorm(theta, 0.5, 0.1) *(theta>=0) *(theta<=5)
+}
+```
+
+## Ex4.2.2
+Use the $\exp\{\ln(\cdot)\}$ trick.
+
+## Ex4.3.2
+The most difficult part of this question is to extract and compute $x$ according to $\texttt{racecourse}$, $\texttt{runway}$ and $\texttt{distance}$. Here I will illustrate how to extract $x$ when $\texttt{distance} = 1000$:
+```{r ex4.3.2}
+# Download data
+id = "1t0YIve2ACvspGrQ-1htTHbhBYkjAgOh2"
+data = read.table(sprintf("https://docs.google.com/uc?id=%s&export=download",
+                          id),header=TRUE)
+# Set conditions to filter data
+distance = 1000
+innerDraw = 6
+cond1 = data[,"distance"]==distance
+cond2 = data[,"racecourse"]=="HV"
+cond3 = data[,"runway"]=="TF"
+cond = cond1 &cond2 &cond3
+# Filter data
+dataCond = data[cond, c("race","draw","position")]
+race = unique(dataCond[,"race"])
+# Compute x
+x = rep(NA, length(race))
+for (i.race in 1:length(race)) {
+  dataRace = dataCond[(dataCond[,"race"])==(race[i.race]),]
+  x[i.race] = mean(dataRace[dataRace[,"draw"]<=innerDraw, "position"]) <
+    mean(dataRace[dataRace[,"draw"]>innerDraw, "position"])
+}
+c(length(x), sum(x), sum(x)/length(x))
+```

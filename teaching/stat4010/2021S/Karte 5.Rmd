@@ -38,9 +38,9 @@ posterior = function(theta, x) {
 ```
 Next, we slightly modified Keith's implementation:
 ```{r keith, fig.asp=0.4}
-hpd_keith = function(x, posterior, support=c(0,1), alpha=0.005, plot=TRUE){
+hpd_keith = function(x, posterior, support=c(0,1), n=301, alpha=0.005, plot=TRUE){
 	# step 1: values of posterior at different values of theta in the support
-	theta = seq(from=support[1], to=support[2], length=301)
+	theta = seq(from=support[1], to=support[2], length=n)
 	d = posterior(theta, x)
 	d = d/sum(d)
 	# step 2: find the theta that satisfy the credibility requirement 
@@ -51,7 +51,7 @@ hpd_keith = function(x, posterior, support=c(0,1), alpha=0.005, plot=TRUE){
 	if (plot) {
 	  plot(theta, d, type="l", lwd=2, col="red4",
 	       xlab=bquote(theta),
-	       ylab=bquote(pi(theta~"|"~italic(x[1:n]))))
+	       ylab=bquote(symbol("\265")~pi(theta~"|"~italic(x[1:n]))))
 	  abline(v=selected, col="pink")
 	  abline(h=c(0,d[O[N]]), v=support, lty=2, lwd=.75)
 	}
@@ -60,9 +60,9 @@ hpd_keith(x, posterior, alpha=0.05)
 ```
 We also implement a "naive" method:
 ```{r naive, fig.asp=0.4}
-hpd_naive = function(x, posterior, support=c(0,1), alpha=0.005, plot=TRUE){
+hpd_naive = function(x, posterior, support=c(0,1), n=301, alpha=0.005, plot=TRUE){
 	# step 1: values of posterior at different values of theta in the support
-	theta = seq(from=support[1], to=support[2], length=301)
+	theta = seq(from=support[1], to=support[2], length=n)
 	d = posterior(theta, x)
 	d = d/sum(d)
 	# step 2: find the theta that satisfy the credibility requirement 
@@ -78,7 +78,7 @@ hpd_naive = function(x, posterior, support=c(0,1), alpha=0.005, plot=TRUE){
 	if (plot) {
 	  plot(theta, d, type="l", lwd=2, col="red4",
 	       xlab=bquote(theta),
-	       ylab=bquote(pi(theta~"|"~italic(x[1:n]))))
+	       ylab=bquote(symbol("\265")~pi(theta~"|"~italic(x[1:n]))))
 	  abline(v=theta[which(d>cutoff)], col="pink")
 	  abline(h=c(0,cutoff), v=support, lty=2, lwd=.75)
 	}
@@ -88,17 +88,17 @@ hpd_naive(x, posterior, alpha=0.05)
 Finally, we compare their speed:
 ```{r compare1}
 library(microbenchmark)
-speed = microbenchmark(keith=hpd_keith(x, posterior, plot=FALSE),
-                       naive=hpd_naive(x, posterior, plot=FALSE))
+speed = microbenchmark(keith=hpd_keith(x, posterior, n=10000, plot=FALSE),
+                       naive=hpd_naive(x, posterior, n=10000, plot=FALSE))
 print(speed)
 ```
 We can see that Keith's implementation, which utilized the highly optimized *cumsum*, is faster than naively searching the cutoff. Theoretically, Keith's method runs in $O(n \log n)$ time (due to ordering) while the naive method runs in $O(n^2)$ time (due to for loop with sum).
 
 By using the concept of time complexity, we can also explain why equal tailed (ET) credible sets can be found more efficiently (in $O(n)$ time) as sorting is not needed. Let's try it in R:
 ```{r et}
-et = function(x, posterior, support=c(0,1), alpha=0.005, plot=TRUE){
+et = function(x, posterior, support=c(0,1), n=301, alpha=0.005, plot=TRUE){
 	# step 1: values of posterior at different values of theta in the support
-	theta = seq(from=support[1], to=support[2], length=301)
+	theta = seq(from=support[1], to=support[2], length=n)
 	d = posterior(theta, x)
 	d = d/sum(d)
 	# step 2: find the theta that satisfy the credibility requirement 
@@ -119,7 +119,7 @@ et(x, posterior, alpha=0.05)
 We also compare their speed:
 ```{r compare2}
 library(microbenchmark)
-speed = microbenchmark(hpd=hpd_keith(x, posterior, plot=FALSE),
-                       et=et(x, posterior, plot=FALSE))
+speed = microbenchmark(hpd=hpd_keith(x, posterior, n=10000, plot=FALSE),
+                       et=et(x, posterior, n=10000, plot=FALSE))
 print(speed)
 ```

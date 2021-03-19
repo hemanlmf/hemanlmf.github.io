@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 4. [Karte 4](2021S/Karte-4.html)  
 5. [Midterm Review](2021S/Midterm-Review.html)  
 6. [Karte 5](2021S/Karte-5.html)  
+7. [Karte 6](2021S/Karte-6.html)  
 
 ### Online Reference
 1. [Course website](https://sites.google.com/site/kwchankeith/teaching/s4010/s4010-2021Spring)  
