@@ -1,0 +1,114 @@
+---
+title: "STAT4010 2021S Karte 7"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    number_sections: no
+    toc: no
+    toc_depth: 2
+  pdf_document:
+    number_sections: no
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 10, out.width = "100%")
+```
+
+# Supplement
+## Recursive Estimation of Mean
+Consider the computation of sample mean $\bar{X}_n = n^{-1} \sum_{i=1}^n X_i$ where:
+
+1. the data $X_i$ can be serially dependent;
+2. the data $X_i$ arrives sequentially;
+3. the sample size $n$ is not known *a priori*.
+
+There are two ways to compute $\bar{X}_n$ when $X_n$ arrives:
+
+1. (Non-recursive) calculate $(X_1+X_2+\cdots+X_n)/n$;
+    a. $O(n)$-time update: need to add up $n$ elements.
+    b. $O(n)$-space update: need to remember $n$ elements.
+2. (Recursive) calculate $\{(n-1)\bar{X}_{n-1} +X_n\}/n$.
+    a. $O(1)$-time update: need to add up 2 elements only.
+    b. $O(1)$-space update: need to remember 2 elements only.
+
+We confirm the finite-sample performance in R:
+```{r mean}
+barX_nr = function(x){
+  mean(x)
+}
+barX_r = function(x, n, barX){
+  (n*barX+x)/(n+1)
+}
+n = 30000
+x = runif(n)
+out = matrix(nrow=n, ncol=2)
+system.time({
+  for (i in 1:n)
+    out[i,1] = barX_nr(x[1:i])
+})["elapsed"] # speed of non-recursive update
+system.time({
+  out[1,2] = x[1]
+  for (i in 2:n)
+    out[i,2] = barX_r(x[i], i-1, out[i-1,2])
+})["elapsed"] # speed of recursive update
+all.equal(out[,1], out[,2]) # the running estimates are the same
+```
+
+## Recursive Estimation of Variance
+Note that the above setting appears frequently with the use of learning algorithms, e.g., Markov chain Monte Carlo (MCMC, which will be taught in the next lecture) and stochastic gradient descent (SGD). In particular, it is crucial to diagnose the convergence (e.g., using Central Limit Theorem) in order to stop the learning procedure at a reasonable point in time with confidence. Nevertheless, while the recursive formula for $\bar{X}_n$ is well-known, the recursive formula for $\mathrm{Var}(\bar{X}_n)$ is lesser-known (especially when $X_i$ are serially dependent).
+
+As we have not covered the long-run variance (see Remark 7.6) in the lecture yet, we are not going to discuss its recursive formula this time. Instead, I will go through the derivation of the recursive formula for the sample variance (i.e., $\mathrm{Var}(\bar{X}_n)$ when $X_i$ are independent) to get you familiar with recursive estimation. To begin with, the non-recursive formula of the sample variance is
+$$
+s_n^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i -\bar{X}_n)^2.
+$$
+Updating the above in $O(1)$ time is non-trivial because $\bar{X}_n$ changes when new data arrives. In light of it, we try to decompose the sum into several basic components:
+$$
+\begin{aligned}
+\sum_{i=1}^n (X_i -\bar{X}_n)^2
+&= \sum_{i=1}^n X_i^2 -2\bar{X}_n \sum_{i=1}^n X_i +n\bar{X}_n^2 \\
+&=: Q_n -2\bar{X}_n (n\bar{X}_n) +n\bar{X}_n^2 \\
+&= Q_n -n\bar{X}_n^2.
+\end{aligned}
+$$
+As a result, we can update $s_n^2$ recursively as follows. At stage $n$, we store $(n, Q_n, \bar{X}_n)$. When $n=1$, the initial vector is $(1, X_1^2, X_1)$. At stage $n+1$, we update the vector by:
+
+1. $Q_{n+1} = Q_n +X_{n+1}^2$;
+2. $\bar{X}_{n+1} = \{n\bar{X}_n +X_{n+1}\}/(n+1)$.
+
+Output: $s_{n+1}^2 = \{Q_{n+1} -(n+1)\bar{X}_{n+1}^2\}/n$.
+
+We verify the finite-sample performance in R:
+```{r var}
+s_nr = function(x){
+  var(x)
+}
+s_r = function(x, n, Q, barX){
+  Q = Q +x^2
+  barX = (n*barX+x)/(n+1)
+  s = (Q-(n+1)*barX^2)/n
+  c(s, n+1, Q, barX)
+}
+n = 30000
+x = runif(n)
+out = matrix(nrow=n, ncol=2)
+system.time({
+  for (i in 2:n)
+    out[i,1] = s_nr(x[1:i])
+})["elapsed"] # speed of non-recursive update
+system.time({
+  comp = c(0, 1, x[1]^2, x[1])
+  for (i in 2:n) {
+    comp = s_r(x[i], comp[2], comp[3], comp[4])
+    out[i,2] = comp[1]
+  }
+})["elapsed"] # speed of recursive update
+all.equal(out[,1], out[,2]) # the running estimates are the same
+```
+There are several final remarks.
+
+1. Recursive formula is not unique for the same estimator. For instance, we can use [Welford's online algorithm](https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_online_algorithm) to update the sample variance.
+2. We may need to store and update some basic components (e.g., $\bar{X}_n$) in order to do recursive estimation. It is computationally inefficient to pass these variables into and out of the same R function every time. To this end, I recommend [environment](https://hemanlmf.github.io/teaching/stat3005/2020F/SN-Tips-for-R.html#environments).
