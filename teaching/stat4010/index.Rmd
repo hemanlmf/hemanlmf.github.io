@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 6. [Karte 5](2021S/Karte-5.html)  
 7. [Karte 6](2021S/Karte-6.html)  
 8. [Karte 7](2021S/Karte-7.html)  
+8. [Karte 8](2021S/Karte-8.html)  
 
 ### Online Reference
 1. [Course website](https://sites.google.com/site/kwchankeith/teaching/s4010/s4010-2021Spring)  

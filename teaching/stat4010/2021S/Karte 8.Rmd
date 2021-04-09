@@ -1,0 +1,228 @@
+---
+title: "STAT4010 2021S Karte 8"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    number_sections: no
+    toc: no
+    toc_depth: 2
+  pdf_document:
+    number_sections: no
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 10, out.width = "100%")
+```
+
+# Assignment 5
+If I omit a question, that usually means the hints are sufficient so you can just refer to the Remark in the assignment.
+
+## Ex5.1.1c
+I think we did not cover how to add curves to an existing graph in the previous assignments. You can try to modify the following snippet:
+```{r ex5.1.1c, eval=FALSE}
+n = 1000 #sample size per replication
+nRep = 4000 #number of replications
+theta = ... #for plotting the asymptotic density
+out = rep(NA, nRep) #for storing nRep random replicates of the MLE
+for (iRep in 1:nRep) {
+  ... # simulation according to part 3(a)
+}
+de = density(out, kernel="epanechnikov") #exact with kernel smoothing
+da = dnorm(theta, ..., ...) #asymptotic
+plot(de, type="l", ...) #plot the smoothed exact density
+points(theta, da, ...) #add the asymptotic density to the existing plot
+```
+
+## Ex5.1.2c
+Use the *points* function as in Ex5.1.1c to plot on the same graph. Better use different line types and colors to distinguish exact vs asymptotic and frequentist vs Bayesian.
+
+## Ex5.1.3a
+Essentially, Brian assumed a fixed $\theta$ in his simulation.
+
+## Ex5.1.3b
+> All models are wrong, but some are useful.
+
+See [this discussion](https://stats.stackexchange.com/questions/57407/what-is-the-meaning-of-all-models-are-wrong-but-some-are-useful) for some philosophical inspirations.
+
+## Ex5.1.4
+A possible MISCONCEPTION here is that frequentist confidence interval is more prudent under model misspecification (as the asymptotic variance is different). For the preferred interval, we should think about whether we want long-run frequency guarantee or decision theoretic optimality.
+
+# Supplement
+## Recursive Estimation of Long-run Variance
+Recall the computation of sample mean $\bar{X}_n = n^{-1} \sum_{i=1}^n X_i$ with the setting in [Karte 7](https://hemanlmf.github.io/teaching/stat4010/2021S/Karte-7.html):
+
+1. the data $X_i$ can be serially dependent;
+2. the data $X_i$ arrives sequentially;
+3. the sample size $n$ is not known *a priori*.
+
+Now, $\mathrm{Var}(\bar{X}_n)$ becomes the long-run variance, i.e., $\sigma^2 = \sum_{k \in \mathbb{Z}} \gamma_k$; see Remark 7.6. In a classical setting, people commonly use the Bartlett kernel estimator (I first learned it when I interned at the HKMA):
+$$
+\hat{\sigma}^2_{n,\mathsf{bart}} 
+= \sum_{|k|<l_n} \left( 1 -\frac{|k|}{l_n} \right) \hat{\gamma}_k
+= \sum_{k=1-l_n}^{l_n-1} \frac{1}{n} \left( 1 -\frac{|k|}{l_n} \right) \sum_{i=|k|+1}^n (X_i -\bar{X}_n) (X_{i-|k|} -\bar{X}_n),
+$$
+where $l_n \sim n^{1/3}$ is called a bandwidth and $a_n \sim b_n$ means $\lim_{n \to \infty} a_n/b_n = 1$. However, $\hat{\sigma}^2_{n,\mathsf{bart}}$ is not computationally efficient when the sample size $n$ is unknown *a priori*. This is because when $n$ increases to points that $l_n$ also increases, one need to estimate a new sample ACVF $\hat{\gamma}_{l_n-1}$. As a result, the algorithm costs $O(n)$ time and $O(n)$ space, which is not suitable for convergence diagnostics introduced in the lecture.
+
+To recursively estimate $\sigma^2$, [Wu (2009)](https://projecteuclid.org/journals/annals-of-applied-probability/volume-19/issue-4/Recursive-estimation-of-time-average-variance-constants/10.1214/08-AAP587.full), [Chan and Yau (2016)](https://sites.google.com/site/kwchankeith/publications/rtavc) and [Chan and Yau (2017)](https://sites.google.com/site/kwchankeith/publications/rtacm) proposed several estimators. Nevertheless, these estimators were uniformly dominated by $\hat{\sigma}^2_{n,\mathsf{bart}}$ in terms of MSE. In [my project with Keith](https://hemanlmf.github.io/research/rlrv/index.html), we propose a general framework that leads to super-optimal recursive estimators as compared with their non-recursive counterparts. Due to time constraint, I will only introduce one of them and discuss the implementation with you:
+$$
+\hat{\sigma}^2_{n,\mathsf{LAS}}
+= \frac{1}{n} \sum_{i=1}^n (X_i -\bar{X}_n)^2
+  + \frac{2}{n} \sum_{i=1}^n \sum_{k=1}^{s_i-1} \left( 1 -\frac{k}{t_n} \right) (X_i -\bar{X}_n) (X_{i-k} -\bar{X}_n),
+$$
+where
+$$
+s_i = \min\{ \max( \lfloor \Psi i^{1/3} \rfloor, 1), i\} \quad \mathrm{and} \quad
+t_n = \min\{ \max( \lfloor \Theta n^{1/3} \rfloor, 1), n\}.
+$$
+The algorithm is as follows:
+
+At stage $n$, we store $(n, s_n, t_n, Q_n, \bar{X}_n, K_{n,b}, R_{n,b}, k_{n,b}, r_{n,b}, U_{n,b}, V_{n,b})$ for $b = 0,1$. When $n=1$, the initial vector is $(1, 1, 1, X_1^2, X_1, 0, \ldots, 0)$. Denote $R_n^{(0,1)} = R_{n,0} -R_{n,1}/t_n$ and similarly for $r_n^{(0,1)}, U_n^{(0,1)}, V_n^{(0,1)}$, e.g., $U_n^{(0,1)} = U_{n,0} -U_{n,1}/t_n$. At stage $n+1$, we update the vector by:
+
+1. $s_{n+1} = \min[ \max\{ \lfloor \Psi (n+1)^{1/3} \rfloor, 1\}, n+1]$;
+2. $t_{n+1} = \min[ \max\{ \lfloor \Theta (n+1)^{1/3} \rfloor, 1\}, n+1]$;
+3. $Q_{n+1} = Q_n +X_{n+1}^2$;
+4. $\bar{X}_{n+1} = (n\bar{X}_n +X_{n+1})/(n+1)$;
+5. $K_{n+1,0} = K_{n,0} +X_n -X_{n+1-s_n} \mathbb{I}_{s_{n+1}=s_n}$;
+6. $K_{n+1,1} = K_{n,1} +K_{n+1,0} -(s_n-1) X_{n+1-s_n} \mathbb{I}_{s_{n+1}=s_n}$;
+7. for each $b = 0,1$,
+    a. $R_{n+1,b} = R_{n,b} +X_{n+1} K_{n+1,b}$;
+    b. $k_{n+1,b} = k_{n,b} +s_n^b \mathbb{I}_{s_{n+1}=1+s_n}$;
+    c. $r_{n+1,b} = r_{n,b} +k_{n+1,b}$;
+    d. $U_{n+1,b} = U_{n,b} +k_{n+1,b} X_{n+1}$; and
+    e. $V_{n+1,b} = V_{n,b} +K_{n+1,b}$.
+
+Output: $\hat{\sigma}_{n+1,\mathsf{LAS}}^2 = \{Q_{n+1} +2R_{n+1}^{(0,1)} +(2r_{n+1}^{(0,1)}-n-1)\bar{X}_{n+1}^2 -2\bar{X}_{n+1}(U_{n+1}^{(0,1)}+V_{n+1}^{(0,1)})\}/(n+1)$.
+
+Compared with the algorithms in [Karte 7](https://hemanlmf.github.io/teaching/stat4010/2021S/Karte-7.html), the algorithm for $\hat{\sigma}^2_{n,\mathsf{LAS}}$ has considerably more components. Therefore, we implement it with the [environment](https://hemanlmf.github.io/teaching/stat3005/2020F/SN-Tips-for-R.html#environments) (click for the implementation of the queue data structure, which I have omitted here).
+
+```{r queue, include=FALSE}
+queue_init = function() {
+  queue = new.env()
+  queue
+}
+
+queue_push = function(queue, value) {
+  E = new.env()
+  E$value = value
+  E$nextE = NULL
+  # If there is no elements in queue, insert E as both head and tail
+  if (is.null(queue$head)) {
+    E$prevE = NULL
+    queue$tail = queue$head = E
+  } else {
+    E$prevE = queue$tail
+    queue$tail$nextE = E
+    queue$tail = E
+  }
+}
+
+queue_pop = function(queue) {
+  if (is.null(queue$head)) {
+    NULL
+  } else {
+    value = queue$head$value
+    queue$head = queue$head$nextE
+    queue$head$prevE = NULL
+  }
+}
+```
+
+```{r las}
+#' Initialize a recursive LRV estimator
+#'
+#' Initialize the components for recursive estimation of long-run variance
+#' with LAS and store them in an environment variable.
+#'
+#' @param X1 the first observation \eqn{X_1} from a univariate time series.
+#' @param s_coef the coefficient of the subsampling parameter \eqn{\Psi}.
+#' @param t_coef the coefficient of the tapering parameter \eqn{\Theta}.
+#' 
+#' @return an environment variable storing the components for recursive
+#' estimation.
+#'
+#' @references Leung, M. F. & Chan, K. W. (2021+), 'General and Super-optimal
+#' Recursive Estimators of Long-Run Variance'.
+lrv_init = function(X1, s_coef=1, t_coef=1) {
+  E = new.env()
+  E$Xn = X1
+  E$s_coef = s_coef
+  E$t_coef = t_coef
+  with(E, {
+    n = s = t = 1
+    K = R = k = r = U = V = rep(0, 2)
+    out = Q = Xn^2
+    barX = Xn
+    queue = queue_init()
+    queue_push(queue, Xn)
+  })
+  E
+}
+
+#' Update a recursive LRV estimator
+#'
+#' Update the components for recursive estimation of long-run variance
+#' with LAS and output the latest estimate.
+#'
+#' @param components the environment storing the components for recursive
+#' estimation with LAS, which should be initialized with
+#' \code{\link{lrv_init}} in the beginning.
+#' @param Xn the latest observation \eqn{X_n} from the time series.
+#' 
+#' @return the latest LRV estimate.
+#'
+#' @references Leung, M. F. & Chan, K. W. (2021+), 'General and Super-optimal
+#' Recursive Estimators of Long-Run Variance'.
+lrv = function(components, Xn) {
+  components$Xn = Xn
+  with(components, {
+    n = n +1
+    sn = min(max(floor(s_coef*n^(1/3)), 1), n)
+    tn = min(max(floor(t_coef*n^(1/3)), 1), n)
+    Xnm1 = queue$tail$value
+    Xnms = queue$head$value
+    if (sn == s) {
+      K[1] = K[1] +Xnm1 -Xnms
+      K[2] = K[2] +K[1] -(s-1)*Xnms
+      queue_pop(queue)
+    } else {
+      K[1] = K[1] +Xnm1
+      K[2] = K[2] +K[1]
+      k[1] = k[1] +1
+      k[2] = k[2] +s
+    }
+    queue_push(queue, Xn)
+    R = R +Xn*K
+    Q = Q +Xn^2
+    r = r +k
+    U = U +k*Xn
+    V = V +K
+    barX = ((n-1)*barX +Xn)/n
+    s = sn
+    t = tn
+    t_inv = 1/tn
+    out = (Q +2*(R[1]-R[2]*t_inv) +(2*(r[1]-r[2]*t_inv) -n)*barX^2
+           -2*barX*(U[1]-U[2]*t_inv +V[1]-V[2]*t_inv))/n
+    out
+  })
+}
+```
+Let's try it with a time series example:
+```{r arma}
+# Generate some observations from ARMA(1,1) for illustration
+set.seed(4010)
+n = 10000
+X = arima.sim(n=n, list(ar=0.5, ma=0.5), sd=1)
+truth = (1+0.5)^2/(1-0.5)^2 #true value is 9
+
+# Recursively estimating the long-run variance
+estimate = rep(0, n)
+comp = lrv_init(X[1])
+for (i in 2:n) estimate[i] = lrv(comp, X[i])
+plot(1:n, estimate, type="l", ylim=c(0,truth+1),
+     ylab=bquote(hat(sigma)^2), xlab=bquote("sample size"))
+abline(h=truth, col="red")
+```
