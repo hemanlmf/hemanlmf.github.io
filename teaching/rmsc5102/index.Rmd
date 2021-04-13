@@ -13,9 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 1. [Tutorial notes](notes.pdf)  
 2. [Tips for R](../stat3005/2020F/SN-Tips-for-R.html)  
 3. [Midterm review](2021S/review_midterm.pdf)  
+4. [Final review](2021S/review_final.pdf)  
 
 ### Extra Exercise
 1. [Stochastic calculus](2021S/EX-Stochastic-Calculus.html)  
+2. [General simulation](2021S/EX-General-Simulation.html)
 
 ### Online Reference
 1. [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/)  
