@@ -1,0 +1,89 @@
+---
+title: "STAT4010 2021S Karte 9"
+author: "LEUNG Man Fung, Heman"
+output:
+  html_document:
+    df_print: paged
+    number_sections: no
+    toc: no
+    toc_depth: 2
+  pdf_document:
+    number_sections: no
+    toc: no
+    toc_depth: 2
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 10, out.width = "100%")
+```
+
+# Supplement
+## Markov chain Monte Carlo (MCMC)
+MCMC is popular in Bayesian analysis because it can solve many posterior computation problems. However, it is not an algorithm only for Bayesian. Here I will discuss some applications in other areas.
+
+1. Expectation–maximization (EM) algorithm  
+To obtain MLE, we need to optimize the likelihood function, which may not have closed form in some models. In that case, we may replace the expectation step in the EM algorithm with a MCMC procedure; see the description [here](https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm#Description).
+
+2. Stochastic approximation (SA) algorithm  
+Instead of using MCMC and Riemann sum to approximate an expectation, we can use MCMC to generate the required random effect in the SA algorithm; see the description [here](https://en.wikipedia.org/wiki/Stochastic_approximation#Application_in_stochastic_optimization). (Perhaps the most well-known SA algorithm is the stochastic gradient descent)
+
+3. Machine learning  
+MC or MCMC methods can be used to enhance or even construct machine learning algorithms. For example, the algorithm behind AlphaGo includes [Monte Carlo tree search](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search).
+
+Let's end this section with a MCMC convergence diagnosis example modified from Example 7.7. The R script "lrv.R", which is copied from [Karte 8](https://hemanlmf.github.io/teaching/stat4010/2021S/Karte-8.html), can be downloaded [here](https://hemanlmf.github.io/teaching/stat4010/2021S/lrv.R).
+```{r}
+source("lrv.R")
+# To perform convergence diagnosis, it's better to sample stepwise
+mh_step = function(theta0, pdf0, sd=1){
+  theta = theta0 +rnorm(1)*sd
+  a = min(1, pdf0(theta)/pdf0(theta0))
+  u = runif(1)
+  `if`(u<a, theta, theta0)
+}
+# Setting in Example 7.7
+set.seed(4010)
+S = 25
+n = 15
+pdf0 = function(theta){ 
+  exp(-0.5*(abs(theta) +n*theta^2 -2*S*theta))
+}
+alpha = 0.02 #for critical value in CI
+J0 = 1e3 #minimum acceptable sample size
+tol = 0.01 #maximum tolerable error
+JBurn = 1e3
+# Burn-in stage
+out = 10 +rnorm(1)
+for (i in 1:(JBurn+1)) out = mh_step(out, pdf0, sd=1)
+# Main stage
+comp = lrv_init(out)
+repeat {
+  out = mh_step(out, pdf0, sd=1)
+  lrv(comp, out)
+  if (comp$n > J0) {
+    hw = qnorm(1-alpha/2)*sqrt(comp$out/comp$n)
+    if (hw < tol*comp$barX) break
+  }
+}
+comp$barX #estimate
+comp$n #sample size to achieve 1% error
+```
+Compared with the standard approach, convergence diagnosis does not require storing all the observations. The stopping point is also theoretically guided.
+
+# Assignment 6
+If I omit a question, that usually means the hints are sufficient so you can just refer to the Remark in the assignment.
+
+## Ex6.1.2
+Note that the target density is same as the proposal density in Gibbs sampling.
+
+## Ex6.2.2
+While the conditional density of $\tau$ is not a named distribution, note that it is a discrete random variable. Hence we can do something like
+```{r, eval=FALSE}
+lp = #log conditional density of tau
+p = exp(lp-max(lp)) #exp-log trick to handle normalizing constant
+sample(support_of_tau, size=1, prob=p/sum(p))
+```
+Remember to set seed for reproducibility.
+
+## Ex6.2.7
+You can read some press release examples in the [government website](https://www.info.gov.hk/gia/ISD_public_Calendar_en.html).
