@@ -20,6 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 8. [Karte 7](2021S/Karte-7.html)  
 9. [Karte 8](2021S/Karte-8.html)  
 10. [Karte 9](2021S/Karte-9.html)  
+11. [Final Review](2021S/Final-Review.html)  
 
 ### Online Reference
 1. [Course website](https://sites.google.com/site/kwchankeith/teaching/s4010/s4010-2021Spring)  
