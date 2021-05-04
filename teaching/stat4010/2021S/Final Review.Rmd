@@ -1,0 +1,329 @@
+---
+title: "STAT4010: Final Review"
+author: "LEUNG Man Fung, Heman"
+date: "Spring 2021"
+output: 
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+---
+
+```{r, echo=FALSE}
+rDir = function(n, a){
+	H = length(a)
+	out = array(NA, dim=c(n,H))
+	for (i in 1:n) {
+		g = rgamma(H, a, 1)
+		out[i,] = g/sum(g)
+	}
+	out
+}
+vSample = function(x, prob){
+	n = nrow(prob)
+	H = ncol(prob)
+	U = runif(n)
+	cumprob = prob %*%upper.tri(diag(H),diag=TRUE) /rowSums(prob)
+	I = rowSums(U>cumprob) +1L
+	x[I]
+}
+rInvGa = function(n, a, b){
+  1/rgamma(n, a, b)
+}
+```
+
+## Introduction
+- We will quickly review some computational techniques and do an alternative version of A7
+- We will also discuss some implementation strategies that can be quite useful
+- Please attend the review lecture next week if you need tips on the theoretical materials
+
+## Opening remark
+- Not sure if you ever wonder why the tutorial note is named Karte
+- Source: [Black Jack (anime)](https://en.wikipedia.org/wiki/Black_Jack_(manga)#Anime)
+  - Doctor wants to give the best treatment condition on the current patient
+  - Bayesian wants to give the best inference condition on the current data
+  - They both look at the problem on a case by case basis
+
+## Normalization
+- Reasons
+  - Computation, e.g., the unnormalized density will be 0 easily in computation (Ex4.1.2a)
+  - Visualization, e.g., the unnormalized density plot will be ugly (Ex5.1.2c)
+  - Data cleaning
+- Techniques
+  - <code>x/sum(x)</code>
+    - Common for obtaining densities (because area under curve is 1)
+  - <code>x/max(x)</code>
+    - Common for visualization and data cleaning
+  - <code>(x-mean(x))/sd(x)</code>
+    - Common for (financial) data cleaning
+  - <code>exp(log(x))</code>
+    - Common for dealing with functions like <code>gamma()</code> and <code>beta()</code>
+- Combine these techniques, e.g., <code>exp(log(x)-max(log(x)))</code>, for complex problems
+
+## Random variable generation
+- Discrete RV
+  - Use <code>sample()</code> (Ex6.2.2)
+  - Pmf, i.e., the argument <code>prob</code>, can be unnormalized; see the documentation in R
+  - Whether it is discrete is determined by the support (Ex6.2.1)
+- Continuous RV
+  - Use built-in method first by checking conjugacy; see Ch2
+  - Try inverse transform if there is formula online, e.g., [truncated normal](https://en.wikipedia.org/wiki/Truncated_normal_distribution#Generating_values_from_the_truncated_normal_distribution)
+  - Try Metropolis–Hastings (MH) at the end
+    - MH is more general than rejection sampling and importance sampling
+- Set seed for reproducibility
+- Non-built-in packages are usually not allowed unless they are used for visualization only
+  - The requirement is usually stated in the question (Ex7.1.1b)
+
+## Proposal in MH
+- Support of proposal
+  - ~~Use discrete for discrete~~ do not need MH for discrete RV in general
+  - Use non-negative proposal for non-negative targets
+    - For instance, we cannot use normal proposal for $\sigma^2$ (Ex7.1.1b)
+- Distribution of proposal
+  - Choose one that you can simulate directly from
+  - Simple choice: same as prior
+    - Free of the problem with different supports
+- Parameters in proposal
+  - Usually set in way such that the mean is same as last realization and the sd is fixed as step size
+  - Fixed parameter: independent MH; see Example 7.8
+    - Performance critically depends on the proposal (cannot improve over time)
+  - Variable step size: adaptive MCMC
+    - Not covered in this course
+
+## Posterior computation
+- Use Gibbs if there are multiple target
+  - Otherwise, we need to derive the joint posterior and simulate from it
+- Implementation strategies
+  - Initialization function
+    - Input: data, hyperparameters, number of iterations, step size(s)
+    - Output: environment (avoid passing arguments everywhere)
+  - 1-step MH function
+    - Perform MH-within-Gibbs if necessary
+  - 1-step Gibbs function
+    - Run 1-step MH and other direct generation steps
+  - Different density functions
+    - For computing acceptance probabilities
+  - Diagnostics function
+    - Input: environment, index of used sample
+    - Output: convergence diagnostics, e.g., trace plot
+
+## Improving the posterior sample
+- Increase the number of iterations
+- Tune the hyperparameters (if not fixed by the question)
+- Tune the step size (if MH is used)
+  - Use different step sizes for different targets
+  - Change the proposal
+- Diagnose the convergence numerically
+  - Fixed-width analysis; see [Karte 9](https://hemanlmf.github.io/teaching/stat4010/2021S/Karte-9.html)
+  - Effective sample size
+- Thinning (use the sample every $m$ iterations)
+
+## Alternative version of A7
+Let $y_1, \ldots, y_n$ be $n$ observations possibly from $H$ different groups. The goal of this exercise is to learn how to classify them into $H$ groups. Consider the following models:
+$$
+\begin{aligned}
+\left[ y_i \mid z_i, \mu_{1:H}, \sigma^2_{1:H} \right] &\sim \mathrm{N}(\mu_{z_i}, \sigma^2_{z_i}), \qquad i=1, \ldots, n, \\
+\left[ z_i \mid \theta \right] &\sim (1,\ldots,H)^\mathrm{T} \mathrm{Multi}_H(1, \theta),\qquad i=1, \ldots, n, \\
+\left[ \mu_h \mid \sigma^2_h \right] &\sim \mathrm{N}(\eta, \kappa \sigma_h^2), \qquad h=1, \ldots, H, \\
+\sigma^2_h &\sim b/\mathrm{Ga}(a), \qquad h=1, \ldots, H, \\
+\theta &\sim \mathrm{Dir}_H((1/H, \ldots, 1/H)^\mathrm{T}),
+\end{aligned}
+$$
+where $a,b, \kappa>0$, $\eta\in\mathbb{R}$, and $H\in\mathbb{Z}^+$ are some fixed non-random hyper-parameters. Note that the only modification that I made is
+$$
+\left[ y_i \mid z_i, \mu_{1:H}, \sigma^2_{1:H} \right] \sim \mathrm{N}(\mu_{z_i}, \sigma^2_{z_i}),
+$$
+instead of truncated normal.
+
+## Data generation
+We generate $y_1, \ldots, y_{100}$ from a mixture of three normal distributions	with means $-1, 0, 2$, standard deviation $0.2, 0.9, 0.3$,	and weights $0.1, 0.55, 0.35$, respectively first.
+```{r}
+rMixNorm = function(n, mean, sd, weight){
+  H = length(mean)
+  I = sample(1:H, n, replace=TRUE, prob=weight)
+  rnorm(n, mean[I], sd[I])
+}
+set.seed(4010)
+n = 100
+mean = c(-1, 0, 2)
+sd = c(.2, .9, .3)
+weight = c(.1, .55, .35)
+y = rMixNorm(n, mean, sd, weight)
+```
+
+## Data generation
+```{r}
+hist(y, freq=FALSE)
+```
+
+## Posterior derivation
+Since there are lots of parameters, it is more desirable to use the Gibbs sampler. We find the conditional density of $\sigma^2_h$ for illustration. Note that
+$$
+\begin{aligned}
+f(\sigma^2_h \mid \mu_h)
+&\propto f(\mu_h \mid \sigma^2_h) f(\sigma^2_h) \\
+&\propto (\sigma^2_h)^{-\frac{1}{2}} \exp\left\{ -\frac{(\mu_h-\eta)^2}{2\kappa \sigma^2_h} \right\} (\sigma^2_h)^{-a-1} \exp\left( -\frac{b}{\sigma^2_h} \right) \mathbb{I}(\sigma^2_h>0) \\
+&\sim \frac{b +(\mu_h-\eta)^2/(2\kappa)}{\mathrm{Ga}(a+1/2)}.
+\end{aligned}
+$$
+
+## Posterior derivation
+Let $\Xi_h = \{i \in \{1,\ldots,n\}: z_i=h \}$ for $h=1,\ldots,H$. By Example 2.12,
+$$
+\begin{aligned}
+f(\sigma^2_h \mid y_{1:n}, z_{1:n}, \mu_{1:H}, \sigma_{-h}^2, \theta)
+&= f(\sigma^2_h \mid y_{\Xi_h}, z_{1:n}, \mu_h, \sigma_{-h}^2, \theta) \\
+&\propto f(y_{\Xi_h} \mid \sigma^2_h, z_{1:n}, \mu_h, \sigma_{-h}^2, \theta) f(\sigma^2_h \mid z_{1:n}, \mu_h, \sigma_{-h}^2, \theta) \\
+&= f(y_{\Xi_h} \mid \sigma^2_h, z_{1:n}, \mu_h) f(\sigma^2_h \mid \mu_h) \\
+&\sim \frac{b +(\mu_h-\eta)^2/(2\kappa) +\sum_{i \in \Xi_h} (y_i-\mu_h)^2/2}{\mathrm{Ga}(a+1/2+|\Xi_h|/2)},
+\end{aligned}
+$$
+where $|\Xi_h| = \sum_{i=1}^n \mathbb{I}(z_i=h)$ denotes the cardinality of $\Xi_h$.
+
+Note: one of you asked why we can drop $\sigma_{-h}^2$. See the explanation below:
+$$
+\begin{aligned}
+& f(\sigma^2_h \mid y_{1:n}, z_{1:n}, \mu_{1:H}, \sigma_{-h}^2, \theta) \\
+\propto{}& f(y_{\Xi_h} \mid \sigma^2_h, z_{1:n}, \mu_h, \theta)
+\underbrace{f(y_{-\Xi_h} \mid \sigma^2_{-h}, z_{1:n}, \mu_{-h}, \theta)}_{\textrm{does not include }\sigma_h^2}
+f(\sigma^2_h \mid z_{1:n}, \mu_h, \sigma_{-h}^2, \theta).
+\end{aligned}
+$$
+
+## Posterior derivation
+We state the other conditonal densities without proof. Note that some of them are not named in the real A7 and so you need to use MH.
+$$
+\begin{aligned}
+f(\mu_h \mid y_{1:n}, z_{1:n}, \sigma^2_{1:H}, \theta) 
+&\sim \mathrm{N}\left\{ \frac{(1/\kappa) \cdot \eta +|\Xi_h| \cdot \bar{y}_{\Xi_h}}{1/\kappa +|\Xi_h|}, \frac{\sigma^2_h}{1/\kappa +|\Xi_h|} \right\}, \\
+f(\theta \mid y_{1:n}, z_{1:n}, \mu_{1:H}, \sigma^2_{1:H})
+&\sim \mathrm{Dir}_H(q), \\
+f(z_i \mid y_{1:n}, z_{-i}, \mu_{1:H}, \sigma^2_{1:H}, \theta)
+&\sim (1,\ldots,H)^\mathrm{T} \mathrm{Multi}_H(1, p_i),
+\end{aligned}
+$$
+where
+$$
+\begin{aligned}
+\bar{y}_{\Xi_h} &= \frac{1}{|\Xi_h|} \sum_{i \in \Xi_h} y_i, \quad
+q = (1/H+|\Xi_1|, \ldots, 1/H+|\Xi_H|)^\mathrm{T}, \\
+p_i &= (p_{i,1}, \ldots, p_{i,H})^\mathrm{T} \quad \mathrm{and} \quad
+p_{i,h} = \frac{\texttt{dnorm}(y_i, \mu_h, \sigma_h) \cdot \theta_h }{\sum_{h'=1}^H \texttt{dnorm}(y_i, \mu_{h'}, \sigma_{h'}) \cdot \theta_{h'}} \quad \mathrm{for} \quad h=1,\ldots,H.
+\end{aligned}
+$$
+
+## MCMC implementation
+First, we write a function to initialize the environment for our Gibbs.
+```{r}
+mcmc_init = function(nIter, ...){
+  env = list2env(list(...))
+  env$nIter = nIter
+  with(env, {
+    n = length(y)
+    z = array(NA, dim=c(nIter+1,n))
+    mu = sigma2 = theta = array(NA, dim=c(nIter+1,H))
+    xi = vector("list", H)
+    sigma20 = b/(a-1)
+    q0 = rep(1/H, H)
+    p = array(1/H, dim=c(n,H))
+    mu[1,] = rnorm(H, eta, sqrt(kappa*sigma20))
+    sigma2[1,] = 1/rgamma(H, a, b)
+    theta[1,] = rDir(1, q0)
+    z[1,] = vSample(1:H, p)
+    iIter = 1
+  })
+  env
+}
+```
+<code>rDir</code> and <code>vSample</code> are functions that can simulate from Dirichlet and multinomial. As a hint, you can read [Wikipedia](https://en.wikipedia.org/wiki/Dirichlet_distribution#Gamma_distribution) for direct generation of Dirichlet RVs.
+
+## MCMC implementation
+Second, we write a function to implement 1-step Gibbs:
+```{r}
+gibbs_step = function(env){
+  with(env, {
+    mu0 = mu[iIter,]
+    for (h in 1:H)
+      xi[[h]] = which(z[iIter,]==h)
+    nXi = sapply(xi, length)
+    for (h in 1:H) {
+      i = xi[[h]]
+      if (nXi[h] == 0) {
+        sigma2[iIter+1,h] = rInvGa(1, a+1/2, b+(mu0[h]-eta)^2/2/kappa)
+        mu[iIter+1,h] = rnorm(1, eta, sqrt(kappa*sigma2[iIter+1,h]))
+      } else {
+        sigma2[iIter+1,h] = rInvGa(1, a+(nXi[h]+1)/2,
+                                 b+(mu0[h]-eta)^2/2/kappa+sum((y[i]-mu0[h])^2)/2)
+        mu[iIter+1,h] = rnorm(1, (1/kappa*eta+nXi[h]*mean(y[i]))/(1/kappa+nXi[h]),
+                            sqrt(sigma2[iIter+1,h]/(1/kappa+nXi[h])))
+      }
+    }
+    q = q0 +nXi
+    theta[iIter+1,] = rDir(1, q)
+    for (h in 1:H)
+      p[,h] = dnorm(y, mu[iIter+1,h], sqrt(sigma2[iIter+1,h]))*theta[iIter+1,h]
+    z[iIter+1,] = vSample(1:H, p)
+    iIter = iIter+1
+  })
+}
+```
+
+## MCMC implementation
+Finally, we run and briefly check the posterior sample:
+```{r, eval=F}
+mcmc_diag = function(env, iUse){
+  par(mfrow=c(1,2))
+  H = env$H
+  # weight
+  matplot(env$theta[iUse,], type="l", lty=1,
+          main=bquote("Trace Plot of "*theta), ylab=bquote(theta))
+  abline(h=weight, col="black", lwd=2, lty=1)
+  hist(env$theta[iUse,], breaks=30, freq=FALSE,
+       main=bquote("Histogram of "*theta), xlab=bquote(theta))
+  abline(v=weight, col="black", lwd=2, lty=1)
+}
+nIter = 1e4
+iUse = (.9*nIter):nIter +1
+mcmc = mcmc_init(nIter, y=y, a=2, b=3, eta=1.5, kappa=5, H=4)
+for (iIter in 1:nIter) {
+  gibbs_step(mcmc)
+}
+mcmc_diag(mcmc, iUse)
+```
+
+## MCMC implementation
+```{r, echo=F}
+mcmc_diag = function(env, iUse){
+  par(mfrow=c(1,2))
+  H = env$H
+  # weight
+  matplot(env$theta[iUse,], type="l", lty=1,
+          main=bquote("Trace Plot of "*theta), ylab=bquote(theta))
+  abline(h=weight, col="black", lwd=2, lty=1)
+  hist(env$theta[iUse,], breaks=30, freq=FALSE,
+       main=bquote("Histogram of "*theta), xlab=bquote(theta))
+  abline(v=weight, col="black", lwd=2, lty=1)
+}
+nIter = 1e4
+iUse = (.9*nIter):nIter +1
+mcmc = mcmc_init(nIter, y=y, a=2, b=3, eta=1.5, kappa=5, H=4)
+for (iIter in 1:nIter) {
+  gibbs_step(mcmc)
+}
+mcmc_diag(mcmc, iUse)
+```
+
+## General tips
+- Answer **ALL** questions
+  - Blank answer must score 0 (do not waste the chance!)
+  - We give partial credit if you can show understanding of the materials
+- The only thing that you **CANNOT** do is to communicate with others
+- In other words, you can:
+  - Use [WolframAlpha](https://www.wolframalpha.com/) to check algebra
+  - Read [Stack Overflow](https://stackoverflow.com/) to debug R code
+    - But you cannot ask questions there
+  - Watch [YouTube](https://www.youtube.com/) video tutorials...
+- Ask on Blackboard for clarification
+- Remember to cite the source
+- Submit on time
+
+# All the best with the final! 
