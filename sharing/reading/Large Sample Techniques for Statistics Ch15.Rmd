@@ -242,7 +242,7 @@ Suppose we simulate $\bs{X} = (X^{(1)}, X^{(2)}, X^{(3)})^\intercal$ with Gibbs.
     - as known as blocked Gibbs sampler.
 - Collapsing: omit $X^{(3)}$, and sample $X^{(1)}$ from $p^{(1 \mid 2)}$ and $X^{(2)}$ from $p^{(2 \mid 1)}$
     -  sampling from $p^{(1 \mid 2)}$ is generally tractable when $X^{(3)}$ is a conjugate prior of $X^{(1)}$; see [Wikipedia](https://en.wikipedia.org/wiki/Gibbs_sampling#Collapsed_Gibbs_sampler).
-    - sensible if the problem of interest only involves the joint of $X_1$ and $X_2$.
+    - sensible if the problem of interest only involves the joint of $X^{(1)}$ and $X^{(2)}$.
 
 Which strategy is the best?
 

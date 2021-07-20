@@ -9,14 +9,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Main
-1. General and Super-optimal Recursive Estimators of Long-run Variance; Supplement  
-Available upon request.  
+<!-- 1. General and Super-optimal Recursive Estimators of Long-run Variance; Supplement   -->
+<!-- Available upon request.   -->
 
-2. [Diagnosing Learning Algorithms with Super-optimal Recursive Estimators](ICSA poster.pdf); [Elevator Speech and Appendix](ICSA presentation.pdf)  
+1. [Diagnosing Learning Algorithms with Super-optimal Recursive Estimators](ICSA poster.pdf); [Elevator Speech and Appendix](ICSA presentation.pdf)  
 Poster presentation at ICSA 2020 Applied Statistics Symposium.  
 
-3. rlaser: an R package for Recursive Long-run Variance Estimation  
-Available upon request.  
+<!-- 3. rlaser: an R package for Recursive Long-run Variance Estimation   -->
+<!-- Available upon request.   -->
 
 ## Related Materials
 1. [Reading Group - Asymptotic theory for stationary processes](Reading Group - Asymptotic theory for stationary processes.pdf)  
