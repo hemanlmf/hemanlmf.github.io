@@ -1,0 +1,55 @@
+\usepackage{xr, tabularx, booktabs}
+\usepackage{MnSymbol}
+\usepackage{bbold} % allow \mathbb{1}, \mathbb{a}. Warning: It affects the appearance of \mathbb{A}
+\usepackage[cal=boondox]{mathalfa}  % allow \mathcal{a}
+\usepackage{color}
+\usepackage{animate}
+
+\AtBeginDocument{
+  \title[A Causal Bootstrap]{A Causal Bootstrap}
+  \author[Ben and Heman]{Guido Imbens and Konrad Menzel (AoS, to appear)}
+  \date{Summer, 2021}
+}
+\AtBeginSection{}
+\AtBeginPart{}
+\setbeamertemplate{page number in head/foot}[appendixframenumber]
+\setbeamersize{text margin left = 10pt}
+\setbeamerfont{caption}{size=\footnotesize, shape=\itshape}
+\setlength{\parskip}{5pt}
+\renewcommand{\tightlist}{\setlength{\parskip}{0pt}}
+
+% \hypersetup{
+%   hidelinks,
+%   linktocpage,
+%   colorlinks=true,
+%   linkcolor=blue,
+%   citecolor=blue,
+%   filecolor=blue,
+%   urlcolor=blue,
+% }
+
+%%% ### Mathematics
+\newcommand{\di}{\mathrm{d}}
+
+%%% ### Probability theory
+\newcommand{\pr}{\mathbb{P}}
+\newcommand{\I}{\mathbb{1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+\newcommand{\MSE}{\mathrm{MSE}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\cin}[1]{\stackrel{\mathrm{#1}}{\to}}
+\newcommand{\indep}{\perp\!\!\!\perp}
+
+%%% ### Common distributions
+\newcommand{\Normal}{\mathrm{N}}
+\newcommand{\Exp}{\mathrm{Exp}}
+\newcommand{\Unif}{\mathrm{Unif}}
+\newcommand{\Bern}{\mathrm{Bern}}
+
+%%% ### Set theory
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}_0}
+\newcommand{\R}{\mathbb{R}}
