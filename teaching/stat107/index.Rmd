@@ -1,0 +1,19 @@
+---
+title: "STAT107 Resources"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Fall, 2021
+
+### Short Slides
+1. [Lab: Introduction](2021F/slide_intro.pdf)
+
+### Online Reference
+1. [Course website](https://discovery.cs.illinois.edu/stat107-fa21/)  
+This should be your major reference for revision  
+2. [Python Tutorial](https://www.w3schools.com/PYTHON/)  
+You can refer to this website if you forget some syntax  
