@@ -10,7 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Fall, 2021
 
 ### Short Slides
-1. [Lab: Introduction](2021F/slide_intro.pdf)
+1. [Lab: Introduction](2021F/slide_intro.pdf)  
+2. [Lab: Getting Started with Pandas](2021F/slide_pandas.pdf)
 
 ### Online Reference
 1. [Course website](https://discovery.cs.illinois.edu/stat107-fa21/)  
