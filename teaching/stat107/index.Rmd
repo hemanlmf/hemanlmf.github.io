@@ -12,7 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Short Slides
 1. [Lab: Introduction](2021F/slide_intro.pdf)  
 2. [Lab: Getting Started with Pandas](2021F/slide_pandas.pdf)  
-3. [Lab: Experimental Design](2021F/slide_exp_design.pdf)
+3. [Lab: Experimental Design](2021F/slide_exp_design.pdf)  
+4. [Lab: Simpson's Paradox](2021F/slide_simpsons_paradox.pdf)
 
 ### Online Reference
 1. [Course website](https://discovery.cs.illinois.edu/stat107-fa21/)  
