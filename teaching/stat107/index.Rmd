@@ -17,7 +17,8 @@ knitr::opts_chunk$set(echo = TRUE)
 5. [Lab: Plots](2021F/slide_plots.pdf)  
 6. [Lab: GPA](2021F/slide_gpa.pdf)  
 7. [Lab: Birthday](2021F/slide_birthday.pdf)  
-8. [Lab: Simulation](2021F/slide_simulation.pdf)
+8. [Lab: Simulation](2021F/slide_simulation.pdf)  
+9. [Lab: Similarity](2021F/slide_similarity.pdf)  
 
 ### Online Reference
 1. [Course website](https://discovery.cs.illinois.edu/stat107-fa21/)  
