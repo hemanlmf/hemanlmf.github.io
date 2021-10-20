@@ -20,6 +20,11 @@ knitr::opts_chunk$set(echo = TRUE)
 8. [Lab: Simulation](2021F/slide_simulation.pdf)  
 9. [Lab: Similarity](2021F/slide_similarity.pdf)  
 
+### Projects
+![Project 1: original image](2021F/bond.jpg){width=49%}
+![Project 1: mosaic image](2021F/mosaic-web.jpg){width=49%}
+
+
 ### Online Reference
 1. [Course website](https://discovery.cs.illinois.edu/stat107-fa21/)  
 This should be your major reference for revision  
