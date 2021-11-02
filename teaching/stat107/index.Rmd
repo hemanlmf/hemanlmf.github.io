@@ -20,6 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 8. [Lab: Simulation](2021F/slide_simulation.pdf)  
 9. [Lab: Similarity](2021F/slide_similarity.pdf)  
 10. [Lab: Justice](2021F/slide_justice.pdf)  
+11. [Lab: Random Variable](2021F/slide_random-variable.pdf)  
 
 ### Projects
 ![Project 1: original image](2021F/bond.jpg){width=49%}
