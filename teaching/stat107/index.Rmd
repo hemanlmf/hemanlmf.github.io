@@ -23,6 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 11. [Lab: Random Variable](2021F/slide_random-variable.pdf)  
 12. [Lab: Central Limit Theorem](2021F/slide_clt.pdf)  
 13. [Lab: Hypothesis Testing](2021F/slide_hypothesis-tests.pdf)  
+14. [Lab: Regression](2021F/slide_regression.pdf)  
 
 ### Projects
 ![Project 1: original image](2021F/bond.jpg){width=49%}
