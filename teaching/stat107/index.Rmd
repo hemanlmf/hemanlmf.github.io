@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Short Slides
 1. [Lab: Introduction](2022S/01_intro.pdf)  
+2. [Lab: Pandas](2022S/02_pandas.pdf)  
 
 ### Online Reference
 1. [Course website](https://discovery.cs.illinois.edu/stat107-sp22/)  
