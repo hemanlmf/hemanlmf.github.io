@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 3. [Lab: Experimental Design](2022S/03_exp_design.pdf)  
 4. [Lab: Simpson's Paradox](2022S/04_simpsons_paradox.pdf)  
 5. [Lab: Plots](2022S/05_plots.pdf)  
+6. [Lab: GPA](2022S/06_gpa.pdf)  
 
 ### Online Reference
 1. [Course website](https://discovery.cs.illinois.edu/stat107-sp22/)  
