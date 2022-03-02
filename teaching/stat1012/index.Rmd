@@ -1,5 +1,5 @@
 ---
-title: "STAT1012 Resources"
+title: "STAT1012 Resources ([back to teaching](../../teaching.html))"
 output: html_document
 ---
 

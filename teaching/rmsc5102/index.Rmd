@@ -1,5 +1,5 @@
 ---
-title: "RMSC5102 Resources"
+title: "RMSC5102 Resources ([back to teaching](../../teaching.html))"
 output: html_document
 ---
 
