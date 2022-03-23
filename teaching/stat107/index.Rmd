@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 6. [Lab: GPA](2022S/06_gpa.pdf)  
 7. [Lab: Birthday](2022S/07_birthday.pdf)  
 8. [Lab: Simulation](2022S/08_simulation.pdf)  
+9. [Lab: Justice](2022S/09_justice.pdf)  
 
 ### Projects
 ![Project 1: original image](2022S/bond.webp){width=49%}
