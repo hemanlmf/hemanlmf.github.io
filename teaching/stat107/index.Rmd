@@ -20,6 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 8. [Lab: Simulation](2022S/08_simulation.pdf)  
 9. [Lab: Justice](2022S/09_justice.pdf)  
 10. [Project: Mosaic](2022S/10_mosaic.pdf)  
+11. [Lab: Random Variable](2022S/11_random_variable.pdf)  
 
 ### Projects
 ![Project 1: original image](2022S/bond.webp){width=49%}
