@@ -22,6 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 10. [Project: Mosaic](2022S/10_mosaic.pdf)  
 11. [Lab: Random Variable](2022S/11_random_variable.pdf)  
 12. [Lab: Central Limit Theorem](2022S/12_clt.pdf)  
+13. [Lab: Hypothesis Testing](2022S/13_hypothesis_tests.pdf)  
 
 ### Projects
 ![Project 1: original image](2022S/bond.webp){width=49%}
