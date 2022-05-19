@@ -16,8 +16,6 @@ fontsize: 12pt
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(microbenchmark)
-library(Rcpp)
 ```
 
 # Introduction
@@ -31,7 +29,7 @@ This book is fairly complete for beginners. Use it as a reference as not everyth
 This book is, as its name suggests, an advance treatment. Read it if you would like to know more as an experience user  
 
 # Basic
-## The Survival *?*
+## The Survival `?`
 We can inspect the documentation of everything in R. For example,
 ```{r, eval=F}
 ?mean
@@ -48,7 +46,7 @@ Looking at the documentation is helpful when we are not sure about how to use so
 ## Long Statements
 (If you just want a quick fix, you can toggle the soft-warp. For R-studio, go to Tools > Global Options > Code and check "Soft-warp R source files".)
 
-Sometimes we may have some long statements that exceed the width of editor. This can be inconvenient when we read the same code later. As R do not have end statement like ";" in other languages, whenever we break down a long statement we have to make sure that it is not ended yet. Here is an example:
+Sometimes we may have some long statements that exceed the width of editor. This can be inconvenient when we read the same code later. As R does not require end statement like ";" in other languages, whenever we break down a long statement we have to make sure that it is not ended yet. Here is an example:
 ```{r}
 # Correct multiline statement
 x = 1 +2 +3 +4 +5 +
@@ -95,8 +93,8 @@ List can be used to store heterogeneous data so it is less often used as a data 
 ## Looping
 There are several common ways to do iterations in R:
 
-1) Traditional control flow such as *for*, *while* and *repeat*
-2) Functional programming such as *apply* and *lapply*
+1) Traditional control flow such as `for`, `while` and `repeat`
+2) Functional programming such as `apply` and `lapply`
 3) Vectorization
 
 For beginners, you may stick to traditional control flow until you are more familiar with R. We will discuss vectorization if we have time.
@@ -118,29 +116,27 @@ cov(a, b, method="kendall")
 
 # Intermediate
 ## Ternary If Operator
-In some common programming languages, *?:* is provided as a ternary if operator. For instance, the statement
+In some common programming languages, `?:` is provided as a ternary if operator. For instance, the statement
 ```{c, eval=F}
 a ? b : c
 ```
-means "if a then b otherwise c". However, *?* is the help operator, which is shown in [The Survival *?*], so this is not true in R. Commonly, people think that *ifelse* is the ternary if operator but this is not accurate. The correct ternary if is *\`if\`* while *ifelse* is its vectorized version. We try to compare their speed with the microbenchmark library:
+means "if a then b otherwise c". However, `?` is the help operator, which is shown in [The Survival `?`], so this is not true in R. Commonly, people think that `ifelse` is the ternary if operator but this is not accurate. The correct ternary if is `\`if\`` while `ifelse` is its vectorized version. We try to compare their speed with the microbenchmark library:
 ```{r}
+library(microbenchmark)
 U = runif(1000)
-f_if = function(U, n=length(U)) # use `if`
-{
+f_if = function(U, n=length(U)) { # use `if`
   out = vector(length=n)
   for (i in 1:n) # can skip {} if only 1 line
     out[i] = `if`(U[i]<0.5, 0, 1)
   out
 }
-f_eif = function(U, n=length(U)) # use ifelse
-{
+f_eif = function(U, n=length(U)) { # use ifelse
   out = vector(length=n)
   for (i in 1:n) # can skip {} if only 1 line
     out[i] = ifelse(U[i]<0.5, 0, 1)
   out
 }
-f_eif_vec = function(U, n=length(U)) # use ifelse in a vectorized way
-{
+f_eif_vec = function(U, n=length(U)) { # use ifelse in a vectorized way
   out = ifelse(U<0.5, 0, 1)
   out
 }
@@ -148,21 +144,19 @@ all.equal(f_if(U), f_eif(U), f_eif_vec(U)) # sanity check
 # evaluate execution time systematically
 print(microbenchmark(f_if(U), f_eif(U), f_eif_vec(U), times=50))
 ```
-There are two messages here. First, *\`if\`* is the correct ternary if operator since it is much faster when a single element is concerned. Second, vectorization can speed up the implementation in R. The general idea is to use vectors instead of single elements as inputs into a vectorized function.
+There are two messages here. First, `\`if\`` is the correct ternary if operator since it is much faster when a single element is concerned. Second, vectorization can speed up the implementation in R. The general idea is to use vectors instead of single elements as inputs into a vectorized function.
 
 ## Pre-allocation
-In simulations, we frequently pre-allocate the storage *out* in advance of the main loops. The reason is that dynamic memory allocation is usually costly in R. To see this, we try a simple example:
+In simulations, we frequently pre-allocate the storage `out` in advance of the main loops. The reason is that dynamic memory allocation is usually costly in R. To see this, we try a simple example:
 ```{r}
 n = 1000
-f_pre = function(n) # pre-allocate out
-{
+f_pre = function(n) { # pre-allocate out
   out = vector(length=n)
   for (i in 1:n)
     out[i] = i
   out
 }
-f_dyn = function(n) # combine elements dynamically
-{
+f_dyn = function(n) { # combine elements dynamically
   out = 1
   for (i in 2:n)
     out = c(out, i)
@@ -171,45 +165,42 @@ f_dyn = function(n) # combine elements dynamically
 all.equal(f_pre(n), f_dyn(n))
 print(microbenchmark(f_pre(n), f_dyn(n), times=50))
 ```
-By adjusting the value of *n*, we can see that dynamic memory allocation is not of constant time in this way. Therefore, we should try our best to pre-allocate the necessary storage to avoid performance issues.
+By adjusting the value of `n`, we can see that dynamic memory allocation is not of constant time in this way. Therefore, we should try our best to pre-allocate the necessary storage to avoid performance issues.
 
 ## Looping with Functionals
 In [Looping], I have recommended stick to traditional control flow. The rationale is that functional loops can usually be rewritten as traditional loops with similar performance. Consider the following:
 ```{r}
 x = matrix(runif(5000), nrow=1000, ncol=5)
-f_for = function(x, n=nrow(x)) # row sum with for loop
-{
+f_for = function(x, n=nrow(x)) { # row sum with for loop
   out = vector(length=n)
   for (i in 1:n)
     out[i] = sum(x[i,])
   out
 }
-f_apply = function(x) # row sum with apply
-{
+f_apply = function(x) { # row sum with apply
   out = apply(x, 1, sum)
   out
 }
-f_vec = function(x) # vectorized row sum
-{
+f_vec = function(x) { # vectorized row sum
   out = rowSums(x)
   out
 }
 all.equal(f_for(x), f_apply(x), f_vec(x))
 print(microbenchmark(f_for(x), f_apply(x), f_vec(x), times=50))
 ```
-In this simple case, *for* is marginally faster than *apply* while the vectorized *rowSums* is much faster than both. When should we use functional loops in practice? There are several cases:
+In this simple case, `for` is marginally faster than `apply` while the vectorized `rowSums` is much faster than both. When should we use functional loops in practice? There are several cases:
 
 1) Readability: functional loops result in neater code in general
 2) Design pattern: functional style of programming may be preferred
 
 ## Sourcing
-The concept of package in R is similar to the concept of library in the other programming languages. However, creating packages to manage our code can be time consuming. A quicker way to save and reuse common R code is through the function *source*. For example,
+The concept of package in R is similar to the concept of library in the other programming languages. However, creating packages to manage our code can be time consuming. A quicker way to save and reuse common R code is through the function `source`. For example,
 ```{r}
 x = "stat"
 source("example.R") # the code inside covered last line
 x
 ```
-We can see that the value of *x* changes because it was "covered" by the code in example.R, which consists of
+We can see that the value of `x` changes because it was "covered" by the code in example.R, which consists of
 ```{r, eval=F}
 # Content of example.R
 x # this will not be printed
@@ -217,12 +208,12 @@ x = 3005
 ```
 There are several things to note:
 
-1) Intuitively, *source* "import" R code by running every line. If global variables/operations are used in the to-be-imported file, they might affect the result unexpectedly. Put only functions in the to-be-imported file to avoid this issue  
-2) By the above example, we can see that some operations might not have effect. For example, calling *x* (the second line in example.R) did not result in auto-printing the value of *x*, which was "stat". Read the documentation for details about the behavior of *source*  
+1) Intuitively, `source` "import" R code by running every line. If global variables/operations are used in the to-be-imported file, they might affect the result unexpectedly. Put only functions in the to-be-imported file to avoid this issue  
+2) By the above example, we can see that some operations might not have effect. For example, calling `x` (the second line in example.R) did not result in auto-printing the value of `x`, which was "stat". Read the documentation for details about the behavior of `source`  
 3) It is possible to import global code chunks separately if we use R markdown. See [this](https://bookdown.org/yihui/rmarkdown-cookbook/read-chunk.html). However, we still need to name the chunks so that we can pinpoint which one to be called  
 
 ## Command Line
-While R studio or other IDE is more user friendly, running R code in them is usually slower than running via command line. One of the reasons is the dynamic interaction with the environments. In R studio, we can inspect the variables usually by clicking their names in the environment panel. However, this convenience comes at cost of tracing and showing the memories associated with the names. Therefore, if execution speed is of concern after the development stage, we should run our R code via terminal directly (e.g., using *source*)
+While R studio or other IDE is more user friendly, running R code in them is usually slower than running via command line. One of the reasons is the dynamic interaction with the environments. In R studio, we can inspect the variables usually by clicking their names in the environment panel. However, this convenience comes at cost of tracing and showing the memories associated with the names. Therefore, if execution speed is of concern after the development stage, we should run our R code via terminal directly (e.g., using `source`)
 
 # Advance
 ## Vectorization
@@ -230,21 +221,20 @@ Vectorization, or array programming, refers to applying operations to the whole 
 
 In some common programming languages, a sum of vector elements function is usually implemented as follows:
 ```{r}
-sum_loop = function(v)
-{
+sum_loop = function(v) {
   s = 0
   for (i in 1:length(v))
     s = s +v[i]
   s
 }
 ```
-We compare this with the built-in *sum* function, which is vectorized:
+We compare this with the built-in `sum` function, which is vectorized:
 ```{r}
 x = 1:1000
 all.equal(sum_loop(x), sum(x))
 print(microbenchmark(sum_loop(x), sum(x), times=50))
 ```
-Obviously, the built-in *sum* is much faster. Nevertheless, if we think about this and the previous two examples carefully, we will realize that we cannot write vectorized R functions ourselves in some sense. The *ifelse*, *rowSums* and *sum* functions are vectorized because they are built-in with highly optimized compiled code (probably in C). It would be difficult to write a vectorized R function without using them because we would not deal with those (probably C) code in general.
+Obviously, the built-in `sum` is much faster. Nevertheless, if we think about this and the previous two examples carefully, we will realize that we cannot write vectorized R functions ourselves in some sense. The `ifelse`, `rowSums` and `sum` functions are vectorized because they are built-in with highly optimized compiled code (probably in C). It would be difficult to write a vectorized R function without using them because we would not deal with those (probably C) code in general.
 
 In other words, the building blocks of vectorization in R are usually the functions provided in system library (take a look at the package panel in R studio). As long as we operate with arrays directly with suitable built-in functions, we are doing vectorization in R in a narrow sense. To illustrate different possibilities, we try to give a more complex example. Consider a data series with missing data:
 ```{r}
@@ -262,12 +252,10 @@ $$
 $$
 A naive implementation is
 ```{r}
-f_naive = function(A, n)
-{
+f_naive = function(A, n) {
   out = rep(0, n)
   j = 1
-  for (i in A[1]:n)
-  {
+  for (i in A[1]:n) {
     if (j == n/2) next
     if (i == A[j+1]) j = j +1
     out[i] = A[j]
@@ -277,8 +265,7 @@ f_naive = function(A, n)
 ```
 A marginally better implementation is
 ```{r}
-f_naive2 = function(A, n)
-{
+f_naive2 = function(A, n) {
   out = rep(0, n)
 	out[A] = A
   for (i in A[1]:n)
@@ -286,10 +273,9 @@ f_naive2 = function(A, n)
   out
 }
 ```
-A vectorized implementation that uses *cumsum* is
+A vectorized implementation that uses `cumsum` is
 ```{r}
-f_vec = function(A, n)
-{
+f_vec = function(A, n) {
   I = rep(0, n)
   I[A] = 1 # indicator of observed data
   I = cumsum(I) # cumsum is vectorized
@@ -318,10 +304,9 @@ We can even convert an environment to a list, vice versa.
 z = as.list(e, all.names=TRUE)
 z
 ```
-However, there is one key difference which makes the role of environment special in developing data structure. Consider the following function which changes the element named *code* in a list or environment *e*:
+However, there is one key difference which makes the role of environment special in developing data structure. Consider the following function which changes the element named `code` in a list or environment `e`:
 ```{r}
-f_change = function(e, v)
-{
+f_change = function(e, v) {
   e$code = v
 }
 ```
@@ -330,12 +315,12 @@ If we input a list, then
 f_change(z, 4010) #z is a list replicated from e in the above
 z$code #remains unchanged
 ```
-The element named *code* is not changed to the input 4010 because changes in a function are local if we do not return the list. Informally, the variable *z* is passed into *f_change* by value and a local copy of *z* is created within the function. However, if we input an environment instead, then
+The element named `code` is not changed to the input 4010 because changes in a function are local if we do not return the list. Informally, the variable `z` is passed into `f_change` by value and a local copy of `z` is created within the function. However, if we input an environment instead, then
 ```{r}
 f_change(e, 4010)
 e$code #it changes from 3005 to 4010
 ```
-Informally, the variable *e* is passed into *f_change* by reference and changes to its content are permanent even in the function. This can be a desirable behavior especially for implementing advance data structures since there is no pointer in R. Alternatively, we may use R6 or a similar OOP system in order to have such reference semantic but environment is available in base R without additional complications.
+Informally, the variable `e` is passed into `f_change` by reference and changes to its content are permanent even in the function. This can be a desirable behavior especially for implementing advance data structures since there is no pointer in R. Alternatively, we may use R6 or a similar OOP system in order to have such reference semantic but environment is available in base R without additional complications.
 
 Before ending this section, let me share my implementation of queue with environment in R. There is a package doing it but I need more flexibility for my research, which motivates me to code it myself. Please feel free to let me know if there is any bug.
 ```{r}
@@ -375,12 +360,11 @@ Recall in [Vectorization] that array operation with suitable built-in functions 
 
 To motivate the performance improvement, consider bootstrapping the variance of sample mean. By slightly modifying Algorithm 7.1, we have
 ```{r}
-bootVar_r = function(x, B=10000)
-{
+library(Rcpp)
+bootVar_r = function(x, B=10000) {
   n = length(x)
   out = rep(NA, B)
-  for (b in 1:B)
-  {
+  for (b in 1:B) {
     xb = x[ceiling(runif(n, 0, n))]
     out[b] = mean(xb)
   }
@@ -393,12 +377,10 @@ For the Rcpp implementation, we may use
 using namespace Rcpp;
 
 //[[Rcpp::export]]
-double bootVar_cpp(NumericVector x, int B=10000)
-{
+double bootVar_cpp(NumericVector x, int B=10000) {
   int n = x.size();
   NumericVector out(B);
-  for (int i=0; i<B; i++)
-  {
+  for (int i=0; i<B; i++) {
     NumericVector xb = x[floor(runif(n, 0, n))];
     out[i] = mean(xb);
   }
@@ -416,6 +398,6 @@ print(microbenchmark(bootVar_r(x), bootVar_cpp(x), times=50))
 ```
 Clearly the Rcpp implementation is faster. However, there are several remarks:
 
-1) We can see that we need (sort of) new terms if we want to use Rcpp. For example, we declare x as *Rcpp::NumericVector* instead of *std::vector* as in ordinary C++ code. To this end, I recommend [this](https://teuder.github.io/rcpp4everyone_en/) as a reference  
+1) We can see that we need (sort of) new terms if we want to use Rcpp. For example, we declare x as `Rcpp::NumericVector` instead of `std::vector` as in ordinary C++ code. To this end, I recommend [this](https://teuder.github.io/rcpp4everyone_en/) as a reference  
 2) Calling Rcpp functions may incur some overheads. Therefore, it is not always the case that Rcpp implementation is faster. It usually improves performance when there are long loops  
 3) If Rcpp functions are simply included in the global environment, they may reside in random addresses. Consequently, we may not call these functions in a parallel computing setting. From my personal experience (and Q&As on the Internet), one of the solutions is to create a personal package with these functions so that they can be called "statically" from the package
