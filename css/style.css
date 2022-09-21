@@ -536,6 +536,10 @@ ul.feature-grid li i{
 	padding:1em 0 0;
 	display: block;
 }
+span.publication span{
+	font-style: italic;
+	display: inline;
+}
 .staff {
   padding: 1em 0;
   border-top: 1px solid #D5D3D3;

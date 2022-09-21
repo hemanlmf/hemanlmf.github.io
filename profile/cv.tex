@@ -1,247 +1,86 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Medium Length Professional CV
-% LaTeX Template
-% Version 2.0 (8/5/13)
+%!TEX encoding = UTF-8 Unicode
+% LaTeX Template for CV/Resume
 %
-% This template has been downloaded from:
-% http://www.LaTeXTemplates.com
+% This template has been downloaded and modified from:
+% https://github.com/posquit0/Awesome-CV
 %
-% Original author:
-% Trey Hunner (http://www.treyhunner.com/)
+% Original Author:
+% Claud D. Park <posquit0.bj@gmail.com>
+% http://www.posquit0.com
 %
-% Important note:
-% This template requires the resume.cls file to be in the same directory as the
-% .tex file. The resume.cls file provides the resume style used for structuring the
-% document.
+% Modified (March 2019) by:
+% Jessica A. Rick <jrick@uwyo.edu>
+% http://www.jessicarick.com
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 
-%------------------------------------------------------------------------------------
-%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
-%------------------------------------------------------------------------------------
 
-\documentclass[10pt]{resume} % Use the custom resume.cls style
+%-------------------------------------------------------------------------------
+% CONFIGURATIONS
+%-------------------------------------------------------------------------------
+% A4 paper size by default, use 'letterpaper' for US letter
+\documentclass[11pt, letterpaper, draft]{academic-cv}
 
-% \usepackage[left=1in,top=0.8in,right=1in,bottom=0.8in]{geometry} % Document margins
-\usepackage[left=0.75in,top=0.6in,right=0.75in,bottom=0.6in]{geometry} % Document margins
-\usepackage{hyperref}
-\usepackage{fancyhdr}
+% Configure page margins with geometry
+\geometry{left=0.75in, top=0.75in, right=0.75in, bottom=0.75in, footskip=.5cm}
 
-\pagestyle{fancy}
-\fancyhf{}
-\renewcommand{\headrulewidth}{0pt}
-\cfoot{\thepage}
+% Specify the location of the included fonts
+\fontdir[fonts/]
 
-\name{Man Fung (Heman) LEUNG}
-\address{
-  % Phone: +852 3943 8535 \\
-  Email: mfleung2@illinois.edu \\
-  Web: \href{https://hemanlmf.github.io}{hemanlmf.github.io}}
+% If you would like to change the social information separator from a pipe (|) to something else
+\renewcommand{\acvHeaderSocialSep}{\quad\textbar\quad}
 
+
+%-------------------------------------------------------------------------------
+%	PERSONAL INFORMATION
+%	Comment any of the lines below if they are not required
+%-------------------------------------------------------------------------------
+\name{Man Fung (Heman) LEUNG}{}
+\position{PhD Candidate{\enskip\cdotp\enskip}Statistics}
+\address{Technology Plaza 212, Champaign, IL 61820}
+
+%\mobile{+1 000-000-0000}
+\email{mfleung2@illinois.edu}
+\homepage{hemanlmf.github.io}
+%\github{mygithub}
+%\linkedin{mylinkedin}
+% \gitlab{my-gitlab-id}
+% \stackoverflow{SO-id}{SO-name}
+% \twitter{@twitterhandle}
+% \skype{skype-id}
+% \reddit{reddit-id}
+% \extrainfo{extra informations}
+
+
+%-------------------------------------------------------------------------------
 \begin{document}
 
-%------------------------------------------------------------------------------------
-%	RESEARCH INTERESTS SECTION
-%------------------------------------------------------------------------------------
+% Print the header with above personal information
+% Give optional argument to change alignment(C: center, L: left, R: right)
+\makecvheader
 
-\begin{rSection}{Research interests}
+% Print the footer with 3 arguments(<left>, <center>, <right>)
+% Leave any of these blank if they are not needed
+\makecvfooter
+  {\monthyeardate\today}
+  {Heman ~~~·~~~ Curriculum Vitae}
+  {\thepage}
 
-Time Series, Statistical Computing, Causal Inference, Machine Learning
 
-\end{rSection}
+%-------------------------------------------------------------------------------
+%	CV/RESUME CONTENT
+%	Each section is imported separately, open each file in turn to modify content
+%   Comment out any sections that are not appropriate for your CV
+%-------------------------------------------------------------------------------
+\input{cv/01_education.tex}
+\input{cv/02_professional.tex}
+\input{cv/03_publication.tex}
+\input{cv/04_presentation.tex}
+\input{cv/05_software.tex}
+\input{cv/06_award.tex}
+% \input{cv/07_mentoring.tex}
+\input{cv/08_teaching.tex}
+\input{cv/09_extracurricular.tex}
 
-%------------------------------------------------------------------------------------
-%	EDUCATION SECTION
-%------------------------------------------------------------------------------------
-
-\begin{rSection}{Education}
-
-{\bf University of Illinois Urbana-Champaign (UIUC)} \\
-Ph.D. in Statistics  \hfill {May 2026 (Expected)} \\
-\hspace*{1em} Thesis: TBD \\
-\hspace*{1em} Advisor: TBD \smallskip \\
-{\bf The Chinese University of Hong Kong (CUHK)} \\
-M.Phil. in Risk Management Science \hfill {Jul 2021} \\
-\hspace*{1em} Thesis: \textit{A General Theory of Recursive Nonparametric Estimation} \\
-\hspace*{1em} Advisor: Kin Wai CHAN \smallskip \\
-B.Sc. in Quantitative Finance and Risk Management Science, First Class Honors \hfill {Jul 2019} \\
-\hspace*{1em} Minor: Statistics \smallskip \\
-{\bf University of California, Davis} \\
-Academic Exchange, UC Education Abroad Program  \hfill {Sep -- Dec 2017}
-
-\end{rSection}
-
-%------------------------------------------------------------------------------------
-%	RESEARCH PROJECTS SECTION
-%------------------------------------------------------------------------------------
-
-\begin{rSection}{Research projects}
-
-\begin{rSubsection}{On Self-Normalization in Online Problems}{Jul 2021 -- Present}{With Kin Wai CHAN and Xiaofeng SHAO}{Ongoing}
-\item Designs truly online and mini-batch self-normalizers for general quantiles based on red-black tree
-\item Discusses applications in Bayesian analysis and statistical learning
-\end{rSubsection}
-
-%------------------------------------------------
-
-\begin{rSubsection}{On Variance Estimation in Online Problems}{Jan 2020 -- Jun 2021}{With Kin Wai CHAN}{Submitted}
-\item Proposed a general framework which generates estimators that uniformly dominate existing alternatives
-\item Derived the first set of sufficient conditions for $O(1)$-time or $O(1)$-space update
-\item Discussed applications in change point detection, Markov chain Monte Carlo and stochastic gradient method
-\end{rSubsection}
-
-%------------------------------------------------
-
-\begin{rSubsection}{A Remark About a Learning Risk Lower Bound}{Mar -- Oct 2020}{With Yiqi LIN and Nicolas WICKER}{Accepted}
-  \item Corrected a learning risk lower bound in the non-realizable case appearing in some classical textbooks
-\end{rSubsection}
-
-\end{rSection}
-
-%------------------------------------------------------------------------------------
-%	PRESENTATIONS SECTION
-%------------------------------------------------------------------------------------
-
-\begin{rSection}{Presentations}
-
-\begin{rSecitem}{Simulation Run Length Control with Super-optimal Long-run Variance Estimators}{Aug 2021}{JSM 2021}{Speed}
-\end{rSecitem}
-
-\begin{rSecitem}{Diagnosing Learning Algorithms with Super-optimal Recursive Estimators}{Dec 2020}{ICSA 2020 Applied Statistics Symposium}{Poster}
-\end{rSecitem}
-
-\end{rSection}
-
-%------------------------------------------------------------------------------------
-%	SOFTWARE SECTION
-%------------------------------------------------------------------------------------
-
-\begin{rSection}{Software}
-
-\textbf{rsn}: an R package for Recursive Self-Normalization \hfill {Jul 2021 -- Present} \\
-\textbf{rlaser}: an R package for Recursive Variance Estimation with LASER \hfill {Jan 2020 -- Jun 2021}
-
-\end{rSection}
-
-%------------------------------------------------------------------------------------
-%	TEACHING EXPERIENCE SECTION
-%------------------------------------------------------------------------------------
-
-\begin{rSection}{Teaching experience}
-
-\begin{rSubsection}{Department of Statistics, UIUC}{Aug 2021 -- Present}{Teaching Assistant}{}
-\item Teaches and leads laboratory sessions in ``Data Science Discovery'' using Python
-\end{rSubsection}
-
-\begin{rSubsection}{Department of Statistics, CUHK}{Sep 2019 -- May 2021}{Teaching Assistant}{}
-\item Selected as the teaching assistant for a postgraduate core course about Monte Carlo simulation
-\item Published diverse learning materials for both undergraduate and postgraduate on personal website
-\item Led and presented in reading group meetings on ``Asymptotic Theory in Time Series'' in 2020
-\end{rSubsection}
-
-\end{rSection}
-
-%------------------------------------------------------------------------------------
-%	PROFESSIONAL SERVICE SECTION
-%------------------------------------------------------------------------------------
-
-\begin{rSection}{Professional Service}
-
-\begin{rSecitem}{Internship Network in the Mathematical Sciences}{Nov 2021; Feb 2022}{Statistical Methods Workshop; Project Workshop}{Teaching Assistant}
-\end{rSecitem}
-
-\begin{rSecitem}{Hong Kong Statistical Society}{Jun 2020, Apr 2021}{Statistical Project Competition for Secondary School Students}{Adjudicator}
-\end{rSecitem}
-
-\end{rSection}
-
-%------------------------------------------------------------------------------------
-%	WORK EXPERIENCE SECTION
-%------------------------------------------------------------------------------------
-
-\begin{rSection}{Work experience}
-
-\begin{rSubsection}{Institute of Software, Chinese Academy of Sciences}{Jun -- Jul 2019}{Research Intern}{}
-\item Analyzed the ideas behind different cutting-edge image classification networks
-\item Designed a deep hand pose detection model with 98.6\% validation accuracy using Python
-\item Extended the developed model to a web-based application with the other two teammates
-\end{rSubsection}
-
-%------------------------------------------------
-
-\begin{rSubsection}{Department of Finance, CUHK}{Sep -- Dec 2018}{Practicum}{}
-\item Explored and extracted high-level features from volatility surface using machine learning
-\item Hypothesized and tested the relationship between stock return and features in multiple models
-\item Developed a trading algorithm to profit from the tested relationship for Contrendian Limited
-\end{rSubsection}
-
-%------------------------------------------------
-
-\begin{rSubsection}{Research Department, Hong Kong Monetary Authority}{Jun -- Aug 2018}{Summer Intern}{}
-\item Investigated the impact of IPO on interbank and exchange rate markets using econometrics
-\item Optimized research procedures by employing automation and NLP with JavaScript and R
-\item Conducted preliminary analysis in a SME financing project collaborated with the FSB
-\end{rSubsection}
-
-%------------------------------------------------
-
-\begin{rSubsection}{Risk Advisory, Ernst \& Young Advisory Limited}{May -- Aug 2017}{Summer Intern}{}
-\item Developed an impairment analytics tool in an IFRS 9 project for CCB (Asia) with VBA
-\item Designed and conducted statistical tests and adjustments on PD and LGD models
-\item Collaborated with other teams to prepare disclosure guidance and strategic advice
-\end{rSubsection}
-
-\end{rSection}
-
-%------------------------------------------------------------------------------------
-%	AWARD SECTION
-%------------------------------------------------------------------------------------
-
-\begin{rSection}{Selected awards}
-
-Centaline Charity Fund Scholarship \hfill {Sep 2015 -- Present} \\
-CLP Centenary Scholarship \hfill {Aug 2018} \\
-CUHK, Best Essay Award 2015-16, Silver Award \hfill {Mar 2017} \\
-Stockholm School of Economics in Riga, Peak Time 2016, 1st Runner-up \hfill {Apr 2016} \\
-The Standard, Liberal Studies Writing Competition 2013-14, 2nd Runner-up \hfill {Jul 2014}
-
-\end{rSection}
-
-%------------------------------------------------------------------------------------
-%	COMMUNITY SERVICE SECTION
-%------------------------------------------------------------------------------------
-
-\begin{rSection}{Community Service}
-
-Lee Woo Sing College, Green Life Ambassador \hfill {Sep 2015 -- Jul 2019} \\
-Hong Kong BioBlitz 2015, Social Media Administrator \hfill {Sep -- Dec 2015}
-
-\end{rSection}
-
-%------------------------------------------------------------------------------------
-%	SKILLS SECTION
-%------------------------------------------------------------------------------------
-
-\begin{rSection}{Technical Skills}
-
-\begin{tabular}{ @{} >{\bfseries}l @{\hspace{6ex}} l }
-Programming & R, C/C++, Python, VBA, JavaScript, Java \\
-Publishing & R Markdown, TeX/LaTeX, HTML 5 \\
-Tools &  MS Office, Eviews, Bloomberg Terminal, GIMP
-\end{tabular}
-
-\end{rSection}
-
-%------------------------------------------------------------------------------------
-%	EXAMPLE SECTION
-%------------------------------------------------------------------------------------
-
-%\begin{rSection}{Section Name}
-
-%Section content\ldots
-
-%\end{rSection}
-
-%------------------------------------------------------------------------------------
-
+%-------------------------------------------------------------------------------
 \end{document}
